@@ -1,6 +1,6 @@
 import React from "react";
-import HomePage, {HomePageProps} from "@app/pages/home";
 import {FederatedProps} from "@app/contexts";
+import {HomePage, HomePageProps} from "@app/pages/home";
 
 type FederatedHomePageProps = HomePageProps & FederatedProps;
 

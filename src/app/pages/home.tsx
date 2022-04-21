@@ -5,7 +5,7 @@ import {CubesIcon} from "@patternfly/react-icons";
 export type HomePageProps = {
 };
 
-const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) => {
+export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) => {
     return (
         <EmptyState variant={EmptyStateVariant.xl}>
             <EmptyStateIcon icon={CubesIcon} />
@@ -20,5 +20,3 @@ const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) => {
         </EmptyState>
     );
 }
-
-export default HomePage;

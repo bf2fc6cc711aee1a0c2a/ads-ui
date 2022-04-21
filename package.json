@@ -14,7 +14,6 @@
     "build": "webpack --config webpack.prod.js",
     "start": "node server.js",
     "start:dev": "webpack serve --hot --color --progress --config webpack.dev.js",
-    "start:federate": "HOST=localhost PORT=9009 PROTOCOL=http webpack serve --hot --color --progress --config webpack.dev.js",
     "type-check": "tsc --noEmit",
     "ci-checks": "npm run type-check",
     "build:bundle-profile": "webpack --config webpack.prod.js --profile --json > stats.json",
