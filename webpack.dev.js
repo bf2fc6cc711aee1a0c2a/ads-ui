@@ -37,9 +37,6 @@ module.exports = merge(common("development"), {
       patterns: [
         { from: "./src/keycloak.dev.json", to: "keycloak.json"}
       ]
-    }),
-    new webpack.DefinePlugin({
-      "__BASE_PATH__": JSON.stringify(process.env.BASE_PATH || "https://api.stage.openshift.com"),
-    }),
+    })
   ]
 });

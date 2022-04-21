@@ -12,16 +12,11 @@ import "@patternfly/patternfly/utilities/Display/display.css";
 import "@patternfly/patternfly/utilities/Flex/flex.css";
 import {HomePage} from "@app/pages";
 
-declare const __BASE_PATH__: string;
-
 const App: React.FunctionComponent = () => {
  return (
      <ConfigContext.Provider
          value={
              {
-                 srs: {
-                     apiBasePath: __BASE_PATH__,
-                 },
              } as Config
          }
      >
