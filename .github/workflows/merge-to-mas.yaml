@@ -1,0 +1,45 @@
+name: Merge to MAS
+on:
+    workflow_dispatch:
+        inputs:
+            branch:
+                description: 'Branch to merge'
+                required: true
+                default: 'main'
+
+jobs:
+    merge:
+        runs-on: ubuntu-18.04
+        if: github.repository_owner == 'Apicurio'
+        steps:
+            - name: Log Metadata
+              run: |
+                  echo "Merging from ${{ github.event.inputs.branch }} to mas-ad"
+            - name: Code Checkout
+              run: |
+                  git init
+                  git config --global user.name "apicurio-ci"
+                  git config --global user.email "apicurio.ci@gmail.com"
+                  git remote add origin "https://apicurio-ci:${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
+                  git fetch
+                  git checkout mas-ad
+                  git branch --set-upstream-to=origin/mas-ad
+                  git pull
+                  echo "#### Listing files after clone ####"
+                  find .
+
+            - name: Merge to mas-ad
+              run: |
+                  git merge origin/${{ github.event.inputs.branch }}
+
+            - name: Commit Changes to mas-ad
+              run: |
+                  git push
+
+            - name: Google Chat Notification
+              if: ${{ failure() }}
+              uses: Co-qn/google-chat-notification@releases/v1
+              with:
+                  name: ${{ github.workflow }}
+                  url: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
+                  status: ${{ job.status }}
