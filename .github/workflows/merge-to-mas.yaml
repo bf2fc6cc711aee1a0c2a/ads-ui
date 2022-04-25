@@ -10,7 +10,7 @@ on:
 jobs:
     merge:
         runs-on: ubuntu-18.04
-        if: github.repository_owner == 'Apicurio'
+        if: github.repository_owner == 'bf2fc6cc711aee1a0c2a'
         steps:
             - name: Log Metadata
               run: |
