@@ -108,7 +108,9 @@ module.exports = (env, argv) => {
         // filename: `${federatedModuleName}${isProduction ? ".[chunkhash:8]" : ""}.js`,
         filename: `${federatedModuleName}.js`,
         exposes: {
-          "./FederatedHomePage": "./src/app/pages/home-federated"
+          "./FederatedHomePage": "./src/app/pages/home-federated",
+          "./FederatedRegistryPage": "./src/app/pages/registry-federated",
+          "./FederatedEditorPage": "./src/app/pages/editor-federated",
         },
         shared: {
           ...dependencies,
