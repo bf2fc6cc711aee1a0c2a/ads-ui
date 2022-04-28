@@ -1,9 +1,11 @@
 import React, {FunctionComponent, useState} from "react";
-import { Link } from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import {
     PageSection, PageSectionVariants, Text, TextContent, Card, CardTitle, CardBody, EmptyState, Title,
     EmptyStateVariant, EmptyStateBody, Button, Grid, GridItem, FileUpload
 } from "@patternfly/react-core";
+import {Basename, useBasename} from "@rhoas/app-services-ui-shared";
+import {Navigation, useNavigation} from "@app/contexts/navigation";
 
 export type HomePageProps = {
 };
@@ -12,6 +14,14 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
 
     const [ value, setValue ] = useState("");
     const [ filename, setFilename ] = useState("");
+
+    const history = useHistory();
+    const basename: Basename = useBasename();
+    const nav: Navigation = useNavigation(basename, history);
+
+    const onCreateDraft = (): void => {
+        nav.navigateTo("/editor");
+    };
 
     return (
         <React.Fragment>
@@ -38,7 +48,7 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
                                         API or Schema.
                                     </EmptyStateBody>
                                     <div style={{marginTop: "20px"}}>
-                                        <Link to={"editor"}>Create draft</Link>
+                                        <Button variant="primary" onClick={onCreateDraft}>Create draft</Button>
                                     </div>
                                 </EmptyState>
                             </CardBody>
