@@ -1,37 +1,13 @@
-import React, {FunctionComponent, useState} from "react";
-import {
-    Button,
-    Card,
-    CardBody,
-    CardTitle,
-    EmptyState,
-    EmptyStateBody,
-    EmptyStateVariant,
-    FileUpload,
-    Grid,
-    GridItem,
-    PageSection,
-    PageSectionVariants,
-    Text,
-    TextContent,
-    Title
-} from "@patternfly/react-core";
-import {Navigation, useNavigation} from "@app/contexts/navigation";
+import React, {FunctionComponent} from "react";
+import {Grid, GridItem, PageSection, PageSectionVariants, Text, TextContent} from "@patternfly/react-core";
 import {RhosrPanel} from "@app/pages/components";
+import {DraftsPanel} from "@app/pages/components/home/drafts-panel";
+import {FilePanel} from "@app/pages/components/home/file-panel";
 
 export type HomePageProps = {
 };
 
 export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) => {
-
-    const [ value, setValue ] = useState("");
-    const [ filename, setFilename ] = useState("");
-
-    const nav: Navigation = useNavigation();
-
-    const onCreateDraft = (): void => {
-        nav.navigateTo("/editor");
-    };
 
     return (
         <React.Fragment>
@@ -46,23 +22,7 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
 
                     {/*The Drafts card/section*/}
                     <GridItem span={3}>
-                        <Card isSelectable={false}>
-                            <CardTitle>Drafts</CardTitle>
-                            <CardBody>
-                                <EmptyState variant={EmptyStateVariant.xs}>
-                                    <Title headingLevel="h4" size="md">
-                                        None found
-                                    </Title>
-                                    <EmptyStateBody>
-                                        Click "Create draft" below to get started on a new
-                                        API or Schema.
-                                    </EmptyStateBody>
-                                    <div style={{marginTop: "20px"}}>
-                                        <Button variant="primary" onClick={onCreateDraft}>Create draft</Button>
-                                    </div>
-                                </EmptyState>
-                            </CardBody>
-                        </Card>
+                        <DraftsPanel />
                     </GridItem>
 
                     <GridItem span={4}>
@@ -70,22 +30,7 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
                     </GridItem>
 
                     <GridItem span={5}>
-                        {/*The Open File/URL card/section*/}
-                        <Card isSelectable={false}>
-                            <CardTitle>Open a File/URL</CardTitle>
-                            <CardBody>
-                                <FileUpload
-                                    id="text-file-with-edits-allowed"
-                                    type="text"
-                                    value={value}
-                                    filename={filename}
-                                    filenamePlaceholder="Drag and drop a file or upload one"
-                                    isLoading={false}
-                                    allowEditingUploadedText
-                                    browseButtonText="Open"
-                                />
-                            </CardBody>
-                        </Card>
+                        <FilePanel />
                     </GridItem>
                 </Grid>
             </PageSection>
