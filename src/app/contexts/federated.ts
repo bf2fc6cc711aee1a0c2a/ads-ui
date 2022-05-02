@@ -1,11 +1,11 @@
-import { createContext, useContext } from "react";
+import {createContext, useContext} from "react";
 
 export type FederatedProps = {
-  tokenEndPointUrl: string;
+    tokenEndPointUrl: string;
 };
 
 export const FederatedContext = createContext<FederatedProps | undefined>(
-  undefined
+    undefined
 );
 export const useFederated = (): FederatedProps | undefined =>
-  useContext(FederatedContext);
+    useContext(FederatedContext);

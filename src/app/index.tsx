@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Config, ConfigContext, BasenameContext } from "@rhoas/app-services-ui-shared";
 
 import "@app/app.css";

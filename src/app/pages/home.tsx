@@ -1,9 +1,23 @@
 import React, {FunctionComponent, useState} from "react";
 import {
-    PageSection, PageSectionVariants, Text, TextContent, Card, CardTitle, CardBody, EmptyState, Title,
-    EmptyStateVariant, EmptyStateBody, Button, Grid, GridItem, FileUpload
+    Button,
+    Card,
+    CardBody,
+    CardTitle,
+    EmptyState,
+    EmptyStateBody,
+    EmptyStateVariant,
+    FileUpload,
+    Grid,
+    GridItem,
+    PageSection,
+    PageSectionVariants,
+    Text,
+    TextContent,
+    Title
 } from "@patternfly/react-core";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
+import {RhosrPanel} from "@app/pages/components";
 
 export type HomePageProps = {
 };
@@ -51,23 +65,8 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
                         </Card>
                     </GridItem>
 
-
                     <GridItem span={4}>
-                        {/*The Registries card/section*/}
-                        <Card isSelectable={false}>
-                            <CardTitle>Browse Service Registries</CardTitle>
-                            <CardBody>
-                                <EmptyState variant={EmptyStateVariant.xs}>
-                                    <Title headingLevel="h4" size="md">
-                                        None found
-                                    </Title>
-                                    <EmptyStateBody>
-                                        Create a Service Registry instance to browse it for editable content.
-                                    </EmptyStateBody>
-                                    <Button variant="primary">Create registry</Button>
-                                </EmptyState>
-                            </CardBody>
-                        </Card>
+                        <RhosrPanel />
                     </GridItem>
 
                     <GridItem span={5}>
