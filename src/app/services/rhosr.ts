@@ -1,6 +1,20 @@
 import {Configuration, Registry, RegistriesApi, RegistryList} from '@rhoas/registry-management-sdk';
 import {Auth, useAuth, Config, useConfig} from "@rhoas/app-services-ui-shared";
 
+
+const RHOSR_MOCK_DATA: Registry[] = [
+    {
+        id: "1",
+        name: "Local Registry (localhost:8081)",
+        registryUrl: "http://localhost:8081/",
+        status: "ready",
+        created_at: "2022-01-01T12:00:00Z",
+        updated_at: "2022-01-01T12:00:00Z",
+        instance_type: "standard"
+    }
+]
+
+
 /**
  * Async function to get the RHOSR instances.  Uses a provided auth token and API
  * base path to create a RHOSR SDK instance.
@@ -53,17 +67,23 @@ export interface RhosrService {
 
 
 /**
- * A no-op version of the RHOSR service. Used when authentication is not available, and therefore
- * the RHOSR fleet manager cannot be invoked.
+ * A mock version of the RHOSR service.
  */
-const noAuthService: RhosrService = {
-    getRegistries(): Promise<Registry[]> {
-        return Promise.resolve([]);
-    },
-    getRegistry(id: string): Promise<Registry> {
-        return Promise.resolve({} as Registry);
-    }
-};
+function createMockService(mockData: Registry[]): RhosrService {
+    return {
+        getRegistries(): Promise<Registry[]> {
+            return Promise.resolve(mockData);
+        },
+        getRegistry(id: string): Promise<Registry> {
+            const matching: Registry[] = mockData.filter(registry => registry.id === id);
+            if (matching && matching.length > 0) {
+                return Promise.resolve(matching[0]);
+            } else {
+                return Promise.resolve({} as Registry);
+            }
+        }
+    };
+}
 
 
 /**
@@ -73,18 +93,13 @@ export const useRhosrService: () => RhosrService = (): RhosrService => {
     const auth: Auth = useAuth();
     const cfg: Config = useConfig();
 
-    // If auth is not defined, then return the no-op version of the RHOSR service.
-    if (!auth.srs) {
-        console.warn("[RhosrService] Authentication not enabled, using no-op RHOSR service.");
-        return noAuthService;
+    if (cfg.srs.apiBasePath && cfg.srs.apiBasePath.startsWith("local-mock")) {
+        console.warn("[RhosrService] RHOSR mocking enabled.");
+        return createMockService(RHOSR_MOCK_DATA);
     }
 
     return {
-        getRegistries: () => {
-            return getRegistries(auth, cfg.srs.apiBasePath);
-        },
-        getRegistry: (id) => {
-            return getRegistry(id, auth, cfg.srs.apiBasePath);
-        }
+        getRegistries: () => getRegistries(auth, cfg.srs.apiBasePath),
+        getRegistry: (id) => getRegistry(id, auth, cfg.srs.apiBasePath),
     };
 };
