@@ -11,9 +11,9 @@ import {
 } from "@patternfly/react-core";
 import {DraftsService, useDraftsService} from "@app/services";
 import {Draft} from "@app/models";
+import {DraftList} from "@app/pages";
 import {If} from "@app/components";
 import "./drafts.panel.css";
-import {DraftList} from "@app/pages/components/home/draft-list";
 
 export type DraftsPanelProps = {
 }
@@ -56,12 +56,9 @@ export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({}: DraftsPanel
                                 None found
                             </Title>
                             <EmptyStateBody>
-                                Click "Create draft" below to get started on a new
+                                Click "Create draft" to get started on a new
                                 API or Schema.
                             </EmptyStateBody>
-                            <div style={{marginTop: "20px"}}>
-                                <Button variant="primary">Create draft</Button>
-                            </div>
                         </EmptyState>
                     </If>
                     <If condition={drafts.length !== 0}>

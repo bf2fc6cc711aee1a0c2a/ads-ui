@@ -1,35 +1,31 @@
 import {ArtifactTypes, CreateDraft, Draft, DraftContent} from "@app/models";
+import Dexie, { Table } from "dexie";
+import { v4 as uuidv4 } from "uuid";
+
+
+const db = new Dexie("draftsDB");
+db.version(1).stores({
+    drafts: "++id, type, name, summary, createdOn, modifiedOn" // Primary key and indexed props
+});
+
 
 async function createDraft(info: CreateDraft): Promise<Draft> {
-    return Promise.resolve({
-        id: "12345",
-        type: ArtifactTypes.AVRO,
-        name: "Mock Draft",
-        summary: "This is a mock object.",
+    const newDraft: Draft = {
+        id: uuidv4(),
+        name: info.name,
+        summary: info.summary,
+        type: info.type,
         createdOn: new Date(),
         modifiedOn: new Date()
-    });
+    };
+    // @ts-ignore
+    await db.drafts.add(newDraft);
+    return Promise.resolve(newDraft);
 }
 
 async function getDrafts(): Promise<Draft[]> {
-    return Promise.resolve([
-        {
-            id: "12345",
-            type: ArtifactTypes.AVRO,
-            name: "Mock Draft #1",
-            summary: "This is the first mock draft.",
-            createdOn: new Date(),
-            modifiedOn: new Date()
-        },
-        {
-            id: "12346",
-            type: ArtifactTypes.AVRO,
-            name: "Mock Draft #2",
-            summary: "This is the second mock draft.",
-            createdOn: new Date(),
-            modifiedOn: new Date()
-        }
-    ]);
+    // @ts-ignore
+    return db.drafts.toArray();
 }
 
 async function getDraft(): Promise<Draft> {
