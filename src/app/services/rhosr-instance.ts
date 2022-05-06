@@ -9,7 +9,7 @@ import {
     Paging,
     SearchedVersion,
     VersionMetaData
-} from "@app/models/rhosr-instance";
+} from "@app/models";
 import {createEndpoint, createHref, createOptions, httpGet, httpPostWithReturn} from "@app/utils/rest.utils";
 import {Registry} from "@rhoas/registry-management-sdk";
 

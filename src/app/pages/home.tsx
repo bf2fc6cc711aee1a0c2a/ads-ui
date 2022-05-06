@@ -1,8 +1,6 @@
 import React, {FunctionComponent} from "react";
 import {Grid, GridItem, PageSection, PageSectionVariants, Text, TextContent} from "@patternfly/react-core";
-import {RhosrPanel} from "@app/pages/components";
-import {DraftsPanel} from "@app/pages/components/home/drafts-panel";
-import {FilePanel} from "@app/pages/components/home/file-panel";
+import {DraftsPanel, RhosrPanel} from "@app/pages/components";
 
 export type HomePageProps = {
 };
@@ -21,17 +19,14 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
                 <Grid hasGutter={true}>
 
                     {/*The Drafts card/section*/}
-                    <GridItem span={3}>
+                    <GridItem span={6}>
                         <DraftsPanel />
                     </GridItem>
 
-                    <GridItem span={4}>
+                    <GridItem span={6}>
                         <RhosrPanel />
                     </GridItem>
 
-                    <GridItem span={5}>
-                        <FilePanel />
-                    </GridItem>
                 </Grid>
             </PageSection>
         </React.Fragment>

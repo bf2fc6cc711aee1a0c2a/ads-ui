@@ -70,6 +70,8 @@
     "@rhoas/registry-management-sdk": "0.30.0",
     "date-fns": "2.28.0",
     "dayjs": "1.11.0",
+    "dexie": "3.2.2",
+    "dexie-react-hooks": "^1.1.1",
     "keycloak-js": "^14.0.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",

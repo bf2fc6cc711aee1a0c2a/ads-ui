@@ -3,12 +3,13 @@ import {useNavigation, Navigation} from "@app/contexts/navigation";
 
 export type NavLinkProps = {
     location: string;
+    className?: string;
     children?: React.ReactNode;
 }
 
-export const NavLink: FunctionComponent<NavLinkProps> = ({location, children}: NavLinkProps) => {
+export const NavLink: FunctionComponent<NavLinkProps> = ({location, className, children}: NavLinkProps) => {
     const nav: Navigation = useNavigation();
     return (
-        <a onClick={() => nav.navigateTo(location)} children={children} />
+        <a className={className} onClick={() => nav.navigateTo(location)} children={children} />
     );
 };

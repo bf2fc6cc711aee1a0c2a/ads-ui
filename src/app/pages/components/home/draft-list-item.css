@@ -1,0 +1,17 @@
+.draft-item {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #ccc;
+}
+
+.draft-item .name {
+    font-size: 17px;
+}
+
+.draft-item .summary {
+    font-size: 14px;
+    color: #444;
+    line-height: 14px;
+}
