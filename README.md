@@ -22,7 +22,7 @@ $ npm install
 $ npm run prebuild
 $ npm run build
 $ docker build -t="apicurio/api-designer-ads" --rm .
-$ docker run -it -p 9009:80 apicurio/api-designer-ads
+$ docker run -it -p 9009:8080 apicurio/api-designer-ads
 ```
 
 Then open your browser to:
