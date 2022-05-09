@@ -6,25 +6,67 @@ import {
     CardTitle,
     EmptyState,
     EmptyStateBody,
-    EmptyStateVariant, Flex, FlexItem, Spinner,
+    EmptyStateVariant,
+    Flex,
+    FlexItem,
+    Spinner,
     Title
 } from "@patternfly/react-core";
 import {DraftsService, useDraftsService} from "@app/services";
-import {Draft} from "@app/models";
-import {DraftList} from "@app/pages";
+import {CreateDraft, Draft, CreateDraftContent, Template} from "@app/models";
 import {If} from "@app/components";
+import {propertyReplace} from "@app/utils";
 import "./drafts.panel.css";
+import {CreateDraftModal, DraftList} from "@app/pages/components";
+
 
 export type DraftsPanelProps = {
 }
 
+
 export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({}: DraftsPanelProps) => {
     const [ loading, setLoading ] = useState(false);
+    const [ refresh, setRefresh ] = useState(1);
     const [ drafts, setDrafts ] = useState([] as (Draft[]));
+    const [ isCreateModalOpen, setCreateModalOpen ] = useState(false);
 
     const draftsSvc: DraftsService = useDraftsService();
 
+    const createDraft = async (info: CreateDraft, template: Template): Promise<void> => {
+        let dc: CreateDraftContent = {
+            contentType: template.content.contentType,
+            data: template.content.data
+        }
+        if (typeof dc.data === "string") {
+            dc.data = dc.data.replace("$NAME", info.name).replace("$SUMMARY", info.summary||"");
+        } else {
+            propertyReplace(dc.data, "$NAME", info.name);
+            propertyReplace(dc.data, "$SUMMARY", info.summary||"");
+        }
+        draftsSvc.createDraft(info, template.content).then(() => {
+            setCreateModalOpen(false);
+            setRefresh(refresh + 1);
+        }).catch(error => {
+            // TODO handle error
+            console.error(error);
+        });
+    };
+
+    const editDraft = (draft: Draft): void => {
+        console.debug("=====> User wants to edit the draft!");
+    };
+
+    const deleteDraft = (draft: Draft): void => {
+        draftsSvc.deleteDraft(draft.id).then(() => {
+            setRefresh(refresh + 1);
+        }).catch(error => {
+            // TODO handle error
+            console.error(error);
+        });
+    };
+
     useEffect(() => {
+        setLoading(true);
         draftsSvc.getDrafts().then(drafts => {
             console.debug("[DraftsPanel] Drafts loaded: ", drafts);
             setDrafts(drafts);
@@ -33,39 +75,42 @@ export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({}: DraftsPanel
             // TODO need error handling
             console.error(error);
         });
-    }, []);
+    }, [refresh]);
 
     return (
-        <Card isSelectable={false}>
-            <CardTitle className="panel-header">
-                <Flex>
-                    <FlexItem className="title">Drafts</FlexItem>
-                    <FlexItem className="actions" align={{ default: 'alignRight' }}>
-                        <Button variant="primary">Create draft</Button>
-                    </FlexItem>
-                </Flex>
-            </CardTitle>
-            <CardBody className="panel-body">
-                <If condition={loading}>
-                    <Spinner />
-                </If>
-                <If condition={!loading}>
-                    <If condition={drafts.length === 0}>
-                        <EmptyState variant={EmptyStateVariant.xs}>
-                            <Title headingLevel="h4" size="md">
-                                None found
-                            </Title>
-                            <EmptyStateBody>
-                                Click "Create draft" to get started on a new
-                                API or Schema.
-                            </EmptyStateBody>
-                        </EmptyState>
+        <React.Fragment>
+            <Card isSelectable={false}>
+                <CardTitle className="panel-header">
+                    <Flex>
+                        <FlexItem className="title">Drafts</FlexItem>
+                        <FlexItem className="actions" align={{ default: 'alignRight' }}>
+                            <Button variant="primary" onClick={() => setCreateModalOpen(true)}>Create draft</Button>
+                        </FlexItem>
+                    </Flex>
+                </CardTitle>
+                <CardBody className="panel-body">
+                    <If condition={loading}>
+                        <Spinner />
                     </If>
-                    <If condition={drafts.length !== 0}>
-                        <DraftList drafts={drafts} />
+                    <If condition={!loading}>
+                        <If condition={drafts.length === 0}>
+                            <EmptyState variant={EmptyStateVariant.xs}>
+                                <Title headingLevel="h4" size="md">
+                                    None found
+                                </Title>
+                                <EmptyStateBody>
+                                    Click "Create draft" to get started on a new
+                                    API or Schema.
+                                </EmptyStateBody>
+                            </EmptyState>
+                        </If>
+                        <If condition={drafts.length !== 0}>
+                            <DraftList drafts={drafts} onEdit={editDraft} onDelete={deleteDraft} />
+                        </If>
                     </If>
-                </If>
-            </CardBody>
-        </Card>
+                </CardBody>
+            </Card>
+            <CreateDraftModal isOpen={isCreateModalOpen} onCreate={createDraft} onCancel={() => {setCreateModalOpen(false)}} />
+        </React.Fragment>
     );
 };

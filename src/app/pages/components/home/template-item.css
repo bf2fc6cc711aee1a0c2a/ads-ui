@@ -1,0 +1,38 @@
+.template-item {
+    width: 125px;
+    height: 120px;
+    border: 1px solid #ccc;
+}
+
+.template-item .icon {
+    width: 100%;
+    text-align: center;
+    color: #666;
+    font-size: 17px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+.template-item .name {
+    width: 100%;
+    text-align: center;
+    font-size: 15px;
+}
+
+.template-item.selected {
+    border-bottom: 2px solid blue;
+    margin-top: -5px;
+}
+
+.template-item.selected .icon {
+    color: rgb(0, 102, 204);
+}
+.template-item.selected .name {
+    color: rgb(0, 102, 204);
+}
+
+.template-item.not-selected:hover {
+    cursor: pointer;
+    background-color: #eee;
+    border-color: #bbb;
+}

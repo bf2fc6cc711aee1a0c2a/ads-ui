@@ -3,3 +3,4 @@ export * from "./draft-list";
 export * from "./draft-list-item";
 export * from "./create-draft.modal";
 export * from "./rhosr.panel";
+export * from "./template-item";

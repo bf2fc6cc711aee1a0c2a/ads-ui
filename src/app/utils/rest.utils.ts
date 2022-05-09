@@ -5,6 +5,9 @@ const AXIOS = axios.create();
 
 
 function createAxiosConfig(method: string, url: string, options: any, data?: any): AxiosRequestConfig {
+    if (typeof data === "string") {
+        data = new Blob([data]);
+    }
     return {
         ...{
             data,

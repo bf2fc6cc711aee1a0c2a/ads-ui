@@ -1,26 +1,37 @@
-import {ArtifactTypes, CreateDraft, Draft, DraftContent} from "@app/models";
+import {CreateDraft, Draft, DraftContent} from "@app/models";
 import Dexie, { Table } from "dexie";
 import { v4 as uuidv4 } from "uuid";
+import {CreateDraftContent} from "@app/models/drafts/create-draft-content.model";
 
 
 const db = new Dexie("draftsDB");
-db.version(1).stores({
-    drafts: "++id, type, name, summary, createdOn, modifiedOn" // Primary key and indexed props
+db.version(2).stores({
+    drafts: "++id, type, name, summary, createdOn, modifiedOn", // Primary key and indexed props
+    content: "++id, data"
 });
 
 
-async function createDraft(info: CreateDraft): Promise<Draft> {
+async function createDraft(cd: CreateDraft, cdc: CreateDraftContent): Promise<Draft> {
+    const id: string = uuidv4();
     const newDraft: Draft = {
-        id: uuidv4(),
-        name: info.name,
-        summary: info.summary,
-        type: info.type,
+        id,
+        name: cd.name,
+        summary: cd.summary,
+        type: cd.type,
         createdOn: new Date(),
         modifiedOn: new Date()
     };
-    // @ts-ignore
-    await db.drafts.add(newDraft);
-    return Promise.resolve(newDraft);
+    const newDraftContent: DraftContent = {
+        id,
+        contentType: cdc.contentType,
+        data: cdc.data
+    };
+    return Promise.all([
+        // @ts-ignore
+        db.drafts.add(newDraft),
+        // @ts-ignore
+        db.content.add(newDraftContent)
+    ]).then(() => newDraft);
 }
 
 async function getDrafts(): Promise<Draft[]> {
@@ -28,23 +39,32 @@ async function getDrafts(): Promise<Draft[]> {
     return db.drafts.toArray();
 }
 
-async function getDraft(): Promise<Draft> {
-    return Promise.resolve({
-        id: "12345",
-        type: ArtifactTypes.AVRO,
-        name: "Mock Draft",
-        summary: "This is a mock object.",
-        createdOn: new Date(),
-        modifiedOn: new Date()
-    });
+async function getDraft(id: string): Promise<Draft> {
+    // @ts-ignore
+    return db.drafts.where("id").equals(id).first();
 }
 
-async function getDraftContent(): Promise<DraftContent> {
-    return Promise.resolve({
-        id: "12345",
-        contentType: "application/json",
-        data: "{}"
-    });
+async function deleteDraft(id: string): Promise<void> {
+    // @ts-ignore
+    return db.drafts.where("id").equals(id).delete();
+}
+
+async function getDraftContent(id: string): Promise<DraftContent> {
+    // @ts-ignore
+    return db.content.where("id").equals(id).first();
+}
+
+async function updateDraftContent(content: DraftContent): Promise<void> {
+    return Promise.all([
+        // @ts-ignore
+        db.content.update(content.id, {
+            data: content.data
+        }),
+        // @ts-ignore
+        db.drafts.update(content.id, {
+            modifiedOn: new Date()
+        })
+    ]).then(() => {});
 }
 
 
@@ -52,10 +72,12 @@ async function getDraftContent(): Promise<DraftContent> {
  * The Drafts Service interface.
  */
 export interface DraftsService {
-    createDraft(info: CreateDraft): Promise<Draft>;
+    createDraft(cd: CreateDraft, cdc: CreateDraftContent): Promise<Draft>;
     getDrafts(): Promise<Draft[]>;
     getDraft(id: string): Promise<Draft>;
+    deleteDraft(id: string): Promise<void>;
     getDraftContent(id: string): Promise<DraftContent>;
+    updateDraftContent(content: DraftContent): Promise<void>;
 }
 
 
@@ -67,6 +89,8 @@ export const useDraftsService: () => DraftsService = (): DraftsService => {
         createDraft,
         getDrafts,
         getDraft,
-        getDraftContent
+        deleteDraft,
+        getDraftContent,
+        updateDraftContent
     };
 };
