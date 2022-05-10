@@ -14,7 +14,7 @@ import {
 } from "@patternfly/react-core";
 import {DraftsService, useDraftsService} from "@app/services";
 import {CreateDraft, Draft, CreateDraftContent, Template} from "@app/models";
-import {If} from "@app/components";
+import {If, IfNotEmpty, IsLoading} from "@app/components";
 import {propertyReplace} from "@app/utils";
 import "./drafts.panel.css";
 import {CreateDraftModal, DraftList} from "@app/pages/components";
@@ -89,25 +89,12 @@ export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({}: DraftsPanel
                     </Flex>
                 </CardTitle>
                 <CardBody className="panel-body">
-                    <If condition={loading}>
-                        <Spinner />
-                    </If>
-                    <If condition={!loading}>
-                        <If condition={drafts.length === 0}>
-                            <EmptyState variant={EmptyStateVariant.xs}>
-                                <Title headingLevel="h4" size="md">
-                                    None found
-                                </Title>
-                                <EmptyStateBody>
-                                    Click "Create draft" to get started on a new
-                                    API or Schema.
-                                </EmptyStateBody>
-                            </EmptyState>
-                        </If>
-                        <If condition={drafts.length !== 0}>
+                    <IsLoading condition={loading}>
+                        <IfNotEmpty collection={drafts} emptyStateTitle={`None found`}
+                                    emptyStateMessage={`Click "Create draft" to get started on a new API or Schema.`}>
                             <DraftList drafts={drafts} onEdit={editDraft} onDelete={deleteDraft} />
-                        </If>
-                    </If>
+                        </IfNotEmpty>
+                    </IsLoading>
                 </CardBody>
             </Card>
             <CreateDraftModal isOpen={isCreateModalOpen} onCreate={createDraft} onCancel={() => {setCreateModalOpen(false)}} />

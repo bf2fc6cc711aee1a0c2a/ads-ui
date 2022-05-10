@@ -10,7 +10,7 @@ import {
     Title
 } from "@patternfly/react-core";
 import {RhosrService, useRhosrService} from "@app/services/rhosr";
-import {If} from "@app/components";
+import {If, IfNotEmpty, IsLoading} from "@app/components";
 import {Registry} from "@rhoas/registry-management-sdk";
 import {NavLink} from "@app/components/navlink";
 
@@ -36,38 +36,25 @@ export const RhosrPanel: FunctionComponent<RhosrPanelProps> = ({}: RhosrPanelPro
             // TODO handle this error case
             console.error("[HomePage] Error getting registry list: ", error);
         });
-
     }, []);
 
     return (
         <Card isSelectable={false}>
             <CardTitle>Browse Service Registries</CardTitle>
             <CardBody>
-                <If condition={loading}>
-                    <Spinner />
-                </If>
-                <If condition={!loading && registries.length > 0}>
-                    <div className="registries">
-                        {
-                            registries.map(registry =>
-                                <div key={registry.id} className="registry">
-                                    <NavLink location={`/registries/${registry.id}`}>{registry.name}</NavLink>
-                                </div>
-                            )
-                        }
-                    </div>
-                </If>
-                <If condition={!loading && registries.length === 0}>
-                    <EmptyState variant={EmptyStateVariant.xs}>
-                        <Title headingLevel="h4" size="md">
-                            None found
-                        </Title>
-                        <EmptyStateBody>
-                            Create a Service Registry instance to browse it for editable content.
-                        </EmptyStateBody>
-                        <Button variant="primary">Create registry</Button>
-                    </EmptyState>
-                </If>
+                <IsLoading condition={loading}>
+                    <IfNotEmpty collection={registries} emptyStateTitle={`None found`} emptyStateMessage={`Create a Service Registry instance to browse it for editable content.`}>
+                        <div className="registries">
+                            {
+                                registries.map(registry =>
+                                    <div key={registry.id} className="registry">
+                                        <NavLink location={`/registries/${registry.id}`}>{registry.name}</NavLink>
+                                    </div>
+                                )
+                            }
+                        </div>
+                    </IfNotEmpty>
+                </IsLoading>
             </CardBody>
         </Card>
     );

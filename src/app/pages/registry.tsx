@@ -1,14 +1,5 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
-import {
-    Button,
-    EmptyState,
-    EmptyStateBody,
-    EmptyStateIcon,
-    EmptyStateVariant,
-    Spinner,
-    Title
-} from "@patternfly/react-core";
-import {CubesIcon} from "@patternfly/react-icons";
+import {Breadcrumb, BreadcrumbItem, PageSection, PageSectionVariants, Text, TextContent} from "@patternfly/react-core";
 import {Registry} from "@rhoas/registry-management-sdk";
 import {
     RhosrInstanceService,
@@ -17,72 +8,108 @@ import {
     useRhosrInstanceServiceFactory,
     useRhosrService
 } from "@app/services";
-import {If} from "@app/components";
+import {IfNotEmpty, IsLoading} from "@app/components";
 import {ArtifactsSearchResults, GetArtifactsCriteria, Paging} from "@app/models/rhosr-instance";
+import {ArtifactsToolbar, ArtifactsToolbarCriteria, ArtifactsList} from "@app/pages/components";
 
 export type RegistryPageProps = {
     params: any;
 };
 
+
 export const RegistryPage: FunctionComponent<RegistryPageProps> = ({params}: RegistryPageProps) => {
     const [ loading, setLoading ] = useState(true);
-    const [ registry, setRegistry ] = useState(undefined as Registry|undefined);
-    const [ artifacts, setArtifacts ] = useState(undefined as ArtifactsSearchResults|undefined);
+    const [ querying, setQuerying ] = useState(true);
+    const [ paging, setPaging ] = useState<Paging>({
+        pageSize: 20,
+        page: 1
+    });
+    const [ criteria, setCriteria ] = useState<ArtifactsToolbarCriteria>({
+        filterValue: "",
+        ascending: true,
+        filterSelection: "name"
+    });
+    const [ registry, setRegistry ] = useState<Registry|undefined>();
+    const [ artifacts, setArtifacts ] = useState<ArtifactsSearchResults|undefined>();
+
+    const [ rhosrInstance, setRhosrInstance ] = useState<RhosrInstanceService>();
 
     const registryId: string = params["registryId"];
 
     const rhosr: RhosrService = useRhosrService();
     const rhosrIntanceFactory: RhosrInstanceServiceFactory = useRhosrInstanceServiceFactory();
 
+    // Load the registry based on the registry ID (from the path param).
     useEffect(() => {
-        // Get a single Registry by ID
         rhosr.getRegistry(registryId).then(registry => {
-            console.debug("[RegistryPage] Registry: ", registry);
             setRegistry(registry);
+            setLoading(false);
         }).catch(error => {
             // TODO handle this error case
-            console.error("[HomePage] Error getting registry list: ", error);
+            console.error("[RegistryPage] Error getting registry: ", error);
         });
     }, [registryId]);
 
+    // Whenever the registry changes, create a rhosr instance service for it.
     useEffect(() => {
         if (registry) {
-            console.info("[RegistryPage] Registry changed, getting artifact list.");
-            const rhosrInstance: RhosrInstanceService = rhosrIntanceFactory.createFor(registry);
-            const criteria: GetArtifactsCriteria = {
-                sortAscending: true,
-                type: "",
-                value: ""
-            };
-            const paging: Paging = {
-                page: 1,
-                pageSize: 20
-            };
-            rhosrInstance.getArtifacts(criteria, paging).then(results => {
-                setArtifacts(results);
-                setLoading(false);
-                console.debug("[RegistryPage] Artifacts: ", results);
-            });
+            const rhosrInstance: RhosrInstanceService = rhosrIntanceFactory.createFor(registry as Registry);
+            setRhosrInstance(rhosrInstance);
         }
     }, [registry]);
 
+    // Query for artifacts when relevant changes occur.
+    useEffect(() => {
+        if (rhosrInstance) {
+            const gac: GetArtifactsCriteria = {
+                sortAscending: criteria.ascending,
+                type: criteria.filterSelection,
+                value: criteria.filterValue
+            };
+            setQuerying(true);
+            rhosrInstance.getArtifacts(gac, paging).then(results => {
+                setArtifacts(results);
+                setQuerying(false);
+            }).catch(error => {
+                // TODO handle error
+                console.error("[RegistryPage] Error searching for artifacts: ", error);
+            });
+        }
+    }, [rhosrInstance, criteria, paging]);
+
+    const onCriteriaChange = (criteria: ArtifactsToolbarCriteria): void =>  {
+        console.info("===> setting criteria to: ", criteria);
+        setCriteria(criteria);
+    };
+
+    const onPagingChange = (paging: Paging): void => {
+        setPaging(paging);
+    };
+
     return (
         <React.Fragment>
-            <If condition={loading}>
-                <Spinner />
-            </If>
-            <If condition={!loading}>
-                <EmptyState variant={EmptyStateVariant.xl}>
-                    <EmptyStateIcon icon={CubesIcon} />
-                    <Title headingLevel="h5" size="4xl">
-                        API Designer - Registry Page
-                    </Title>
-                    <EmptyStateBody>
-                        ({artifacts?.artifacts.length} artifacts were found, nice work.)
-                    </EmptyStateBody>
-                    <Button variant="primary">Primary action</Button>
-                </EmptyState>
-            </If>
+            <IsLoading condition={loading}>
+                <PageSection variant={PageSectionVariants.light}>
+                    <Breadcrumb style={{marginBottom: "10px"}}>
+                        <BreadcrumbItem to="/">Red Hat OpenShift API Designer</BreadcrumbItem>
+                        <BreadcrumbItem isActive={true}>Service Registries</BreadcrumbItem>
+                        <BreadcrumbItem isActive={true}>{registry?.name}</BreadcrumbItem>
+                    </Breadcrumb>
+                    <TextContent>
+                        <Text component="h1">{registry?.name}</Text>
+                    </TextContent>
+                </PageSection>
+                <PageSection variant={PageSectionVariants.default} isFilled={true}>
+                    <ArtifactsToolbar criteria={criteria} paging={paging}
+                                      onCriteriaChange={onCriteriaChange} onPagingChange={onPagingChange}
+                                      artifacts={artifacts} />
+                    <IsLoading condition={querying}>
+                        <IfNotEmpty collection={artifacts?.artifacts} emptyStateMessage={`No artifacts found matching the search criteria.`}>
+                            <ArtifactsList artifacts={artifacts?.artifacts} />
+                        </IfNotEmpty>
+                    </IsLoading>
+                </PageSection>
+            </IsLoading>
         </React.Fragment>
     );
 }
