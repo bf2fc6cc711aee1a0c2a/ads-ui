@@ -1,23 +1,12 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
-import {
-    Button,
-    Card,
-    CardBody,
-    CardTitle,
-    EmptyState,
-    EmptyStateBody,
-    EmptyStateVariant,
-    Flex,
-    FlexItem,
-    Spinner,
-    Title
-} from "@patternfly/react-core";
+import {Button, Card, CardBody, CardTitle, Flex, FlexItem} from "@patternfly/react-core";
 import {DraftsService, useDraftsService} from "@app/services";
-import {CreateDraft, Draft, CreateDraftContent, Template} from "@app/models";
-import {If, IfNotEmpty, IsLoading} from "@app/components";
+import {CreateDraft, CreateDraftContent, Draft, Template} from "@app/models";
+import {IfNotEmpty, IsLoading} from "@app/components";
 import {propertyReplace} from "@app/utils";
 import "./drafts.panel.css";
 import {CreateDraftModal, DraftList} from "@app/pages/components";
+import {Navigation, useNavigation} from "@app/contexts/navigation";
 
 
 export type DraftsPanelProps = {
@@ -31,6 +20,7 @@ export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({}: DraftsPanel
     const [ isCreateModalOpen, setCreateModalOpen ] = useState(false);
 
     const draftsSvc: DraftsService = useDraftsService();
+    const nav: Navigation = useNavigation();
 
     const createDraft = async (info: CreateDraft, template: Template): Promise<void> => {
         let dc: CreateDraftContent = {
@@ -53,7 +43,7 @@ export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({}: DraftsPanel
     };
 
     const editDraft = (draft: Draft): void => {
-        console.debug("=====> User wants to edit the draft!");
+        nav.navigateTo(`/drafts/${draft.id}/editor`);
     };
 
     const deleteDraft = (draft: Draft): void => {

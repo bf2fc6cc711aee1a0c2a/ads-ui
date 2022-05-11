@@ -6,7 +6,7 @@ import React, {FunctionComponent} from "react";
 export type IfProps = {
     condition: boolean | (() => boolean);
     children?: React.ReactNode;
-}
+};
 
 /**
  * Wrapper around a set of arbitrary child elements and displays them only if the

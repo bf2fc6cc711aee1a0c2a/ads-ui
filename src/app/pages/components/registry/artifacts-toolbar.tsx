@@ -59,7 +59,6 @@ export const ArtifactsToolbar: FunctionComponent<ArtifactsToolbarProps> = ({crit
     };
 
     const onFilterChange = (value: string): void => {
-        console.info("====> filter changed: ", value);
         setFilterValue(value);
     }
 
@@ -71,7 +70,6 @@ export const ArtifactsToolbar: FunctionComponent<ArtifactsToolbarProps> = ({crit
     };
 
     const onClear = (): void => {
-        console.info("====> CLEAR");
         setFilterValue("");
         onCriteriaChange({
             ...criteria,

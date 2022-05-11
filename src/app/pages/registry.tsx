@@ -34,13 +34,13 @@ export const RegistryPage: FunctionComponent<RegistryPageProps> = ({params}: Reg
 
     const [ rhosrInstance, setRhosrInstance ] = useState<RhosrInstanceService>();
 
-    const registryId: string = params["registryId"];
-
     const rhosr: RhosrService = useRhosrService();
     const rhosrIntanceFactory: RhosrInstanceServiceFactory = useRhosrInstanceServiceFactory();
 
     // Load the registry based on the registry ID (from the path param).
     useEffect(() => {
+        const registryId: string = params["registryId"];
+
         rhosr.getRegistry(registryId).then(registry => {
             setRegistry(registry);
             setLoading(false);
@@ -48,7 +48,7 @@ export const RegistryPage: FunctionComponent<RegistryPageProps> = ({params}: Reg
             // TODO handle this error case
             console.error("[RegistryPage] Error getting registry: ", error);
         });
-    }, [registryId]);
+    }, [params]);
 
     // Whenever the registry changes, create a rhosr instance service for it.
     useEffect(() => {
@@ -78,7 +78,6 @@ export const RegistryPage: FunctionComponent<RegistryPageProps> = ({params}: Reg
     }, [rhosrInstance, criteria, paging]);
 
     const onCriteriaChange = (criteria: ArtifactsToolbarCriteria): void =>  {
-        console.info("===> setting criteria to: ", criteria);
         setCriteria(criteria);
     };
 
