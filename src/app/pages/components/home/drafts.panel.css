@@ -5,3 +5,7 @@
 .panel-body {
     padding: 0px;
 }
+
+.panel-body:first-child {
+    padding: 0px;
+}

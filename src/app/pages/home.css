@@ -1,0 +1,13 @@
+.summary .summary-title-and-description .description {
+    font-size: 15px;
+    color: #333;
+}
+
+.summary .summary-actions {
+    text-align: right;
+    margin-top: 15px;
+}
+
+.summary .summary-actions button {
+    margin-right: 15px;
+}

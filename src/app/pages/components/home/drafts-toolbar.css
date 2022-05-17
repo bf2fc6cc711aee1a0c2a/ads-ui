@@ -1,0 +1,18 @@
+.drafts-toolbar {
+    padding-left: 8px;
+    padding-right: 24px;
+    border-bottom: 1px dashed #ccc;
+}
+
+.drafts-toolbar > div {
+    width: 100%;
+}
+
+#drafts-toolbar .tbi-filter-type {
+    margin-right: 0;
+}
+
+#drafts-toolbar .draft-paging-item {
+    flex-grow: 1;
+    text-align: right;
+}

@@ -1,45 +1,39 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
-import {Button, Card, CardBody, CardTitle, Flex, FlexItem} from "@patternfly/react-core";
-import {DraftsService, useDraftsService} from "@app/services";
-import {CreateDraft, CreateDraftContent, Draft, Template} from "@app/models";
-import {IfNotEmpty, IsLoading} from "@app/components";
-import {propertyReplace} from "@app/utils";
 import "./drafts.panel.css";
-import {CreateDraftModal, DraftList} from "@app/pages/components";
+import {Alert, Card, CardBody} from "@patternfly/react-core";
+import {DraftsService, useDraftsService} from "@app/services";
+import {Draft, DraftsSearchCriteria, DraftsSearchResults, Paging} from "@app/models";
+import {If, ListWithToolbar} from "@app/components";
+import {DraftList, DraftsEmptyState, DraftsEmptyStateFiltered, DraftsToolbar} from "@app/pages/components";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
 
 
 export type DraftsPanelProps = {
+    onCreate: () => void;
+    onImport: () => void;
 }
 
 
-export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({}: DraftsPanelProps) => {
-    const [ loading, setLoading ] = useState(false);
+export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({onCreate, onImport}: DraftsPanelProps) => {
+    const [ isLoading, setLoading ] = useState(false);
     const [ refresh, setRefresh ] = useState(1);
-    const [ drafts, setDrafts ] = useState([] as (Draft[]));
-    const [ isCreateModalOpen, setCreateModalOpen ] = useState(false);
+    const [ isFiltered, setFiltered ] = useState(false);
+    const [ paging, setPaging ] = useState<Paging>({
+        pageSize: 20,
+        page: 1
+    });
+    const [ criteria, setCriteria ] = useState<DraftsSearchCriteria>({
+        filterValue: "",
+        ascending: true,
+        filterOn: "name"
+    });
+    const [ drafts, setDrafts ] = useState<DraftsSearchResults>();
 
     const draftsSvc: DraftsService = useDraftsService();
     const nav: Navigation = useNavigation();
 
-    const createDraft = async (info: CreateDraft, template: Template): Promise<void> => {
-        let dc: CreateDraftContent = {
-            contentType: template.content.contentType,
-            data: template.content.data
-        }
-        if (typeof dc.data === "string") {
-            dc.data = dc.data.replace("$NAME", info.name).replace("$SUMMARY", info.summary||"");
-        } else {
-            propertyReplace(dc.data, "$NAME", info.name);
-            propertyReplace(dc.data, "$SUMMARY", info.summary||"");
-        }
-        draftsSvc.createDraft(info, template.content).then(() => {
-            setCreateModalOpen(false);
-            setRefresh(refresh + 1);
-        }).catch(error => {
-            // TODO handle error
-            console.error(error);
-        });
+    const doRefresh = (): void => {
+        setRefresh(refresh + 1);
     };
 
     const editDraft = (draft: Draft): void => {
@@ -48,16 +42,31 @@ export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({}: DraftsPanel
 
     const deleteDraft = (draft: Draft): void => {
         draftsSvc.deleteDraft(draft.id).then(() => {
-            setRefresh(refresh + 1);
+            doRefresh();
         }).catch(error => {
             // TODO handle error
             console.error(error);
         });
     };
 
+    const onCriteriaChange = (criteria: DraftsSearchCriteria): void =>  {
+        setCriteria(criteria);
+        setPaging({
+            page: 1,
+            pageSize: paging.pageSize
+        });
+        setFiltered(criteria.filterValue != undefined && criteria.filterValue.trim().length > 0);
+        doRefresh();
+    };
+
+    const onPagingChange = (paging: Paging): void => {
+        setPaging(paging);
+        doRefresh();
+    };
+
     useEffect(() => {
         setLoading(true);
-        draftsSvc.getDrafts().then(drafts => {
+        draftsSvc.searchDrafts(criteria, paging).then(drafts => {
             console.debug("[DraftsPanel] Drafts loaded: ", drafts);
             setDrafts(drafts);
             setLoading(false);
@@ -67,27 +76,43 @@ export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({}: DraftsPanel
         });
     }, [refresh]);
 
+    const emptyState: React.ReactNode = (
+        <DraftsEmptyState onCreate={onCreate} onImport={onImport} />
+    );
+
+    const emptyStateFiltered: React.ReactNode = (
+        <DraftsEmptyStateFiltered />
+    );
+
+    const toolbar: React.ReactNode = (
+        <DraftsToolbar drafts={drafts} criteria={criteria} paging={paging}
+                       onCriteriaChange={onCriteriaChange} onPagingChange={onPagingChange} />
+    );
+
     return (
         <React.Fragment>
             <Card isSelectable={false}>
-                <CardTitle className="panel-header">
-                    <Flex>
-                        <FlexItem className="title">Drafts</FlexItem>
-                        <FlexItem className="actions" align={{ default: 'alignRight' }}>
-                            <Button variant="primary" onClick={() => setCreateModalOpen(true)}>Create draft</Button>
-                        </FlexItem>
-                    </Flex>
-                </CardTitle>
+                <If condition={!drafts || (drafts.count === 0 && !isFiltered)}>
+                    <Alert className="panel-alert" isInline variant="info" title="About your data" style={{ marginBottom: "15px"}}>
+                        <p>
+                            All designs are stored locally in your browser.  Clearing your browser cache or
+                            switching to a new browser <em>may</em> result in loss of data.  Make sure you save your
+                            work locally or in a Red Hat OpenShift Service Registry instance!  In the future your
+                            designs will be saved to a persistent server, stay tuned!
+                        </p>
+                    </Alert>
+                </If>
                 <CardBody className="panel-body">
-                    <IsLoading condition={loading}>
-                        <IfNotEmpty collection={drafts} emptyStateTitle={`None found`}
-                                    emptyStateMessage={`Click "Create draft" to get started on a new API or Schema.`}>
-                            <DraftList drafts={drafts} onEdit={editDraft} onDelete={deleteDraft} />
-                        </IfNotEmpty>
-                    </IsLoading>
+                    <ListWithToolbar toolbar={toolbar}
+                                     emptyState={emptyState}
+                                     filteredEmptyState={emptyStateFiltered}
+                                     isLoading={isLoading}
+                                     isFiltered={isFiltered}
+                                     isEmpty={!drafts || drafts.count === 0}>
+                        <DraftList drafts={drafts as DraftsSearchResults} onEdit={editDraft} onDelete={deleteDraft} />
+                    </ListWithToolbar>
                 </CardBody>
             </Card>
-            <CreateDraftModal isOpen={isCreateModalOpen} onCreate={createDraft} onCancel={() => {setCreateModalOpen(false)}} />
         </React.Fragment>
     );
 };

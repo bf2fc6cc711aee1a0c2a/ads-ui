@@ -1,6 +1,15 @@
 import React, {FunctionComponent, useState} from "react";
 import {Draft} from "@app/models";
-import {ActionList, ActionListItem, Dropdown, DropdownItem, Flex, FlexItem, KebabToggle} from "@patternfly/react-core";
+import {
+    ActionList,
+    ActionListItem,
+    Button,
+    Dropdown,
+    DropdownItem,
+    Flex,
+    FlexItem,
+    KebabToggle
+} from "@patternfly/react-core";
 import "./draft-list-item.css";
 import {ArtifactTypeIcon} from "@app/components/artifact-type-icon";
 
@@ -39,6 +48,9 @@ export const DraftListItem: FunctionComponent<DraftListItemProps> = ({draft, onE
             </FlexItem>
             <FlexItem>
                 <ActionList>
+                    <ActionListItem>
+                        <Button variant="secondary" onClick={onEdit}>Edit</Button>
+                    </ActionListItem>
                     <ActionListItem>
                         <Dropdown
                             onSelect={onActionSelect}
