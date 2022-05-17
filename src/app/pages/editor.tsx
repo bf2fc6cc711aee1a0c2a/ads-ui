@@ -4,7 +4,7 @@ import {DraftsService, useDraftsService} from "@app/services";
 import {Draft, DraftContent} from "@app/models";
 import {IsLoading} from "@app/components";
 import {EditorContext} from "@app/pages/components";
-import {TextEditor} from "@app/editors";
+import {OpenApiEditor, TextEditor} from "@app/editors";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
 
 
@@ -68,16 +68,27 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorP
             // TODO handle error
             console.error("[EditorPage] Failed to save draft content: ", error);
         });
-    }
+    };
 
     // Called when the user makes an edit in the editor.
     const onCancel = (): void => {
         nav.navigateTo("/");
-    }
+    };
 
-    const editor: React.ReactElement = (
+    const textEditor: React.ReactElement = (
         <TextEditor content={draftContent as DraftContent} onChange={onEditorChange} />
     );
+
+    const openapiEditor: React.ReactElement = (
+        <OpenApiEditor content={draftContent as DraftContent} onChange={onEditorChange} />
+    );
+
+    const editor = (): React.ReactElement => {
+        if (draft?.type === "OPENAPI") {
+            return openapiEditor;
+        }
+        return textEditor;
+    };
 
     return (
         <IsLoading condition={isLoading}>
@@ -85,7 +96,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorP
                 <EditorContext draft={draft as Draft} dirty={isDirty} onSave={onSave} onCancel={onCancel} />
             </PageSection>
             <PageSection variant={PageSectionVariants.light} style={{padding: "0"}}>
-                {editor}
+                {editor()}
             </PageSection>
         </IsLoading>
     );

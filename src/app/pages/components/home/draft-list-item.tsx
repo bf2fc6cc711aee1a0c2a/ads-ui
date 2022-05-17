@@ -1,8 +1,6 @@
 import React, {FunctionComponent, useState} from "react";
 import {Draft} from "@app/models";
 import {ActionList, ActionListItem, Dropdown, DropdownItem, Flex, FlexItem, KebabToggle} from "@patternfly/react-core";
-import {NavLink} from "@app/components/navlink";
-import {NewspaperIcon} from "@patternfly/react-icons";
 import "./draft-list-item.css";
 import {ArtifactTypeIcon} from "@app/components/artifact-type-icon";
 
@@ -36,7 +34,7 @@ export const DraftListItem: FunctionComponent<DraftListItemProps> = ({draft, onE
                 <ArtifactTypeIcon type={draft.type} />
             </FlexItem>
             <FlexItem grow={{ default: "grow" }}>
-                <NavLink className="name" location={`/drafts/${draft.id}/editor`}>{draft.name}</NavLink>
+                <div className="name">{draft.name}</div>
                 <div className="summary">{draft.summary}</div>
             </FlexItem>
             <FlexItem>
