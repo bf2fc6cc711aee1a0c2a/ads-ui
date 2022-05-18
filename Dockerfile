@@ -1,5 +1,8 @@
 FROM registry.access.redhat.com/ubi8/nginx-118
 
+# Copy configuration scripts
+COPY --chown=1001:0 build/configs/notify-gchat.sh /usr/local/bin/notify-gchat.sh
+
 # Copy dist files
 COPY --chown=1001:0 dist/ .
 
