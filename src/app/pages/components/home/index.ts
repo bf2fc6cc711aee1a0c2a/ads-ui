@@ -1,4 +1,5 @@
 export * from "./create-draft.modal";
+export * from "./delete-draft.modal";
 export * from "./drafts.panel";
 export * from "./draft-list";
 export * from "./draft-list-item";

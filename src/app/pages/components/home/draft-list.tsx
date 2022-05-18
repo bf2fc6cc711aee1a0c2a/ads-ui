@@ -7,14 +7,18 @@ export type DraftListProps = {
     drafts: DraftsSearchResults;
     onEdit: (draft: Draft) => void;
     onDelete: (draft: Draft) => void;
+    onDownload: (draft: Draft) => void;
 }
 
-export const DraftList: FunctionComponent<DraftListProps> = ({drafts, onEdit, onDelete}: DraftListProps) => {
+export const DraftList: FunctionComponent<DraftListProps> = ({drafts, onEdit, onDelete, onDownload}: DraftListProps) => {
     return (
         <div className="draft-list">
             {
                 drafts.drafts.map(draft => (
-                    <DraftListItem key={draft.id} draft={draft} onEdit={() => onEdit(draft)} onDelete={() => onDelete(draft)} />
+                    <DraftListItem key={draft.id} draft={draft}
+                                   onEdit={() => onEdit(draft)}
+                                   onDownload={() => onDownload(draft)}
+                                   onDelete={() => onDelete(draft)} />
                 ))
             }
         </div>

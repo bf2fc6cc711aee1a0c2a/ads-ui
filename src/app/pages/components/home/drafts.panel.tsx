@@ -1,12 +1,34 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
 import "./drafts.panel.css";
 import {Alert, Card, CardBody} from "@patternfly/react-core";
-import {DraftsService, useDraftsService} from "@app/services";
+import {DownloadService, DraftsService, useDownloadService, useDraftsService} from "@app/services";
 import {Draft, DraftsSearchCriteria, DraftsSearchResults, Paging} from "@app/models";
 import {If, ListWithToolbar} from "@app/components";
-import {DraftList, DraftsEmptyState, DraftsEmptyStateFiltered, DraftsToolbar} from "@app/pages/components";
+import {
+    DeleteDraftModal,
+    DraftList,
+    DraftsEmptyState,
+    DraftsEmptyStateFiltered,
+    DraftsToolbar
+} from "@app/pages/components";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
 
+
+function convertToValidFilename(value: string): string {
+    return (value.replace(/[\/|\\:*?"<>]/g, ""));
+}
+function fileExtensionForDraft(draft: Draft): string {
+    if (draft.type === "PROTOBUF") {
+        return "proto";
+    }
+    return "json";
+}
+function contentTypeForDraft(draft: Draft): string {
+    if (draft.type === "PROTOBUF") {
+        return "application/protobuf";
+    }
+    return "application/json";
+}
 
 export type DraftsPanelProps = {
     onCreate: () => void;
@@ -28,24 +50,42 @@ export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({onCreate, onIm
         filterOn: "name"
     });
     const [ drafts, setDrafts ] = useState<DraftsSearchResults>();
+    const [ draftToDelete, setDraftToDelete ] = useState<Draft>();
+    const [ isDeleteModalOpen, setDeleteModalOpen ] = useState(false);
 
     const draftsSvc: DraftsService = useDraftsService();
+    const downloadSvc: DownloadService = useDownloadService();
     const nav: Navigation = useNavigation();
 
     const doRefresh = (): void => {
         setRefresh(refresh + 1);
     };
 
-    const editDraft = (draft: Draft): void => {
+    const onEditDraft = (draft: Draft): void => {
         nav.navigateTo(`/drafts/${draft.id}/editor`);
     };
 
-    const deleteDraft = (draft: Draft): void => {
+    const onDeleteDraftConfirmed = (draft: Draft): void => {
         draftsSvc.deleteDraft(draft.id).then(() => {
             doRefresh();
         }).catch(error => {
             // TODO handle error
             console.error(error);
+        });
+        setDeleteModalOpen(false);
+    };
+
+    const onDeleteDraft = (draft: Draft): void => {
+        setDraftToDelete(draft);
+        setDeleteModalOpen(true);
+    };
+
+    const onDownloadDraft = (draft: Draft): void => {
+        const filename: string = `${convertToValidFilename(draft.name)}.${fileExtensionForDraft(draft)}`;
+        const contentType: string = contentTypeForDraft(draft);
+        draftsSvc.getDraftContent(draft.id).then(content => {
+            const c: string = typeof content.data === "object" ? JSON.stringify(content.data, null, 4) : content.data as string;
+            downloadSvc.downloadToFS(c, contentType, filename);
         });
     };
 
@@ -109,10 +149,18 @@ export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({onCreate, onIm
                                      isLoading={isLoading}
                                      isFiltered={isFiltered}
                                      isEmpty={!drafts || drafts.count === 0}>
-                        <DraftList drafts={drafts as DraftsSearchResults} onEdit={editDraft} onDelete={deleteDraft} />
+                        <DraftList drafts={drafts as DraftsSearchResults}
+                                   onEdit={onEditDraft}
+                                   onDownload={onDownloadDraft}
+                                   onDelete={onDeleteDraft} />
                     </ListWithToolbar>
                 </CardBody>
             </Card>
+            <DeleteDraftModal draft={draftToDelete}
+                              isOpen={isDeleteModalOpen}
+                              onDelete={onDeleteDraftConfirmed}
+                              onDownload={onDownloadDraft}
+                              onCancel={() => setDeleteModalOpen(false)} />
         </React.Fragment>
     );
 };

@@ -5,7 +5,7 @@ import {
     ActionListItem,
     Button,
     Dropdown,
-    DropdownItem,
+    DropdownItem, DropdownSeparator,
     Flex,
     FlexItem,
     KebabToggle
@@ -17,9 +17,10 @@ export type DraftListItemProps = {
     draft: Draft;
     onEdit: () => void;
     onDelete: () => void;
+    onDownload: () => void;
 }
 
-export const DraftListItem: FunctionComponent<DraftListItemProps> = ({draft, onEdit, onDelete}: DraftListItemProps) => {
+export const DraftListItem: FunctionComponent<DraftListItemProps> = ({draft, onEdit, onDelete, onDownload}: DraftListItemProps) => {
 
     const [ isToggleOpen, setToggleOpen ] = useState(false);
 
@@ -33,6 +34,9 @@ export const DraftListItem: FunctionComponent<DraftListItemProps> = ({draft, onE
                 return;
             case "action-delete":
                 onDelete();
+                return;
+            case "action-download":
+                onDownload();
                 return;
         }
     };
@@ -60,6 +64,8 @@ export const DraftListItem: FunctionComponent<DraftListItemProps> = ({draft, onE
                             dropdownItems={
                                 [
                                     <DropdownItem key="action-edit" data-id="action-edit">Edit</DropdownItem>,
+                                    <DropdownItem key="action-download" data-id="action-download">Download</DropdownItem>,
+                                    <DropdownSeparator />,
                                     <DropdownItem key="action-delete" data-id="action-delete">Delete</DropdownItem>,
                                 ]
                             }
