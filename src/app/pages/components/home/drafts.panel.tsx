@@ -136,7 +136,7 @@ export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({onCreate, onIm
                     <Alert className="panel-alert" isInline variant="info" title="About your data" style={{ marginBottom: "15px"}}>
                         <p>
                             All designs are stored locally in your browser.  Clearing your browser cache or
-                            switching to a new browser <em>may</em> result in loss of data.  Make sure you save your
+                            switching to a new browser <em>might</em> result in loss of data.  Make sure you save your
                             work locally or in a Red Hat OpenShift Service Registry instance!  In the future your
                             designs will be saved to a persistent server, stay tuned!
                         </p>

@@ -47,13 +47,13 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
                 <TextContent className="summary-title-and-description">
                     <Text component="h1" className="title">Red Hat OpenShift API Designer</Text>
                     <Text component="p" className="description">
-                        A tool to design your APIs (OpenAPI, AsyncAPI) and Schemas (Apache Avro, Google Protobuf, JSON Schema).
+                        A tool to design your APIs (OpenAPI, AsyncAPI) and schemas (Apache Avro, Google Protobuf, JSON Schema).
                         Manage your collection of API and schema designs below by creating, importing, and editing.
                     </Text>
                 </TextContent>
                 <TextContent className="summary-actions">
-                    <Button className="btn-create" variant="primary" onClick={() => setCreateModalOpen(true)}>Create a schema or API Design</Button>
-                    <Button className="btn-import" variant="secondary" onClick={() => setImportModalOpen(true)}>Import a schema or API Design</Button>
+                    <Button className="btn-create" variant="primary" onClick={() => setCreateModalOpen(true)}>Create a schema or API design</Button>
+                    <Button className="btn-import" variant="secondary" onClick={() => setImportModalOpen(true)}>Import a schema or API design</Button>
                 </TextContent>
                 <CreateDraftModal isOpen={isCreateModalOpen} onCreate={createDraft} onCancel={() => {setCreateModalOpen(false)}} />
                 <ImportDraftModal isOpen={isImportModalOpen} onImport={importDraft} onCancel={() => {setImportModalOpen(false)}} />

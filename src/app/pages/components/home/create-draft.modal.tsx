@@ -161,7 +161,7 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = ({isOp
             <Alert isInline variant="warning" title="Warning" style={{ marginBottom: "15px"}}>
                 <p>
                     All new drafts are stored locally in your browser.  Clearing your browser cache or
-                    switching to a new browser <em>may</em> result in loss of data.  Make sure you save your
+                    switching to a new browser <em>might</em> result in loss of data.  Make sure you save your
                     work locally or in a Red Hat OpenShift Service Registry instance!
                 </p>
             </Alert>
