@@ -37,8 +37,14 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
         });
     };
 
-    const importDraft = async (): Promise<void> => {
-        return Promise.resolve();
+    const importDraft = async (event: CreateDraft, content: CreateDraftContent): Promise<void> => {
+        return draftsSvc.createDraft(event, content).then((draft) => {
+            setImportModalOpen(false);
+            nav.navigateTo(`/drafts/${draft.id}/editor`);
+        }).catch(error => {
+            // TODO handle error
+            console.error(error);
+        });
     };
 
     return (

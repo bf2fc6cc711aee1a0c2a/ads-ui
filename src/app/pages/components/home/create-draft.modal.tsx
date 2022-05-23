@@ -24,13 +24,46 @@ export type CreateDraftModalProps = {
     onCancel: () => void;
 }
 
+
+const TYPE_OPTIONS: SelectOptionObject[] = [
+    {
+        value: ArtifactTypes.OPENAPI,
+        label: "OpenAPI"
+    },
+    {
+        value: ArtifactTypes.ASYNCAPI,
+        label: "AsyncAPI"
+    },
+    {
+        value: ArtifactTypes.AVRO,
+        label: "Apache Avro"
+    },
+    {
+        value: ArtifactTypes.JSON,
+        label: "JSON Schema"
+    },
+    {
+        value: ArtifactTypes.PROTOBUF,
+        label: "Google Protocol Buffers"
+    },
+].map(item => {
+    return {
+        value: item.value,
+        label: item.label,
+        toString: () => {
+            return item.label;
+        }
+    };
+});
+
+
 export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = ({isOpen, onCreate, onCancel}: CreateDraftModalProps) => {
     const [isValid, setValid] = useState(false);
     const [name, setName] = useState("");
     const [summary, setSummary] = useState("");
 
-    const [type, setType] = useState("");
-    const [typeSelection, setTypeSelection] = useState<SelectOptionObject|undefined>(undefined);
+    const [type, setType] = useState(ArtifactTypes.OPENAPI);
+    const [typeSelection, setTypeSelection] = useState<SelectOptionObject>();
     const [isTypeToggled, setTypeToggled] = useState(false);
 
     const [version, setVersion] = useState("");
@@ -40,37 +73,6 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = ({isOp
     const [template, setTemplate] = useState<Template>();
 
     const templatesSvc: TemplatesService = useTemplatesService();
-
-    const typeOptions: SelectOptionObject[] = [
-        {
-            value: ArtifactTypes.OPENAPI,
-            label: "OpenAPI"
-        },
-        {
-            value: ArtifactTypes.ASYNCAPI,
-            label: "AsyncAPI"
-        },
-        {
-            value: ArtifactTypes.AVRO,
-            label: "Apache Avro"
-        },
-        {
-            value: ArtifactTypes.JSON,
-            label: "JSON Schema"
-        },
-        {
-            value: ArtifactTypes.PROTOBUF,
-            label: "Google Protocol Buffers"
-        },
-    ].map(item => {
-        return {
-            value: item.value,
-            label: item.label,
-            toString: () => {
-                return item.label;
-            }
-        };
-    });
 
 
     // Called when the user changes the "type" (dropdown)
@@ -140,9 +142,6 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = ({isOp
         }
     }, [templates]);
 
-    useEffect(() => {
-    }, [template]);
-
     return (
         <Modal
             variant={ModalVariant.medium}
@@ -199,7 +198,7 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = ({isOp
                         menuAppendTo="parent"
                     >
                         {
-                            typeOptions.map(to => <SelectOption key={(to as any).value} value={to} />)
+                            TYPE_OPTIONS.map(to => <SelectOption key={(to as any).value} value={to} />)
                         }
                     </Select>
                 </FormGroup>
