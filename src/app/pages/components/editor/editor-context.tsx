@@ -2,6 +2,7 @@ import React, {FunctionComponent} from "react";
 import {Draft} from "@app/models";
 import {Breadcrumb, BreadcrumbItem, Button, Flex, FlexItem, Text, TextContent} from "@patternfly/react-core";
 import "./editor-context.css";
+import {NavLink} from "@app/components";
 
 /**
  * Properties
@@ -20,7 +21,9 @@ export const EditorContext: FunctionComponent<EditorContextProps> = ({draft, dir
     return (
         <React.Fragment>
             <Breadcrumb style={{marginBottom: "10px"}}>
-                <BreadcrumbItem to="/">Red Hat OpenShift API Designer</BreadcrumbItem>
+                <BreadcrumbItem component="button">
+                    <NavLink location="/">Red Hat OpenShift API Designer</NavLink>
+                </BreadcrumbItem>
                 <BreadcrumbItem isActive={true}>Drafts</BreadcrumbItem>
                 <BreadcrumbItem isActive={true}>{draft?.name}</BreadcrumbItem>
             </Breadcrumb>

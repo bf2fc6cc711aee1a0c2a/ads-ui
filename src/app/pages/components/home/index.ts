@@ -9,3 +9,4 @@ export * from "./drafts-toolbar";
 export * from "./import-draft.modal";
 export * from "./rhosr.panel";
 export * from "./template-item";
+export * from "./url-upload";

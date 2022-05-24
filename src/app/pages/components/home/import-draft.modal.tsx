@@ -12,6 +12,7 @@ import {
 } from "@patternfly/react-core";
 import {ArtifactTypes, CreateDraft, CreateDraftContent} from "@app/models";
 import {If} from "@app/components";
+import {UrlUpload} from "@app/pages/components";
 
 export type ImportDraftModalProps = {
     isOpen: boolean | undefined;
@@ -110,6 +111,7 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({isOp
 
     const [draftContent, setDraftContent] = useState<string>();
     const [fileName, setFileName] = useState<string>();
+    const [url, setUrl] = useState<string>();
 
     const [name, setName] = useState("");
     const [summary, setSummary] = useState("");
@@ -132,6 +134,11 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({isOp
     const onFileChange = (value: string | File, fname: string): void => {
         setDraftContent(value as string);
         setFileName(fname);
+    };
+
+    const onUrlChange = (value: string|undefined, url: string|undefined): void => {
+        setDraftContent(value);
+        setUrl(url);
     };
 
     // Called when the user changes the "type" (dropdown)
@@ -261,6 +268,7 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({isOp
         if (draftContent && draftContent.trim().length > 0) {
             const info: DetectionInfo = detectInfo(draftContent as string);
             console.debug("[ImportDraftModal] Content detection: ", info);
+            console.debug("[ImportDraftModal] Version detected: ", info.version || "");
 
             setTheType(info.type);
             setVersion(info.version || "");
@@ -276,7 +284,7 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({isOp
 
     // Whenever the type changes to OpenAPI, set the version to "3.0.2".
     useEffect(() => {
-        if (type === ArtifactTypes.OPENAPI) {
+        if (type === ArtifactTypes.OPENAPI && version === undefined) {
             setVersion("3.0.2");
         }
     }, [type]);
@@ -336,7 +344,11 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({isOp
                 </If>
                 <If condition={importType === IMPORT_FROM_URL}>
                     <FormGroup label="URL" isRequired={true} fieldId="import-draft-url">
-                        <h1>Not yet implemented</h1>
+                        <UrlUpload
+                            id="draft-text-url"
+                            urlPlaceholder="Enter a valid and accessible URL"
+                            onChange={onUrlChange}
+                        />
                     </FormGroup>
                 </If>
                 <If condition={importType === IMPORT_FROM_RHOSR}>
@@ -374,8 +386,8 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({isOp
                                 selections={version}
                                 menuAppendTo="parent"
                             >
-                                <SelectOption value={"3.0.2"}/>
-                                <SelectOption value={"2.0"}/>
+                                <SelectOption value="3.0.2"/>
+                                <SelectOption value="2.0"/>
                             </Select>
                         </FormGroup>
                     </If>

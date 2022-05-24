@@ -22,6 +22,7 @@ function createAxiosConfig(method: string, url: string, options: any, data?: any
 
 
 function unwrapErrorData(error: any): any {
+    console.debug("Error detected, unwrapping...");
     if (error && error.response && error.response.data) {
         return {
             message: error.message,

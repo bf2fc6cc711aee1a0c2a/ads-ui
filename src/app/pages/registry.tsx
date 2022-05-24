@@ -8,7 +8,7 @@ import {
     useRhosrInstanceServiceFactory,
     useRhosrService
 } from "@app/services";
-import {IfNotEmpty, IsLoading} from "@app/components";
+import {IfNotEmpty, IsLoading, NavLink} from "@app/components";
 import {ArtifactsSearchResults, GetArtifactsCriteria, Paging} from "@app/models/rhosr-instance";
 import {ArtifactsToolbar, ArtifactsToolbarCriteria, ArtifactsList} from "@app/pages/components";
 
@@ -90,7 +90,11 @@ export const RegistryPage: FunctionComponent<RegistryPageProps> = ({params}: Reg
             <IsLoading condition={loading}>
                 <PageSection variant={PageSectionVariants.light}>
                     <Breadcrumb style={{marginBottom: "10px"}}>
-                        <BreadcrumbItem to="/">Red Hat OpenShift API Designer</BreadcrumbItem>
+                        <BreadcrumbItem component="button">
+                            <NavLink location="/">
+                                Red Hat OpenShift API Designer
+                            </NavLink>
+                        </BreadcrumbItem>
                         <BreadcrumbItem isActive={true}>Service Registries</BreadcrumbItem>
                         <BreadcrumbItem isActive={true}>{registry?.name}</BreadcrumbItem>
                     </Breadcrumb>

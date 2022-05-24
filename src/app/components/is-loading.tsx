@@ -6,6 +6,7 @@ import {Spinner} from "@patternfly/react-core";
  */
 export type IsLoadingProps = {
     condition: boolean | (() => boolean);
+    loadingComponent?: React.ReactNode;
     children?: React.ReactNode;
 }
 
@@ -14,7 +15,7 @@ export type IsLoadingProps = {
  * are displayed.  Useful when displaying content from the results of an async operation such as a REST
  * call.
  */
-export const IsLoading: FunctionComponent<IsLoadingProps> = ({condition, children}: IsLoadingProps) => {
+export const IsLoading: FunctionComponent<IsLoadingProps> = ({condition, loadingComponent, children}: IsLoadingProps) => {
     const accept = () => {
         if (typeof condition === "boolean") {
             return condition;
@@ -22,6 +23,6 @@ export const IsLoading: FunctionComponent<IsLoadingProps> = ({condition, childre
             return condition();
         }
     }
-
-    return (accept() ? <Spinner /> : <React.Fragment children={children} />);
+    const lc: React.ReactNode = loadingComponent || <Spinner />;
+    return (accept() ? <React.Fragment children={lc} /> : <React.Fragment children={children} />);
 };
