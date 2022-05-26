@@ -4,10 +4,6 @@
 }
 
 .summary .summary-actions {
-    text-align: right;
+    float: right;
     margin-top: 15px;
-}
-
-.summary .summary-actions button {
-    margin-right: 15px;
 }

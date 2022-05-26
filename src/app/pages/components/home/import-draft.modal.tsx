@@ -14,39 +14,18 @@ import {ArtifactTypes, CreateDraft, CreateDraftContent} from "@app/models";
 import {If} from "@app/components";
 import {UrlUpload} from "@app/pages/components";
 
+
+const IMPORT_FROM_FILE: string = "FILE";
+const IMPORT_FROM_URL: string = "URL";
+
+
 export type ImportDraftModalProps = {
+    importType: "FILE" | "URL";
     isOpen: boolean | undefined;
     onImport: (event: CreateDraft, content: CreateDraftContent) => void;
     onCancel: () => void;
 }
 
-const IMPORT_FROM_FILE: string = "FILE";
-const IMPORT_FROM_URL: string = "URL";
-const IMPORT_FROM_RHOSR: string = "RHOSR";
-
-
-const IMPORT_TYPE_OPTIONS: SelectOptionObject[] = [
-    {
-        value: IMPORT_FROM_FILE,
-        label: "Import from File"
-    },
-    {
-        value: IMPORT_FROM_URL,
-        label: "Import from URL"
-    },
-    {
-        value: IMPORT_FROM_RHOSR,
-        label: "Import from Service Registry"
-    },
-].map(item => {
-    return {
-        value: item.value,
-        label: item.label,
-        toString: () => {
-            return item.label;
-        }
-    };
-});
 
 const PLACEHOLDER_TYPE_OPTION: SelectOptionObject = {
     // @ts-ignore
@@ -102,12 +81,8 @@ type DetectionInfo = {
 }
 
 
-export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({isOpen, onImport, onCancel}: ImportDraftModalProps) => {
+export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({importType, isOpen, onImport, onCancel}: ImportDraftModalProps) => {
     const [isValid, setValid] = useState(false);
-
-    const [importType, setImportType] = useState<string>(IMPORT_FROM_FILE);
-    const [importTypeSelection, setImportTypeSelection] = useState<SelectOptionObject>(IMPORT_TYPE_OPTIONS[0]);
-    const [isImportTypeToggled, setImportTypeToggled] = useState<boolean>(false);
 
     const [draftContent, setDraftContent] = useState<string>();
     const [fileName, setFileName] = useState<string>();
@@ -122,14 +97,6 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({isOp
 
     const [version, setVersion] = useState("");
     const [isVersionToggled, setVersionToggled] = useState(false);
-
-    const onImportTypeSelect = (selection: SelectOptionObject): void => {
-        setImportType((selection as any).value);
-        setImportTypeSelection(selection);
-        setImportTypeToggled(false);
-        setDraftContent(undefined);
-        setFileName(undefined);
-    };
 
     const onFileChange = (value: string | File, fname: string): void => {
         setDraftContent(value as string);
@@ -170,6 +137,14 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({isOp
 
     const hasDraftContent = (): boolean => {
         return draftContent !== undefined && draftContent.trim().length > 0;
+    };
+
+    const title = (): string => {
+        if (importType === IMPORT_FROM_FILE) {
+            return "Import from file";
+        } else {
+            return "Import from URL";
+        }
     };
 
     // Tries to figure out the type and meta-data of the content by parsing it and looking
@@ -254,8 +229,6 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({isOp
 
     // Whenever the modal is opened, set default values for the form.
     useEffect(() => {
-        setImportType(IMPORT_FROM_FILE);
-        setImportTypeSelection(IMPORT_TYPE_OPTIONS[0]);
         setDraftContent(undefined);
         setName("");
         setSummary("");
@@ -289,11 +262,10 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({isOp
         }
     }, [type]);
 
-    // TODO implement this modal
     return (
         <Modal
             variant={ModalVariant.medium}
-            title="Import a design"
+            title={title()}
             isOpen={isOpen}
             onClose={onCancel}
             actions={[
@@ -314,21 +286,6 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({isOp
             </Alert>
 
             <Form>
-                <FormGroup label="Import type" isRequired={true} fieldId="import-import-type">
-                    <Select
-                        variant={SelectVariant.single}
-                        aria-label="Select import type"
-                        onToggle={() => setImportTypeToggled(!isImportTypeToggled)}
-                        onSelect={(event, selection) => onImportTypeSelect(selection)}
-                        isOpen={isImportTypeToggled}
-                        selections={importTypeSelection}
-                        menuAppendTo="parent"
-                    >
-                        {
-                            IMPORT_TYPE_OPTIONS.map(to => <SelectOption key={(to as any).value} value={to}/>)
-                        }
-                    </Select>
-                </FormGroup>
                 <If condition={importType === IMPORT_FROM_FILE}>
                     <FormGroup label="File" isRequired={true} fieldId="import-draft-file">
                         <FileUpload
@@ -349,11 +306,6 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({isOp
                             urlPlaceholder="Enter a valid and accessible URL"
                             onChange={onUrlChange}
                         />
-                    </FormGroup>
-                </If>
-                <If condition={importType === IMPORT_FROM_RHOSR}>
-                    <FormGroup label="Service Registry" isRequired={true} fieldId="import-draft-rhosr">
-                        <h1>Not yet implemented</h1>
                     </FormGroup>
                 </If>
                 <If condition={hasDraftContent}>

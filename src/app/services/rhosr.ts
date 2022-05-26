@@ -23,7 +23,7 @@ const RHOSR_MOCK_DATA: Registry[] = [
  */
 async function getRegistries(auth: Auth, basePath: string): Promise<Registry[]> {
     console.debug("[RhosrService] Getting a list of registries from: ", basePath);
-    const token: string | undefined = await auth?.srs.getToken();
+    const token: string | undefined = auth?.srs ? await auth?.srs.getToken() : "";
     const api: RegistriesApi = new RegistriesApi(
         new Configuration({
             accessToken: token,
@@ -44,7 +44,7 @@ async function getRegistries(auth: Auth, basePath: string): Promise<Registry[]> 
  */
 async function getRegistry(id: string, auth: Auth, basePath: string): Promise<Registry> {
     console.debug("[RhosrService] Getting a single registry from: ", basePath);
-    const token: string | undefined = await auth?.srs.getToken();
+    const token: string | undefined = auth?.srs ? await auth?.srs.getToken() : "";
     const api: RegistriesApi = new RegistriesApi(
         new Configuration({
             accessToken: token,

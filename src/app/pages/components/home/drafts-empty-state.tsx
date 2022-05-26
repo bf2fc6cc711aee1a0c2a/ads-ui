@@ -33,9 +33,6 @@ export const DraftsEmptyState: FunctionComponent<DraftsEmptyStateProps> = ({onCr
                 create a new design or import one.
             </EmptyStateBody>
             <Button variant="primary" onClick={onCreate}>Create a schema or API design</Button>
-            <EmptyStateSecondaryActions>
-                <Button variant="link" onClick={onImport}>Import a schema or API design</Button>
-            </EmptyStateSecondaryActions>
         </EmptyState>
     );
 };
