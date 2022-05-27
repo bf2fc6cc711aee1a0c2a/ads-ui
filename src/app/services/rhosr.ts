@@ -5,8 +5,17 @@ import {Auth, useAuth, Config, useConfig} from "@rhoas/app-services-ui-shared";
 const RHOSR_MOCK_DATA: Registry[] = [
     {
         id: "1",
-        name: "Local Registry (localhost:8081)",
+        name: "Local Registry 1 (localhost:8081)",
         registryUrl: "http://localhost:8081/",
+        status: "ready",
+        created_at: "2022-01-01T12:00:00Z",
+        updated_at: "2022-01-01T12:00:00Z",
+        instance_type: "standard"
+    },
+    {
+        id: "2",
+        name: "Local Registry 2 (localhost:8082)",
+        registryUrl: "http://localhost:8082/",
         status: "ready",
         created_at: "2022-01-01T12:00:00Z",
         updated_at: "2022-01-01T12:00:00Z",

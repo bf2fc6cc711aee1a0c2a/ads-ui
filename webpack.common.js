@@ -109,7 +109,6 @@ module.exports = (env, argv) => {
         filename: `${federatedModuleName}.js`,
         exposes: {
           "./FederatedHomePage": "./src/app/pages/home-federated",
-          "./FederatedRegistryPage": "./src/app/pages/registry-federated",
           "./FederatedEditorPage": "./src/app/pages/editor-federated",
         },
         shared: {

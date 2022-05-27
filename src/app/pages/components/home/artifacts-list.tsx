@@ -3,7 +3,7 @@ import {SearchedArtifact} from "@app/models";
 import {DataList, DataListItemRow, DataListItemCells, DataListCell, Badge} from "@patternfly/react-core";
 import {ArtifactTypeIcon} from "@app/components";
 import {ArtifactGroup, ArtifactName} from "@app/pages/components";
-import "./artifact-list.css";
+import "./artifacts-list.css";
 
 /**
  * Properties

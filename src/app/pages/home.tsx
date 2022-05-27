@@ -1,22 +1,27 @@
 import React, {FunctionComponent, useState} from "react";
 import "./home.css";
 import {
-    ActionList, ActionListItem,
-    Button, Dropdown, DropdownItem, DropdownSeparator,
+    ActionList,
+    ActionListItem,
+    Button,
     Grid,
-    GridItem, KebabToggle,
-    MenuToggle,
+    GridItem,
     PageSection,
     PageSectionVariants,
     Text,
     TextContent
 } from "@patternfly/react-core";
-import {CreateDraftModal, DraftsPanel, ImportDraftModal} from "@app/pages/components";
+import {
+    CreateDraftModal,
+    DraftsPanel,
+    ImportDraftModal,
+    ImportDropdown,
+    ImportFromRhosrModal
+} from "@app/pages/components";
 import {CreateDraft, CreateDraftContent, Template} from "@app/models";
 import {propertyReplace} from "@app/utils";
 import {DraftsService, useDraftsService} from "@app/services";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
-import {ImportDropdown} from "@app/pages/components/home/import-dropdown";
 
 export type HomePageProps = {
 };
@@ -24,6 +29,7 @@ export type HomePageProps = {
 export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) => {
     const [ isCreateModalOpen, setCreateModalOpen ] = useState(false);
     const [ isImportModalOpen, setImportModalOpen ] = useState(false);
+    const [ isImportFromRhosrModalOpen, setImportFromRhosrModalOpen ] = useState(false);
     const [ importType, setImportType ] = useState<"FILE"|"URL">("FILE");
 
     const draftsSvc: DraftsService = useDraftsService();
@@ -38,7 +44,7 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
         setImportModalOpen(true);
     };
     const onImportFromRhosr = (): void => {
-        // TODO: TBD
+        setImportFromRhosrModalOpen(true);
     };
 
     const createDraft = async (info: CreateDraft, template: Template): Promise<void> => {
@@ -96,6 +102,7 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
                 <CreateDraftModal isOpen={isCreateModalOpen} onCreate={createDraft} onCancel={() => {setCreateModalOpen(false)}} />
                 <ImportDraftModal isOpen={isImportModalOpen} onImport={importDraft} onCancel={() => {setImportModalOpen(false)}}
                                   importType={importType} />
+                <ImportFromRhosrModal isOpen={isImportFromRhosrModalOpen} onImport={importDraft} onCancel={() => {setImportFromRhosrModalOpen(false)}} />
             </PageSection>
             <PageSection variant={PageSectionVariants.default} isFilled={true}>
                 <Grid hasGutter={true}>

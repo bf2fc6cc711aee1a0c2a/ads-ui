@@ -1,6 +1,5 @@
 .artifacts-toolbar {
-    padding-left: 8px;
-    padding-right: 24px;
+    padding: 0px;
 }
 
 .artifacts-toolbar > div {
