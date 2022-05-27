@@ -1,6 +1,6 @@
 import {SearchedArtifact} from "@app/models";
 
-export interface ArtifactsSearchResults {
+export interface ArtifactSearchResults {
     artifacts: SearchedArtifact[];
     count: number;
     page: number;

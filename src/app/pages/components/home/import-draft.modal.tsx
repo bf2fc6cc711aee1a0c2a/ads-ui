@@ -128,6 +128,7 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
             summary
         };
         const cdc: CreateDraftContent = {
+            // TODO handle non-JSON content types (i.e. YAML content)
             contentType: "application/json",
             data: draftContent
         };
@@ -321,8 +322,8 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
                         >
                             {
                                 [
-                                    <SelectOption key={undefined} value={PLACEHOLDER_TYPE_OPTION} isPlaceholder={true}/>,
-                                    ...TYPE_OPTIONS.map(to => <SelectOption key={(to as any).value} value={to}/>)
+                                    <SelectOption key={-1} value={PLACEHOLDER_TYPE_OPTION} isPlaceholder={true}/>,
+                                    ...TYPE_OPTIONS.map((to, index) => <SelectOption key={index} value={to}/>)
                                 ]
                             }
                         </Select>
@@ -338,8 +339,8 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
                                 selections={version}
                                 menuAppendTo="parent"
                             >
-                                <SelectOption value="3.0.2"/>
-                                <SelectOption value="2.0"/>
+                                <SelectOption key={1} value="3.0.2"/>
+                                <SelectOption key={2} value="2.0"/>
                             </Select>
                         </FormGroup>
                     </If>

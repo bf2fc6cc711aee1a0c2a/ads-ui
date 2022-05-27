@@ -1,5 +1,5 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
-import "./artifacts-toolbar.css";
+import "./artifact-list-toolbar.css";
 import {
     Button,
     OnPerPageSelect,
@@ -11,30 +11,30 @@ import {
     ToolbarItem
 } from "@patternfly/react-core";
 import {SortAlphaDownAltIcon, SortAlphaDownIcon} from "@patternfly/react-icons";
-import {ArtifactsSearchResults, Paging} from "@app/models";
+import {ArtifactSearchResults, Paging} from "@app/models";
 import {Registry} from "@rhoas/registry-management-sdk";
 import {ObjectSelect} from "@app/components/object-select";
 
 
-export interface ArtifactsToolbarCriteria {
+export interface ArtifactListToolbarCriteria {
     filterSelection: string;
     filterValue: string;
     ascending: boolean;
 }
 
-export type ArtifactsToolbarProps = {
+export type ArtifactListToolbarProps = {
     registries: Registry[];
-    criteria: ArtifactsToolbarCriteria;
+    criteria: ArtifactListToolbarCriteria;
     paging: Paging;
-    artifacts?: ArtifactsSearchResults;
+    artifacts?: ArtifactSearchResults;
     onRegistrySelected: (registry: Registry) => void;
-    onCriteriaChange: (criteria: ArtifactsToolbarCriteria) => void;
+    onCriteriaChange: (criteria: ArtifactListToolbarCriteria) => void;
     onPagingChange: (paging: Paging) => void;
 }
 
 
-export const ArtifactsToolbar: FunctionComponent<ArtifactsToolbarProps> = ({registries, criteria, onCriteriaChange, paging,
-                                                                            onPagingChange, artifacts, onRegistrySelected}: ArtifactsToolbarProps) => {
+export const ArtifactListToolbar: FunctionComponent<ArtifactListToolbarProps> = ({registries, criteria, onCriteriaChange, paging,
+                                                                            onPagingChange, artifacts, onRegistrySelected}: ArtifactListToolbarProps) => {
     const [ registry, setRegistry ] = useState<Registry>();
     const [ filterValue, setFilterValue ] = useState(criteria.filterValue);
 
@@ -89,6 +89,12 @@ export const ArtifactsToolbar: FunctionComponent<ArtifactsToolbarProps> = ({regi
     };
 
     useEffect(() => {
+        if (registries && registries.length > 0) {
+            setRegistry(registries[0]);
+        }
+    }, [registries]);
+
+    useEffect(() => {
         setFilterValue(criteria.filterValue);
     }, [criteria]);
 
@@ -96,7 +102,9 @@ export const ArtifactsToolbar: FunctionComponent<ArtifactsToolbarProps> = ({regi
         <Toolbar id="artifacts-toolbar-1" className="artifacts-toolbar">
             <ToolbarContent>
                 <ToolbarItem variant="search-filter">
-                    <ObjectSelect value={registry} items={registries} onSelect={onRegistrySelectInternal} itemToString={item => item.name} />
+                    <ObjectSelect value={registry} items={registries}
+                                  onSelect={onRegistrySelectInternal}
+                                  itemToString={item => item.name} />
                 </ToolbarItem>
                 <ToolbarItem variant="search-filter">
                     <SearchInput aria-label="Filter artifacts" value={filterValue} onChange={onFilterChange} onSearch={onSearch} onClear={onClear} />

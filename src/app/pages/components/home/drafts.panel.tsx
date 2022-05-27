@@ -21,12 +21,14 @@ function fileExtensionForDraft(draft: Draft): string {
     if (draft.type === "PROTOBUF") {
         return "proto";
     }
+    // TODO handle non-JSON content types (i.e. YAML content)
     return "json";
 }
 function contentTypeForDraft(draft: Draft): string {
     if (draft.type === "PROTOBUF") {
         return "application/protobuf";
     }
+    // TODO handle non-JSON content types (i.e. YAML content)
     return "application/json";
 }
 

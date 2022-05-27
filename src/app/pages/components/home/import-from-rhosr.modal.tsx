@@ -24,7 +24,7 @@ export const ImportFromRhosrModal: FunctionComponent<ImportFromRhosrModalProps> 
     const rhosr: RhosrService = useRhosrService();
 
     // Called when the user selects an artifact from the artifact selector.
-    const onArtifactSelected = (artifact: SearchedArtifact, content: CreateDraftContent): void => {
+    const onArtifactSelected = (artifact?: SearchedArtifact, content?: CreateDraftContent): void => {
         if (artifact === undefined) {
             setDraft(undefined);
             setDraftContent(undefined);

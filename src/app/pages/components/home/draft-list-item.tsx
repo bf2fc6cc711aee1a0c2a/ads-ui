@@ -65,7 +65,7 @@ export const DraftListItem: FunctionComponent<DraftListItemProps> = ({draft, onE
                                 [
                                     <DropdownItem key="action-edit" data-id="action-edit">Edit</DropdownItem>,
                                     <DropdownItem key="action-download" data-id="action-download">Download</DropdownItem>,
-                                    <DropdownSeparator />,
+                                    <DropdownSeparator key="action-sep-1" />,
                                     <DropdownItem key="action-delete" data-id="action-delete">Delete</DropdownItem>,
                                 ]
                             }

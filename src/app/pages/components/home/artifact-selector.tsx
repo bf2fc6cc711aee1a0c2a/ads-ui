@@ -1,8 +1,15 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
 import {Registry} from "@rhoas/registry-management-sdk";
-import {ArtifactsSearchResults, CreateDraftContent, GetArtifactsCriteria, Paging, SearchedArtifact} from "@app/models";
+import {
+    ArtifactSearchResults,
+    CreateDraftContent,
+    GetArtifactsCriteria,
+    Paging,
+    SearchedArtifact,
+    SearchedVersion
+} from "@app/models";
 import {RhosrInstanceService, RhosrInstanceServiceFactory, useRhosrInstanceServiceFactory} from "@app/services";
-import {ArtifactsList, ArtifactsToolbar, ArtifactsToolbarCriteria} from "@app/pages/components";
+import {ArtifactList, ArtifactListToolbar, ArtifactListToolbarCriteria} from "@app/pages/components";
 import {IfNotEmpty, IsLoading} from "@app/components";
 
 /**
@@ -10,7 +17,7 @@ import {IfNotEmpty, IsLoading} from "@app/components";
  */
 export type ArtifactSelectorProps = {
     registries: Registry[];
-    onSelected: (artifact: SearchedArtifact, content: CreateDraftContent) => void;
+    onSelected: (artifact?: SearchedArtifact, content?: CreateDraftContent) => void;
 };
 
 /**
@@ -23,13 +30,13 @@ export const ArtifactSelector: FunctionComponent<ArtifactSelectorProps> = ({regi
         pageSize: 20,
         page: 1
     });
-    const [ criteria, setCriteria ] = useState<ArtifactsToolbarCriteria>({
+    const [ criteria, setCriteria ] = useState<ArtifactListToolbarCriteria>({
         filterValue: "",
         ascending: true,
         filterSelection: "name"
     });
     const [ registry, setRegistry ] = useState<Registry>();
-    const [ artifacts, setArtifacts ] = useState<ArtifactsSearchResults|undefined>();
+    const [ artifacts, setArtifacts ] = useState<ArtifactSearchResults|undefined>();
     const [ rhosrInstance, setRhosrInstance ] = useState<RhosrInstanceService>();
 
     const rhosrIntanceFactory: RhosrInstanceServiceFactory = useRhosrInstanceServiceFactory();
@@ -38,12 +45,22 @@ export const ArtifactSelector: FunctionComponent<ArtifactSelectorProps> = ({regi
         setRegistry(registry);
     };
 
-    const onCriteriaChange = (criteria: ArtifactsToolbarCriteria): void =>  {
+    const onCriteriaChange = (criteria: ArtifactListToolbarCriteria): void =>  {
         setCriteria(criteria);
     };
 
     const onPagingChange = (paging: Paging): void => {
         setPaging(paging);
+    };
+
+    const fetchArtifactVersions = (artifact: SearchedArtifact): Promise<SearchedVersion[]> => {
+        const ri: RhosrInstanceService = rhosrInstance as RhosrInstanceService;
+        return ri.getArtifactVersions(artifact.groupId, artifact.id);
+    };
+
+    const fetchArtifactContent = (artifact: SearchedArtifact, version?: SearchedVersion): Promise<string> => {
+        const ri: RhosrInstanceService = rhosrInstance as RhosrInstanceService;
+        return ri.getArtifactContent(artifact.groupId, artifact.id, version?.version||"latest");
     };
 
     // Initialization
@@ -78,17 +95,20 @@ export const ArtifactSelector: FunctionComponent<ArtifactSelectorProps> = ({regi
                 console.error("[RegistryPage] Error searching for artifacts: ", error);
             });
         }
+        onSelected(undefined, undefined);
     }, [rhosrInstance, criteria, paging]);
 
     return (
         <React.Fragment>
-            <ArtifactsToolbar registries={registries} criteria={criteria} paging={paging}
-                              onRegistrySelected={onRegistrySelected}
-                              onCriteriaChange={onCriteriaChange} onPagingChange={onPagingChange}
-                              artifacts={artifacts} />
+            <ArtifactListToolbar registries={registries} criteria={criteria} paging={paging}
+                                 onRegistrySelected={onRegistrySelected}
+                                 onCriteriaChange={onCriteriaChange} onPagingChange={onPagingChange}
+                                 artifacts={artifacts} />
             <IsLoading condition={querying}>
                 <IfNotEmpty collection={artifacts?.artifacts} emptyStateMessage={`No artifacts found matching the search criteria.`}>
-                    <ArtifactsList artifacts={artifacts?.artifacts} />
+                    <ArtifactList artifacts={artifacts?.artifacts} fetchArtifactContent={fetchArtifactContent}
+                                  onArtifactSelected={onSelected}
+                                  fetchArtifactVersions={fetchArtifactVersions} />
                 </IfNotEmpty>
             </IsLoading>
         </React.Fragment>

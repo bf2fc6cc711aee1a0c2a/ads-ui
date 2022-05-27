@@ -14,12 +14,13 @@ export type ObjectSelectProps = {
     items: any[];
     onSelect: (value: any) => void;
     itemToString: (value: any) => string;
+    noSelectionLabel?: string;
 };
 
 /**
  * A generic control that makes it easier to create a <Select> from an array of objects.
  */
-export const ObjectSelect: FunctionComponent<ObjectSelectProps> = ({value, items, onSelect, itemToString}: ObjectSelectProps) => {
+export const ObjectSelect: FunctionComponent<ObjectSelectProps> = ({value, items, onSelect, itemToString, noSelectionLabel}: ObjectSelectProps) => {
     const [isToggled, setToggled] = useState<boolean>(false);
     const [selectObjects, setSelectObjects] = useState<ObjectSelectOptionObject[]>();
     const [selections, setSelections] = useState<ObjectSelectOptionObject[]>();
@@ -30,15 +31,28 @@ export const ObjectSelect: FunctionComponent<ObjectSelectProps> = ({value, items
     };
 
     useEffect(() => {
-        setSelectObjects(items.map((item, index) => {
-            const soo: ObjectSelectOptionObject = {
+        const theItems: any[] = items || [];
+        const selectObjects: ObjectSelectOptionObject[] = theItems.map((item, index) => {
+            return {
                 item: item,
                 toString: () => {
                     return itemToString(item)
                 }
             }
-            return soo;
-        }));
+        });
+        if (noSelectionLabel !== undefined) {
+            const noSelection: ObjectSelectOptionObject = {
+                item: undefined,
+                toString(): string {
+                    return noSelectionLabel;
+                }
+            }
+            setSelectObjects([
+                noSelection, ...selectObjects
+            ]);
+        } else {
+            setSelectObjects(selectObjects);
+        }
     }, [items]);
 
     useEffect(() => {
@@ -49,7 +63,9 @@ export const ObjectSelect: FunctionComponent<ObjectSelectProps> = ({value, items
     return (
         <Select variant={SelectVariant.single} onToggle={setToggled} onSelect={onSelectInternal} isOpen={isToggled} selections={selections}>
             {
-                selectObjects?.map((soo, index) => <SelectOption key={index} value={soo} />)
+                selectObjects?.map((soo, index) => (
+                    <SelectOption isPlaceholder={soo.item === undefined} key={index} value={soo} />
+                ))
             }
         </Select>
     )

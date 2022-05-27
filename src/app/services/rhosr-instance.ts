@@ -1,7 +1,7 @@
 import {Auth, useAuth} from "@rhoas/app-services-ui-shared";
 import {
     ArtifactMetaData,
-    ArtifactsSearchResults,
+    ArtifactSearchResults,
     ContentTypes,
     CreateArtifactData,
     CreateVersionData,
@@ -122,7 +122,7 @@ async function createArtifactVersion(auth: Auth, basePath: string, groupId: stri
 }
 
 
-async function getArtifacts(auth: Auth, basePath: string, criteria: GetArtifactsCriteria, paging: Paging): Promise<ArtifactsSearchResults> {
+async function getArtifacts(auth: Auth, basePath: string, criteria: GetArtifactsCriteria, paging: Paging): Promise<ArtifactSearchResults> {
     console.debug("[RhosrInstanceService] Getting artifacts: ", criteria, paging);
     const start: number = (paging.page - 1) * paging.pageSize;
     const end: number = start + paging.pageSize;
@@ -142,8 +142,8 @@ async function getArtifacts(auth: Auth, basePath: string, criteria: GetArtifacts
         }
     }
     const endpoint: string = createEndpoint(basePath, "/search/artifacts", {}, queryParams);
-    return httpGet<ArtifactsSearchResults>(endpoint, undefined, (data) => {
-        const results: ArtifactsSearchResults = {
+    return httpGet<ArtifactSearchResults>(endpoint, undefined, (data) => {
+        const results: ArtifactSearchResults = {
             artifacts: data.artifacts,
             count: data.count,
             page: paging.page,
@@ -199,7 +199,7 @@ async function getArtifactVersions(auth: Auth, basePath: string, groupId: string
 export interface RhosrInstanceService {
     createArtifact(data: CreateArtifactData): Promise<ArtifactMetaData>;
     createArtifactVersion(groupId: string | null, artifactId: string, data: CreateVersionData): Promise<VersionMetaData>;
-    getArtifacts(criteria: GetArtifactsCriteria, paging: Paging): Promise<ArtifactsSearchResults>;
+    getArtifacts(criteria: GetArtifactsCriteria, paging: Paging): Promise<ArtifactSearchResults>;
     getArtifactContent(groupId: string | null, artifactId: string, version: string): Promise<string>;
     getArtifactVersions(groupId: string | null, artifactId: string): Promise<SearchedVersion[]>;
 }

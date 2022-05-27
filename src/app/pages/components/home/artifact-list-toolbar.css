@@ -1,5 +1,6 @@
 .artifacts-toolbar {
     padding: 0px;
+    border-bottom: 1px solid #ddd;
 }
 
 .artifacts-toolbar > div {
