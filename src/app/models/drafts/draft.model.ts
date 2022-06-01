@@ -1,3 +1,5 @@
+import {DraftContext} from "@app/models/drafts/draft-context.model";
+
 export interface Draft {
 
     id: string;
@@ -6,5 +8,6 @@ export interface Draft {
     summary: string|undefined;
     createdOn: Date;
     modifiedOn: Date;
+    contexts?: DraftContext[];
 
 }
