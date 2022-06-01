@@ -147,7 +147,7 @@ export const ArtifactListItem: FunctionComponent<ArtifactListItemProps> = (
             <div className="artifact-list-item-versions">
                 <If condition={isSelected}>
                     <ObjectSelect value={selectedVersion} items={versions as SearchedVersion[]}
-                                  noSelectionLabel="latest"
+                                  noSelectionLabel="latest" menuAppendTo="parent"
                                   onSelect={onVersionSelect} itemToString={version => version.version} />
                 </If>
             </div>

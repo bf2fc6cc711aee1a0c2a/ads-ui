@@ -104,6 +104,7 @@ export const ArtifactListToolbar: FunctionComponent<ArtifactListToolbarProps> = 
                 <ToolbarItem variant="search-filter">
                     <ObjectSelect value={registry} items={registries}
                                   onSelect={onRegistrySelectInternal}
+                                  menuAppendTo="parent"
                                   itemToString={item => item.name} />
                 </ToolbarItem>
                 <ToolbarItem variant="search-filter">
