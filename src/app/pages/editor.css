@@ -1,0 +1,17 @@
+#section-context {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 1px;
+    padding: 12px 12px 12px 24px;
+}
+
+#section-editor {
+    padding: 0;
+    display: flex;
+    flex-flow: column;
+    height: auto;
+    width: 100%;
+}
+
+#section-editor .editor-parent {
+    flex-grow: 1;
+}

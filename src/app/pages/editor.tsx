@@ -1,4 +1,5 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
+import "./editor.css";
 import {PageSection, PageSectionVariants} from "@patternfly/react-core";
 import {DraftsService, useDraftsService} from "@app/services";
 import {Draft, DraftContent} from "@app/models";
@@ -63,7 +64,10 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorP
             ...draftContent as DraftContent,
             data: currentContent
         }).then(() => {
-            nav.navigateTo("/");
+            setDraft({
+                ...draft,
+                modifiedOn: new Date()
+            } as Draft);
         }).catch(error => {
             // TODO handle error
             console.error("[EditorPage] Failed to save draft content: ", error);
@@ -92,11 +96,13 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorP
 
     return (
         <IsLoading condition={isLoading}>
-            <PageSection variant={PageSectionVariants.light} style={{borderBottom: "1px solid #ccc", marginBottom: "1px"}}>
+            <PageSection variant={PageSectionVariants.light} id="section-context">
                 <EditorContext draft={draft as Draft} dirty={isDirty} onSave={onSave} onCancel={onCancel} />
             </PageSection>
-            <PageSection variant={PageSectionVariants.light} style={{padding: "0"}}>
-                {editor()}
+            <PageSection variant={PageSectionVariants.light} id="section-editor">
+                <div className="editor-parent">
+                    {editor()}
+                </div>
             </PageSection>
         </IsLoading>
     );

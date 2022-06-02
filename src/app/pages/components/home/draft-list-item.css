@@ -1,14 +1,27 @@
 .draft-item {
     padding: 15px 20px;
     border-bottom: 1px solid #ccc;
+    display: flex;
 }
 
-.draft-item .name {
+.draft-item .draft-item-icon {
+    padding-right: 15px;
+}
+
+.draft-item .draft-item-info {
+    flex-grow: 1;
+}
+
+.draft-item .draft-item-info .name {
     font-size: 17px;
 }
 
-.draft-item .summary {
+.draft-item .draft-item-info .summary {
     font-size: 14px;
     color: #444;
     line-height: 14px;
+}
+
+.draft-item .draft-item-actions {
+
 }

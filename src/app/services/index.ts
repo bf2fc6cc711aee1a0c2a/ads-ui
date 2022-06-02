@@ -4,4 +4,5 @@ export * from "./drafts";
 export * from "./templates";
 export * from "./download";
 export * from "./url";
+export * from "./local-storage";
 

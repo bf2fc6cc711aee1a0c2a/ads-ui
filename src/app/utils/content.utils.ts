@@ -45,8 +45,6 @@ export function isXml(content: string): boolean {
         const xmlParser: DOMParser = new DOMParser();
         const dom: Document = xmlParser.parseFromString(content, "application/xml");
         const isParseError: boolean = dom.getElementsByTagName("parsererror").length !== 0;
-
-        console.debug("====> It's XML! ", dom.documentElement.namespaceURI, dom.documentElement.localName);
         return !isParseError;
     } catch (e) {
         return false;

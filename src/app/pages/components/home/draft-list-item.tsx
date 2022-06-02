@@ -42,15 +42,15 @@ export const DraftListItem: FunctionComponent<DraftListItemProps> = ({draft, onE
     };
 
     return (
-        <Flex className="draft-item">
-            <FlexItem>
+        <div className="draft-item">
+            <div className="draft-item-icon">
                 <ArtifactTypeIcon type={draft.type} />
-            </FlexItem>
-            <FlexItem grow={{ default: "grow" }}>
+            </div>
+            <div className="draft-item-info">
                 <div className="name">{draft.name}</div>
-                <div className="summary">{draft.summary}</div>
-            </FlexItem>
-            <FlexItem>
+                <div className="summary">{draft.summary||"(Design or schema with no summary)"}</div>
+            </div>
+            <div className="draft-item-actions">
                 <ActionList>
                     <ActionListItem>
                         <Button variant="secondary" onClick={onEdit}>Edit</Button>
@@ -73,7 +73,7 @@ export const DraftListItem: FunctionComponent<DraftListItemProps> = ({draft, onE
                         />
                     </ActionListItem>
                 </ActionList>
-            </FlexItem>
-        </Flex>
+            </div>
+        </div>
     );
 };
