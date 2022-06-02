@@ -10,7 +10,7 @@ export type ArtifactListProps = {
     artifacts?: SearchedArtifact[];
     fetchArtifactVersions: (artifact: SearchedArtifact) => Promise<SearchedVersion[]>;
     fetchArtifactContent: (artifact: SearchedArtifact, version?: SearchedVersion) => Promise<string>;
-    onArtifactSelected: (artifact?: SearchedArtifact, content?: CreateDraftContent) => void;
+    onArtifactSelected: (artifact?: SearchedArtifact, version?: SearchedVersion, content?: CreateDraftContent) => void;
 }
 
 /**
@@ -29,14 +29,14 @@ export const ArtifactList: FunctionComponent<ArtifactListProps> = (
     const onArtifactUnselectedInternal = (artifact: SearchedArtifact): void => {
         console.debug("[ArtifactList] Artifact unselected: ", artifact);
         setSelectedArtifact(undefined);
-        onArtifactSelected(undefined, undefined);
+        onArtifactSelected(undefined, undefined, undefined);
     };
 
-    const onArtifactLoaded = (artifact: SearchedArtifact, content: CreateDraftContent): void => {
+    const onArtifactLoaded = (artifact: SearchedArtifact, version: SearchedVersion, content: CreateDraftContent): void => {
         console.debug("[ArtifactList] Artifact loaded: ", artifact);
         console.debug("[ArtifactList] Selected Artifact: ", selectedArtifact);
         if (artifact === selectedArtifact) {
-            onArtifactSelected(artifact, content);
+            onArtifactSelected(artifact, version, content);
         }
     };
 

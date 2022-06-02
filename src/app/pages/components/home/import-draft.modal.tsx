@@ -10,9 +10,11 @@ import {
     TextArea,
     TextInput
 } from "@patternfly/react-core";
-import {ArtifactTypes, CreateDraft, CreateDraftContent} from "@app/models";
+import {ArtifactTypes, ContentTypes, CreateDraft, CreateDraftContent} from "@app/models";
 import {If} from "@app/components";
 import {UrlUpload} from "@app/pages/components";
+import {isJson, isXml, isYaml, parseJson, parseYaml} from "@app/utils";
+import {DraftContext} from "@app/models/drafts/draft-context.model";
 
 
 const IMPORT_FROM_FILE: string = "FILE";
@@ -75,6 +77,7 @@ const TYPE_OPTIONS: SelectOptionObject[] = [
 
 type DetectionInfo = {
     type?: string;
+    contentType?: string;
     version?: string;
     name?: string;
     summary?: string;
@@ -97,6 +100,8 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
 
     const [version, setVersion] = useState("");
     const [isVersionToggled, setVersionToggled] = useState(false);
+
+    const [contentType, setContentType] = useState<string>();
 
     const onFileChange = (value: string | File, fname: string): void => {
         setDraftContent(value as string);
@@ -122,17 +127,30 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
 
     // Called when the user clicks the Import button in the modal
     const doImport = (): void => {
+        const context: DraftContext = importType === "FILE" ? {
+            type: "file",
+            file: {
+                fileName: fileName as string
+            }
+        } : {
+            type: "url",
+            url: {
+                url: url as string
+            }
+        };
         const cd: CreateDraft = {
             type: type as string,
             name,
-            summary
+            summary,
+            context
         };
         const cdc: CreateDraftContent = {
-            // TODO handle non-JSON content types (i.e. YAML content)
-            contentType: "application/json",
+            contentType: contentType as string,
             data: draftContent
         };
 
+        console.debug("[ImportDraftModal] Importing draft: ", cd);
+        console.debug("[ImportDraftModal] Importing content-type: ", contentType);
         onImport(cd, cdc);
     };
 
@@ -148,57 +166,72 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
         }
     };
 
+    const detectJsonOrYamlInfo = (contentObj: any, contentType: string): DetectionInfo => {
+        if (contentObj.openapi) {
+            return {
+                type: ArtifactTypes.OPENAPI,
+                contentType: contentType,
+                version: "3.0.2",
+                name: contentObj.info?.title,
+                summary: contentObj.info?.description
+            };
+        }
+        if (contentObj.swagger) {
+            return {
+                type: ArtifactTypes.OPENAPI,
+                contentType: contentType,
+                version: "2.0",
+                name: contentObj.info?.title,
+                summary: contentObj.info?.description
+            };
+        }
+        if (contentObj.asyncapi) {
+            return {
+                type: ArtifactTypes.ASYNCAPI,
+                contentType: contentType,
+                name: contentObj.info?.title,
+                summary: contentObj.info?.description
+            };
+        }
+        if (contentObj.$schema) {
+            return {
+                type: ArtifactTypes.JSON,
+                contentType: contentType,
+                name: contentObj.title,
+                summary: contentObj.description
+            };
+        }
+
+        return {
+            type: ArtifactTypes.AVRO,
+            contentType: contentType,
+            name: contentObj.name
+        }
+    }
+
+    const detectXmlInfo = (): DetectionInfo => {
+        return {
+            contentType: ContentTypes.TEXT_XML
+        };
+    }
+
     // Tries to figure out the type and meta-data of the content by parsing it and looking
     // for key indicators.
     const detectInfo = (content: string): DetectionInfo => {
-        try {
-            const parsed: any = JSON.parse(content);
-            if (parsed.openapi) {
-                return {
-                    type: ArtifactTypes.OPENAPI,
-                    version: "3.0.2",
-                    name: parsed.info?.title,
-                    summary: parsed.info?.description
-                };
-            }
-            if (parsed.swagger) {
-                return {
-                    type: ArtifactTypes.OPENAPI,
-                    version: "2.0",
-                    name: parsed.info?.title,
-                    summary: parsed.info?.description
-                };
-            }
-            if (parsed.asyncapi) {
-                return {
-                    type: ArtifactTypes.ASYNCAPI,
-                    name: parsed.info?.title,
-                    summary: parsed.info?.description
-                };
-            }
-            if (parsed.$schema) {
-                return {
-                    type: ArtifactTypes.JSON,
-                    name: parsed.title,
-                    summary: parsed.description
-                };
-            }
-            return {
-                type: ArtifactTypes.AVRO,
-                name: parsed.name
-            };
-        } catch (e) {
-            // Do nothing - it wasn't JSON!
+        if (isJson(content)) {
+            return detectJsonOrYamlInfo(parseJson(content), ContentTypes.APPLICATION_JSON);
+        } else if (isYaml(content)) {
+            return detectJsonOrYamlInfo(parseYaml(content), ContentTypes.APPLICATION_YAML);
+        } else if (isXml(content)) {
+            return detectXmlInfo();
         }
-
+        console.warn("[ImportDraftModal] Failed to detect the type of the content.");
         // Default: nothing detected
         return {
         };
 
-        // TODO handle parsing of YAML content
         // TODO handle parsing of protobuf
         // TODO handle parsing of GraphQL
-        // TODO handle parsing of XML
     };
 
     const setTheType = (newType: string|undefined): void => {
@@ -248,11 +281,13 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
             setVersion(info.version || "");
             setName(info.name || "");
             setSummary(info.summary || "");
+            setContentType(info.contentType);
         } else {
             console.debug("[ImportDraftModal] Content empty, resetting form fields.");
             setName("");
             setSummary("");
             setTheType(undefined);
+            setContentType(undefined);
         }
     }, [draftContent]);
 

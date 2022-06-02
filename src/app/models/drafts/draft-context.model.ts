@@ -8,7 +8,7 @@ export interface DraftContextUrl {
 
 export interface DraftContextRhosr {
     instanceId: string;
-    group: string;
+    groupId: string;
     artifactId: string;
     version: string;
 }

@@ -19,8 +19,12 @@ async function createDraft(cd: CreateDraft, cdc: CreateDraftContent): Promise<Dr
         summary: cd.summary,
         type: cd.type,
         createdOn: new Date(),
-        modifiedOn: new Date()
+        modifiedOn: new Date(),
+        contexts: []
     };
+    if (cd.context) {
+        newDraft.contexts?.push(cd.context);
+    }
     const newDraftContent: DraftContent = {
         id,
         contentType: cdc.contentType,

@@ -12,51 +12,7 @@ import {
 } from "@app/models";
 import {createEndpoint, createHref, createOptions, httpGet, httpPostWithReturn} from "@app/utils/rest.utils";
 import {Registry} from "@rhoas/registry-management-sdk";
-
-
-/**
- * Returns true if the given content is JSON formatted.
- * @param content the content to check
- */
-function isJson(content: string): boolean {
-    try {
-        JSON.parse(content);
-        return true;
-    } catch (e) {
-        return false;
-    }
-}
-
-
-/**
- * Returns true if the given content is XML formatted.
- * @param content the content to check
- */
-function isXml(content: string): boolean {
-    try {
-        const xmlParser: DOMParser = new DOMParser();
-        const dom: Document = xmlParser.parseFromString(content, "application/xml");
-        const isParseError: boolean = dom.getElementsByTagName("parsererror").length !== 0;
-        return !isParseError;
-    } catch (e) {
-        return false;
-    }
-}
-
-
-/**
- * Returns true if the given content is YAML formatted.
- * @param content the content to check
- */
-function isYaml(content: string): boolean {
-    // try {
-    //     const parsedContent: any = YAML.parse(content);
-    //     return typeof parsedContent === "object";
-    // } catch (e) {
-    //     return false;
-    // }
-    return false;
-}
+import {isJson, isXml, isYaml} from "@app/utils";
 
 
 /**

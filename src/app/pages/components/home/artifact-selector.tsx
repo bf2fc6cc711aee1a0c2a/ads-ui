@@ -17,7 +17,7 @@ import {IfNotEmpty, IsLoading} from "@app/components";
  */
 export type ArtifactSelectorProps = {
     registries: Registry[];
-    onSelected: (artifact?: SearchedArtifact, content?: CreateDraftContent) => void;
+    onSelected: (registry?: Registry, artifact?: SearchedArtifact, version?: SearchedVersion, content?: CreateDraftContent) => void;
 };
 
 /**
@@ -63,6 +63,10 @@ export const ArtifactSelector: FunctionComponent<ArtifactSelectorProps> = ({regi
         return ri.getArtifactContent(artifact.groupId, artifact.id, version?.version||"latest");
     };
 
+    const onArtifactSelected = (artifact?: SearchedArtifact, version?: SearchedVersion, content?: CreateDraftContent): void => {
+        onSelected(registry, artifact, version, content);
+    };
+
     // Initialization
     useEffect(() => {
         if (registries && registries.length > 0) {
@@ -95,7 +99,7 @@ export const ArtifactSelector: FunctionComponent<ArtifactSelectorProps> = ({regi
                 console.error("[RegistryPage] Error searching for artifacts: ", error);
             });
         }
-        onSelected(undefined, undefined);
+        onSelected(undefined, undefined, undefined);
     }, [rhosrInstance, criteria, paging]);
 
     return (
@@ -107,7 +111,7 @@ export const ArtifactSelector: FunctionComponent<ArtifactSelectorProps> = ({regi
             <IsLoading condition={querying}>
                 <IfNotEmpty collection={artifacts?.artifacts} emptyStateMessage={`No artifacts found matching the search criteria.`}>
                     <ArtifactList artifacts={artifacts?.artifacts} fetchArtifactContent={fetchArtifactContent}
-                                  onArtifactSelected={onSelected}
+                                  onArtifactSelected={onArtifactSelected}
                                   fetchArtifactVersions={fetchArtifactVersions} />
                 </IfNotEmpty>
             </IsLoading>

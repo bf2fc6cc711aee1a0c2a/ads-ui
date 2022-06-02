@@ -7,4 +7,5 @@ export class ContentTypes {
     public static APPLICATION_PROTOBUF: string = "application/x-protobuf";
     public static APPLICATION_GRAPHQL: string = "application/graphql";
 
+    public static TEXT_XML: string = "text/xml";
 }

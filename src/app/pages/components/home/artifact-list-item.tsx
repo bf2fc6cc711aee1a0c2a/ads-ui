@@ -1,6 +1,6 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
 import "./artifact-list-item.css";
-import {CreateDraftContent, SearchedArtifact, SearchedVersion} from "@app/models";
+import {ArtifactTypes, ContentTypes, CreateDraftContent, SearchedArtifact, SearchedVersion} from "@app/models";
 import {
     Badge,
     DataList,
@@ -12,6 +12,7 @@ import {
 } from "@patternfly/react-core";
 import {ArtifactTypeIcon, If, IsLoading, ObjectSelect} from "@app/components";
 import {ArtifactGroup, ArtifactName} from "@app/pages/components";
+import {isJson, isXml, isYaml} from "@app/utils";
 
 /**
  * Properties
@@ -21,7 +22,7 @@ export type ArtifactListItemProps = {
     isSelected: boolean;
     onSelected: (artifact: SearchedArtifact) => void;
     onUnselected: (artifact: SearchedArtifact) => void;
-    onArtifactLoaded: (artifact: SearchedArtifact, content: CreateDraftContent) => void;
+    onArtifactLoaded: (artifact: SearchedArtifact, version: SearchedVersion, content: CreateDraftContent) => void;
     fetchArtifactVersions: (artifact: SearchedArtifact) => Promise<SearchedVersion[]>;
     fetchArtifactContent: (artifact: SearchedArtifact, version?: SearchedVersion) => Promise<string>;
 }
@@ -112,12 +113,25 @@ export const ArtifactListItem: FunctionComponent<ArtifactListItemProps> = (
     // from inside useEffect() so that it's not happening from an async callback.
     useEffect(() => {
         if (content !== undefined) {
+            let contentType: string;
+            if (isJson(content)) {
+                contentType = ContentTypes.APPLICATION_JSON;
+            } else if (isYaml(content)) {
+                contentType = ContentTypes.APPLICATION_YAML;
+            } else if (isXml(content)) {
+                contentType = ContentTypes.APPLICATION_XML;
+            } else if (artifact.type === ArtifactTypes.PROTOBUF) {
+                contentType = ContentTypes.APPLICATION_PROTOBUF;
+            } else if (artifact.type === ArtifactTypes.GRAPHQL) {
+                contentType = ContentTypes.APPLICATION_GRAPHQL;
+            } else {
+                contentType = ContentTypes.APPLICATION_JSON;
+            }
             const cdc: CreateDraftContent = {
-                // TODO handle non-JSON content types
-                contentType: "application/json",
+                contentType,
                 data: content
             };
-            onArtifactLoaded(artifact, cdc);
+            onArtifactLoaded(artifact, selectedVersion as SearchedVersion, cdc);
         }
     }, [content]);
 

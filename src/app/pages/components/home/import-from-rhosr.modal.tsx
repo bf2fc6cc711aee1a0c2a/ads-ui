@@ -24,7 +24,7 @@ export const ImportFromRhosrModal: FunctionComponent<ImportFromRhosrModalProps> 
     const rhosr: RhosrService = useRhosrService();
 
     // Called when the user selects an artifact from the artifact selector.
-    const onArtifactSelected = (artifact?: SearchedArtifact, content?: CreateDraftContent): void => {
+    const onArtifactSelected = (registry?: Registry, artifact?: SearchedArtifact, version?: SearchedVersion, content?: CreateDraftContent): void => {
         if (artifact === undefined) {
             setDraft(undefined);
             setDraftContent(undefined);
@@ -32,7 +32,16 @@ export const ImportFromRhosrModal: FunctionComponent<ImportFromRhosrModalProps> 
             const cd: CreateDraft = {
                 type: artifact.type,
                 name: artifact.name || artifact.id,
-                summary: artifact.description || ""
+                summary: artifact.description || "",
+                context: {
+                    type: "rhosr",
+                    rhosr: {
+                        instanceId: registry?.id as string,
+                        groupId: artifact.groupId as string,
+                        artifactId: artifact.id,
+                        version: version?.version as string
+                    }
+                }
             };
             setDraft(cd);
             setDraftContent(content);
