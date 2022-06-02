@@ -13,7 +13,7 @@ import {
 import {ArtifactTypes, ContentTypes, CreateDraft, CreateDraftContent} from "@app/models";
 import {If} from "@app/components";
 import {UrlUpload} from "@app/pages/components";
-import {isJson, isXml, isYaml, parseJson, parseYaml} from "@app/utils";
+import {isJson, isProto, isWsdl, isXml, isXsd, isYaml, parseJson, parseYaml} from "@app/utils";
 import {DraftContext} from "@app/models/drafts/draft-context.model";
 
 
@@ -209,9 +209,23 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
         }
     }
 
-    const detectXmlInfo = (): DetectionInfo => {
+    const detectXmlInfo = (content: string): DetectionInfo => {
+        let type: string = ArtifactTypes.XML;
+        if (isWsdl(content)) {
+            type = ArtifactTypes.WSDL;
+        } else if (isXsd(content)) {
+            type = ArtifactTypes.XSD;
+        }
         return {
+            type,
             contentType: ContentTypes.TEXT_XML
+        };
+    }
+
+    const detectProtoInfo = (): DetectionInfo => {
+        return {
+            contentType: ContentTypes.APPLICATION_PROTOBUF,
+            type: ArtifactTypes.PROTOBUF
         };
     }
 
@@ -223,7 +237,9 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
         } else if (isYaml(content)) {
             return detectJsonOrYamlInfo(parseYaml(content), ContentTypes.APPLICATION_YAML);
         } else if (isXml(content)) {
-            return detectXmlInfo();
+            return detectXmlInfo(content);
+        } else if (isProto(content)) {
+            return detectProtoInfo();
         }
         console.warn("[ImportDraftModal] Failed to detect the type of the content.");
         // Default: nothing detected
@@ -266,6 +282,7 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
         setDraftContent(undefined);
         setName("");
         setSummary("");
+        setFileName(undefined);
         setTheType(undefined);
     }, [isOpen]);
 
