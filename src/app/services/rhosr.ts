@@ -130,7 +130,7 @@ export const useRhosrService: () => RhosrService = (): RhosrService => {
 
     if (cfg.srs.apiBasePath && cfg.srs.apiBasePath.startsWith("operate-first-mock")) {
         console.warn("[RhosrService] RHOSR mocking enabled (Operate First).");
-        return createMockService(RHOSR_MOCK_DATA);
+        return createMockService(RHOSR_MOCK_DATA_OF);
     }
 
     return {
