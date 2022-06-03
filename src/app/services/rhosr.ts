@@ -35,7 +35,7 @@ const RHOSR_MOCK_DATA_OF: Registry[] = [
     },
     {
         id: "201",
-        name: "Local Registry 2 (localhost:8082)",
+        name: "Operate First Registry 2",
         registryUrl: "http://apicurio-registry-mem-two.apps.smaug.na.operate-first.cloud/",
         status: "ready",
         created_at: "2022-01-01T12:00:00Z",
