@@ -23,6 +23,27 @@ const RHOSR_MOCK_DATA: Registry[] = [
     }
 ]
 
+const RHOSR_MOCK_DATA_OF: Registry[] = [
+    {
+        id: "101",
+        name: "Operate First Registry 1",
+        registryUrl: "http://apicurio-registry-mem-one.apps.smaug.na.operate-first.cloud/",
+        status: "ready",
+        created_at: "2022-01-01T12:00:00Z",
+        updated_at: "2022-01-01T12:00:00Z",
+        instance_type: "standard"
+    },
+    {
+        id: "201",
+        name: "Local Registry 2 (localhost:8082)",
+        registryUrl: "http://apicurio-registry-mem-two.apps.smaug.na.operate-first.cloud/",
+        status: "ready",
+        created_at: "2022-01-01T12:00:00Z",
+        updated_at: "2022-01-01T12:00:00Z",
+        instance_type: "standard"
+    }
+]
+
 
 /**
  * Async function to get the RHOSR instances.  Uses a provided auth token and API
@@ -104,6 +125,11 @@ export const useRhosrService: () => RhosrService = (): RhosrService => {
 
     if (cfg.srs.apiBasePath && cfg.srs.apiBasePath.startsWith("local-mock")) {
         console.warn("[RhosrService] RHOSR mocking enabled.");
+        return createMockService(RHOSR_MOCK_DATA);
+    }
+
+    if (cfg.srs.apiBasePath && cfg.srs.apiBasePath.startsWith("operate-first-mock")) {
+        console.warn("[RhosrService] RHOSR mocking enabled (Operate First).");
         return createMockService(RHOSR_MOCK_DATA);
     }
 
