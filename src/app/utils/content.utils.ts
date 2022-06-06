@@ -18,6 +18,9 @@ export function isJson(content: string): boolean {
 export function parseJson(content: string): any {
     return JSON.parse(content);
 }
+export function toJsonString(content: any): string {
+    return JSON.stringify(content, null, 4);
+}
 
 
 /**
@@ -36,6 +39,9 @@ export function isYaml(content: string): boolean {
 }
 export function parseYaml(content: string): any {
     return YAML.parse(content);
+}
+export function toYamlString(content: any): string {
+    return YAML.stringify(content, null, 4);
 }
 
 /**

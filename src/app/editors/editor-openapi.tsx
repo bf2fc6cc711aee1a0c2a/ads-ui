@@ -2,6 +2,8 @@ import React, {RefObject, useEffect} from "react";
 import {Editor as DraftEditor, EditorProps} from "@app/editors/editor-types";
 import "./editor-openapi.css";
 import {Config, useConfig} from "@rhoas/app-services-ui-shared";
+import {parseJson, parseYaml, toJsonString, toYamlString} from "@app/utils";
+import {ContentTypes} from "@app/models";
 
 
 export type OpenApiEditorProps = {
@@ -19,15 +21,28 @@ export const OpenApiEditor: DraftEditor = ({content, onChange, className}: OpenA
     const cfg: Config = useConfig();
 
     useEffect(() => {
-        window.addEventListener("message", (event) => {
+        const eventListener: any = (event) => {
             if (event.data && event.data.type === "apicurio_onChange") {
                 let newContent: any = event.data.data.content;
                 if (typeof newContent === "object") {
-                    newContent = JSON.stringify(newContent, null, 4);
+                    if (content.contentType === ContentTypes.APPLICATION_YAML) {
+                        console.info("[OpenApiEditor] New content is 'object', converting to YAML string");
+                        newContent = toYamlString(newContent);
+                    } else {
+                        console.info("[OpenApiEditor] New content is 'object', converting to JSON string");
+                        newContent = toJsonString(newContent);
+                    }
+                } else if (typeof newContent === "string" && content.contentType === ContentTypes.APPLICATION_YAML) {
+                    console.info("[OpenApiEditor] Converting from JSON string to YAML string.")
+                    newContent = toYamlString(parseJson(newContent as string));
                 }
                 onChange(newContent);
             }
-        }, false);
+        };
+        window.addEventListener("message", eventListener, false);
+        return () => {
+            window.removeEventListener("message", eventListener, false);
+        };
     }, []);
 
     const editorAppUrl = (): string => {
@@ -36,7 +51,17 @@ export const OpenApiEditor: DraftEditor = ({content, onChange, className}: OpenA
 
     const onEditorLoaded = (): void => {
         // Now it's OK to post a message to iframe with the content to edit.
-        const value: string = typeof content.data === "object" ? JSON.stringify(content.data) : content.data as string;
+        let value: string;
+        if (typeof content.data === "object") {
+            console.info("[OpenApiEditor] Loading editor data from 'object' - converting to JSON string.");
+            value = toJsonString(content.data);
+        } else if (typeof content.data === "string" && content.contentType === ContentTypes.APPLICATION_YAML) {
+            console.info("[OpenApiEditor] Loading editor data from 'string' - converting from YAML to JSON.");
+            value = toJsonString(parseYaml(content.data as string));
+        } else {
+            console.info("[OpenApiEditor] Loading editor data from 'string' without content conversion.");
+            value = content.data as string;
+        }
         const message: any = {
             type: "apicurio-editingInfo",
             // tslint:disable-next-line:object-literal-sort-keys
