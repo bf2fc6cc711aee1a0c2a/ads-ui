@@ -5,7 +5,7 @@ import {DraftsService, useDraftsService} from "@app/services";
 import {Draft, DraftContent} from "@app/models";
 import {IsLoading} from "@app/components";
 import {EditorContext} from "@app/pages/components";
-import {OpenApiEditor, TextEditor} from "@app/editors";
+import {OpenApiEditor, ProtoEditor, TextEditor} from "@app/editors";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
 
 
@@ -83,6 +83,10 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorP
         <TextEditor content={draftContent as DraftContent} onChange={onEditorChange} />
     );
 
+    const protoEditor: React.ReactElement = (
+        <ProtoEditor content={draftContent as DraftContent} onChange={onEditorChange} />
+    );
+
     const openapiEditor: React.ReactElement = (
         <OpenApiEditor content={draftContent as DraftContent} onChange={onEditorChange} />
     );
@@ -90,6 +94,8 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorP
     const editor = (): React.ReactElement => {
         if (draft?.type === "OPENAPI") {
             return openapiEditor;
+        } else if (draft?.type === "PROTOBUF") {
+            return protoEditor;
         }
         return textEditor;
     };
