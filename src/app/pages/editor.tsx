@@ -2,11 +2,12 @@ import React, {FunctionComponent, useEffect, useState} from "react";
 import "./editor.css";
 import {PageSection, PageSectionVariants} from "@patternfly/react-core";
 import {DraftsService, useDraftsService} from "@app/services";
-import {Draft, DraftContent} from "@app/models";
+import {ArtifactTypes, Draft, DraftContent} from "@app/models";
 import {IsLoading} from "@app/components";
 import {EditorContext} from "@app/pages/components";
 import {OpenApiEditor, ProtoEditor, TextEditor} from "@app/editors";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
+import {AsyncApiEditor} from "@app/editors/editor-asyncapi";
 
 
 export type EditorPageProps = {
@@ -91,12 +92,21 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorP
         <OpenApiEditor content={draftContent as DraftContent} onChange={onEditorChange} />
     );
 
+    const asyncapiEditor: React.ReactElement = (
+        <AsyncApiEditor content={draftContent as DraftContent} onChange={onEditorChange} />
+    );
+
     const editor = (): React.ReactElement => {
-        if (draft?.type === "OPENAPI") {
+        if (draft?.type === ArtifactTypes.OPENAPI) {
             return openapiEditor;
-        } else if (draft?.type === "PROTOBUF") {
+        } else if (draft?.type === ArtifactTypes.ASYNCAPI) {
+            return asyncapiEditor;
+        } else if (draft?.type === ArtifactTypes.PROTOBUF) {
             return protoEditor;
         }
+
+        // TODO create different text editors depending on the content type?  Or assume
+        // that the text editor can configure itself appropriately?
         return textEditor;
     };
 
