@@ -8,4 +8,5 @@ export class ContentTypes {
     public static APPLICATION_GRAPHQL: string = "application/graphql";
 
     public static TEXT_XML: string = "text/xml";
+    public static APPLICATION_WSDL: string = "application/wsdl+xml";
 }

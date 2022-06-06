@@ -12,24 +12,11 @@ import {
     DraftsToolbar
 } from "@app/pages/components";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
+import {contentTypeForDraft, fileExtensionForDraft} from "@app/utils";
 
 
 function convertToValidFilename(value: string): string {
     return (value.replace(/[\/|\\:*?"<>]/g, ""));
-}
-function fileExtensionForDraft(draft: Draft): string {
-    if (draft.type === "PROTOBUF") {
-        return "proto";
-    }
-    // TODO handle non-JSON content types (i.e. YAML content)
-    return "json";
-}
-function contentTypeForDraft(draft: Draft): string {
-    if (draft.type === "PROTOBUF") {
-        return "application/protobuf";
-    }
-    // TODO handle non-JSON content types (i.e. YAML content)
-    return "application/json";
 }
 
 export type DraftsPanelProps = {
@@ -83,9 +70,9 @@ export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({onCreate, onIm
     };
 
     const onDownloadDraft = (draft: Draft): void => {
-        const filename: string = `${convertToValidFilename(draft.name)}.${fileExtensionForDraft(draft)}`;
-        const contentType: string = contentTypeForDraft(draft);
         draftsSvc.getDraftContent(draft.id).then(content => {
+            const filename: string = `${convertToValidFilename(draft.name)}.${fileExtensionForDraft(draft, content)}`;
+            const contentType: string = contentTypeForDraft(draft, content);
             const c: string = typeof content.data === "object" ? JSON.stringify(content.data, null, 4) : content.data as string;
             downloadSvc.downloadToFS(c, contentType, filename);
         });

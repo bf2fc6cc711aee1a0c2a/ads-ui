@@ -1,7 +1,7 @@
 import React, {FunctionComponent} from "react";
+import "./draft-list.css";
 import {Draft, DraftsSearchResults} from "@app/models";
 import {DraftListItem} from "@app/pages/components/home/draft-list-item";
-import "./draft-list.css";
 
 export type DraftListProps = {
     drafts: DraftsSearchResults;
