@@ -18,9 +18,11 @@ export type DraftListItemProps = {
     onEdit: () => void;
     onDelete: () => void;
     onDownload: () => void;
+    onRegister: () => void;
 }
 
-export const DraftListItem: FunctionComponent<DraftListItemProps> = ({draft, onEdit, onDelete, onDownload}: DraftListItemProps) => {
+export const DraftListItem: FunctionComponent<DraftListItemProps> = (
+    {draft, onEdit, onDelete, onDownload, onRegister}: DraftListItemProps) => {
 
     const [ isToggleOpen, setToggleOpen ] = useState(false);
 
@@ -37,6 +39,9 @@ export const DraftListItem: FunctionComponent<DraftListItemProps> = ({draft, onE
                 return;
             case "action-download":
                 onDownload();
+                return;
+            case "action-register":
+                onRegister();
                 return;
         }
     };
@@ -65,6 +70,7 @@ export const DraftListItem: FunctionComponent<DraftListItemProps> = ({draft, onE
                                 [
                                     <DropdownItem key="action-edit" data-id="action-edit">Edit</DropdownItem>,
                                     <DropdownItem key="action-download" data-id="action-download">Download</DropdownItem>,
+                                    <DropdownItem key="action-register" data-id="action-register">Export to Service Registry</DropdownItem>,
                                     <DropdownSeparator key="action-sep-1" />,
                                     <DropdownItem key="action-delete" data-id="action-delete">Delete</DropdownItem>,
                                 ]

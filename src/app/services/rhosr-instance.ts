@@ -13,6 +13,7 @@ import {
 import {createEndpoint, createHref, createOptions, httpGet, httpPostWithReturn} from "@app/utils/rest.utils";
 import {Registry} from "@rhoas/registry-management-sdk";
 import {isJson, isXml, isYaml} from "@app/utils";
+import {CreateOrUpdateArtifactData} from "@app/models/rhosr-instance/create-or-update-artifact-data.model";
 
 
 /**
@@ -43,7 +44,7 @@ function determineContentType(type: string, content: string): string {
 }
 
 
-function normalizeGroupId(groupId: string | null): string {
+function normalizeGroupId(groupId: string|undefined): string {
     return groupId || "default";
 }
 
@@ -62,11 +63,32 @@ async function createArtifact(auth: Auth, basePath: string, data: CreateArtifact
 }
 
 
-async function createArtifactVersion(auth: Auth, basePath: string, groupId: string | null, artifactId: string, data: CreateVersionData): Promise<VersionMetaData> {
+async function createOrUpdateArtifact(auth: Auth, basePath: string, data: CreateOrUpdateArtifactData): Promise<ArtifactMetaData> {
+    const endpoint: string = createEndpoint(basePath,
+        "/groups/:groupId/artifacts",
+        {groupId: data.groupId||"default"},
+        {ifExists: "UPDATE"}
+    );
+    const headers: any = {};
+    if (data.id) {
+        headers["X-Registry-ArtifactId"] = data.id;
+    }
+    if (data.type) {
+        headers["X-Registry-ArtifactType"] = data.type;
+    }
+    if (data.version) {
+        headers["X-Registry-Version"] = data.version;
+    }
+    headers["Content-Type"] = data.contentType;
+    return httpPostWithReturn<any, ArtifactMetaData>(endpoint, data.content, createOptions(headers));
+};
+
+
+async function createArtifactVersion(auth: Auth, basePath: string, groupId: string | undefined, artifactId: string, data: CreateVersionData): Promise<VersionMetaData> {
     groupId = normalizeGroupId(groupId);
 
     const endpoint: string = createEndpoint(basePath, "/groups/:groupId/artifacts/:artifactId/versions", {
-        groupId,
+        groupId: groupId||"default",
         artifactId
     });
     const headers: any = {};
@@ -110,7 +132,7 @@ async function getArtifacts(auth: Auth, basePath: string, criteria: GetArtifacts
 }
 
 
-async function getArtifactContent(auth: Auth, basePath: string, groupId: string | null, artifactId: string, version: string): Promise<string> {
+async function getArtifactContent(auth: Auth, basePath: string, groupId: string | undefined, artifactId: string, version: string): Promise<string> {
     groupId = normalizeGroupId(groupId);
 
     let endpoint: string = createEndpoint(basePath, "/groups/:groupId/artifacts/:artifactId/versions/:version", {
@@ -132,7 +154,7 @@ async function getArtifactContent(auth: Auth, basePath: string, groupId: string 
 }
 
 
-async function getArtifactVersions(auth: Auth, basePath: string, groupId: string | null, artifactId: string): Promise<SearchedVersion[]> {
+async function getArtifactVersions(auth: Auth, basePath: string, groupId: string | undefined, artifactId: string): Promise<SearchedVersion[]> {
     groupId = normalizeGroupId(groupId);
 
     console.info("[RhosrInstanceService] Getting the list of versions for artifact: ", groupId, artifactId);
@@ -154,10 +176,11 @@ async function getArtifactVersions(auth: Auth, basePath: string, groupId: string
  */
 export interface RhosrInstanceService {
     createArtifact(data: CreateArtifactData): Promise<ArtifactMetaData>;
-    createArtifactVersion(groupId: string | null, artifactId: string, data: CreateVersionData): Promise<VersionMetaData>;
+    createArtifactVersion(groupId: string | undefined, artifactId: string, data: CreateVersionData): Promise<VersionMetaData>;
+    createOrUpdateArtifact(data: CreateOrUpdateArtifactData): Promise<ArtifactMetaData>;
     getArtifacts(criteria: GetArtifactsCriteria, paging: Paging): Promise<ArtifactSearchResults>;
-    getArtifactContent(groupId: string | null, artifactId: string, version: string): Promise<string>;
-    getArtifactVersions(groupId: string | null, artifactId: string): Promise<SearchedVersion[]>;
+    getArtifactContent(groupId: string | undefined, artifactId: string, version: string): Promise<string>;
+    getArtifactVersions(groupId: string | undefined, artifactId: string): Promise<SearchedVersion[]>;
 }
 
 /**
@@ -180,6 +203,7 @@ export const useRhosrInstanceServiceFactory: () => RhosrInstanceServiceFactory =
             return {
                 createArtifact: (data) => createArtifact(auth, instanceUrl, data),
                 createArtifactVersion: (groupId, artifactId, data) => createArtifactVersion(auth, instanceUrl, groupId, artifactId, data),
+                createOrUpdateArtifact: (data: CreateOrUpdateArtifactData) => createOrUpdateArtifact(auth, instanceUrl, data),
                 getArtifacts: (criteria, paging) => getArtifacts(auth, instanceUrl, criteria, paging),
                 getArtifactContent: (groupId, artifactId, version) => getArtifactContent(auth, instanceUrl, groupId, artifactId, version),
                 getArtifactVersions: (groupId, artifactId) => getArtifactVersions(auth, instanceUrl, groupId, artifactId),

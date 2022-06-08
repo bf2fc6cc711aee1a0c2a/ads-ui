@@ -39,7 +39,7 @@ export const ArtifactSelector: FunctionComponent<ArtifactSelectorProps> = ({regi
     const [ artifacts, setArtifacts ] = useState<ArtifactSearchResults|undefined>();
     const [ rhosrInstance, setRhosrInstance ] = useState<RhosrInstanceService>();
 
-    const rhosrIntanceFactory: RhosrInstanceServiceFactory = useRhosrInstanceServiceFactory();
+    const rhosrInstanceFactory: RhosrInstanceServiceFactory = useRhosrInstanceServiceFactory();
 
     const onRegistrySelected = (registry: Registry): void => {
         setRegistry(registry);
@@ -77,7 +77,7 @@ export const ArtifactSelector: FunctionComponent<ArtifactSelectorProps> = ({regi
     // Whenever the registry changes, create a rhosr instance service for it.
     useEffect(() => {
         if (registry) {
-            const rhosrInstance: RhosrInstanceService = rhosrIntanceFactory.createFor(registry as Registry);
+            const rhosrInstance: RhosrInstanceService = rhosrInstanceFactory.createFor(registry as Registry);
             setRhosrInstance(rhosrInstance);
         }
     }, [registry]);

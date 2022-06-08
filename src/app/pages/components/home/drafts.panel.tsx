@@ -9,7 +9,7 @@ import {
     DraftList,
     DraftsEmptyState,
     DraftsEmptyStateFiltered,
-    DraftsToolbar
+    DraftsToolbar, ExportToRhosrData, ExportToRhosrModal
 } from "@app/pages/components";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
 import {contentTypeForDraft, fileExtensionForDraft} from "@app/utils";
@@ -41,6 +41,8 @@ export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({onCreate, onIm
     const [ drafts, setDrafts ] = useState<DraftsSearchResults>();
     const [ draftToDelete, setDraftToDelete ] = useState<Draft>();
     const [ isDeleteModalOpen, setDeleteModalOpen ] = useState(false);
+    const [ draftToRegister, setDraftToRegister ] = useState<Draft>();
+    const [ isRegisterModalOpen, setRegisterModalOpen ] = useState(false);
 
     const draftsSvc: DraftsService = useDraftsService();
     const downloadSvc: DownloadService = useDownloadService();
@@ -54,6 +56,11 @@ export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({onCreate, onIm
         nav.navigateTo(`/drafts/${draft.id}/editor`);
     };
 
+    const onDeleteDraft = (draft: Draft): void => {
+        setDraftToDelete(draft);
+        setDeleteModalOpen(true);
+    };
+
     const onDeleteDraftConfirmed = (draft: Draft): void => {
         draftsSvc.deleteDraft(draft.id).then(() => {
             doRefresh();
@@ -64,9 +71,14 @@ export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({onCreate, onIm
         setDeleteModalOpen(false);
     };
 
-    const onDeleteDraft = (draft: Draft): void => {
-        setDraftToDelete(draft);
-        setDeleteModalOpen(true);
+    const onRegisterDraft = (draft: Draft): void => {
+        setDraftToRegister(draft);
+        setRegisterModalOpen(true);
+    };
+
+    const onRegisterDraftConfirmed = (event: ExportToRhosrData): void => {
+        // TODO anything to do here other than close the modal?
+        setRegisterModalOpen(false);
     };
 
     const onDownloadDraft = (draft: Draft): void => {
@@ -141,6 +153,7 @@ export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({onCreate, onIm
                         <DraftList drafts={drafts as DraftsSearchResults}
                                    onEdit={onEditDraft}
                                    onDownload={onDownloadDraft}
+                                   onRegister={onRegisterDraft}
                                    onDelete={onDeleteDraft} />
                     </ListWithToolbar>
                 </CardBody>
@@ -150,6 +163,10 @@ export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({onCreate, onIm
                               onDelete={onDeleteDraftConfirmed}
                               onDownload={onDownloadDraft}
                               onCancel={() => setDeleteModalOpen(false)} />
+            <ExportToRhosrModal draft={draftToRegister as Draft}
+                                isOpen={isRegisterModalOpen}
+                                onExported={onRegisterDraftConfirmed}
+                                onCancel={() => setRegisterModalOpen(false)} />
         </React.Fragment>
     );
 };

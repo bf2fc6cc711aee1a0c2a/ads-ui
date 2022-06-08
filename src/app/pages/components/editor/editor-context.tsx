@@ -15,6 +15,7 @@ import {If, NavLink, ToggleIcon} from "@app/components";
 import Moment from "react-moment";
 import {LocalStorageService, useLocalStorageService} from "@app/services";
 import {DraftContext} from "@app/models/drafts/draft-context.model";
+import {ExportToRhosrData, ExportToRhosrModal} from "@app/pages/components";
 
 /**
  * Properties
@@ -35,6 +36,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = ({draft, dir
     const [draftContext, setDraftContext] = useState<DraftContext>();
     const [isActionMenuToggled, setActionMenuToggled] = useState(false);
     const [isExpanded, setExpanded] = useState(lss.getConfigProperty("editor-context.isExpanded", "false") === "true");
+    const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
 
     const onActionMenuToggle = (): void => {
         setActionMenuToggled(!isActionMenuToggled);
@@ -60,6 +62,9 @@ export const EditorContext: FunctionComponent<EditorContextProps> = ({draft, dir
             case "action-validate":
                 return;
             case "action-compatibility":
+                return;
+            case "action-export-to-rhosr":
+                setRegisterModalOpen(true);
                 return;
         }
     };
@@ -92,6 +97,11 @@ export const EditorContext: FunctionComponent<EditorContextProps> = ({draft, dir
         return draftContext !== undefined && draftContext.type && draftContext.type === "url";
     };
 
+    const onRegisterDraftConfirmed = (event: ExportToRhosrData): void => {
+        // TODO anything to do here other than close the modal?
+        setRegisterModalOpen(false);
+    };
+
     useEffect(() => {
         if (draft) {
             const context: DraftContext|undefined = (draft.contexts && draft.contexts.length > 0) ? draft.contexts[0] : undefined;
@@ -122,6 +132,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = ({draft, dir
                         isPlain
                         dropdownItems={
                             [
+                                <DropdownItem key="action-export-to-rhosr" data-id="action-export-to-rhosr">Export to Service Registry</DropdownItem>,
                                 <DropdownItem key="action-compare" data-id="action-compare">Compare differences</DropdownItem>,
                                 <DropdownItem key="action-validate" data-id="action-validate">Validate</DropdownItem>,
                                 <DropdownItem key="action-compatibility" data-id="action-compatibility">Check compatibility</DropdownItem>,
@@ -178,6 +189,10 @@ export const EditorContext: FunctionComponent<EditorContextProps> = ({draft, dir
                     </Gallery>
                 </div>
             </If>
+            <ExportToRhosrModal draft={draft as Draft}
+                                isOpen={isRegisterModalOpen}
+                                onExported={onRegisterDraftConfirmed}
+                                onCancel={() => setRegisterModalOpen(false)} />
         </React.Fragment>
     );
 };

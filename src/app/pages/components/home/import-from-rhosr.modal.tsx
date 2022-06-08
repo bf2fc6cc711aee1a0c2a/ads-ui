@@ -1,6 +1,6 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
 import {Button, Modal, ModalVariant} from "@patternfly/react-core";
-import {ArtifactTypes, CreateDraft, CreateDraftContent, SearchedArtifact, SearchedVersion} from "@app/models";
+import {CreateDraft, CreateDraftContent, SearchedArtifact, SearchedVersion} from "@app/models";
 import {Registry} from "@rhoas/registry-management-sdk";
 import {RhosrService, useRhosrService} from "@app/services";
 import {IsLoading} from "@app/components";
