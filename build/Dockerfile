@@ -22,7 +22,5 @@ RUN rm -rf /node_modules \
 FROM registry.access.redhat.com/ubi8/nginx-118:latest
 
 # copy required built output to image
-COPY --from=builder --chown=root:root /opt/app-root/src/LICENSE ./
-COPY --from=builder --chown=root:root /opt/app-root/src/dist ./dist
-COPY --from=builder --chown=root:root /opt/app-root/src/node_modules ./node_modules
+COPY --from=builder --chown=1001:0 /opt/app-root/src/dist ./dist
 
