@@ -1,8 +1,8 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
 import "./editor.css";
 import {PageSection, PageSectionVariants} from "@patternfly/react-core";
-import {DraftsService, useDraftsService} from "@app/services";
-import {ArtifactTypes, Draft, DraftContent} from "@app/models";
+import {DesignsService, useDesignsService} from "@app/services";
+import {ArtifactTypes, Design, DesignContent} from "@app/models";
 import {IsLoading} from "@app/components";
 import {EditorContext} from "@app/pages/components";
 import {OpenApiEditor, ProtoEditor, TextEditor} from "@app/editors";
@@ -17,41 +17,41 @@ export type EditorPageProps = {
 
 export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorPageProps) => {
     const [isLoading, setLoading] = useState(true);
-    const [draft, setDraft] = useState<Draft>();
-    const [draftContent, setDraftContent] = useState<DraftContent>();
+    const [design, setDesign] = useState<Design>();
+    const [designContent, setDesignContent] = useState<DesignContent>();
     const [currentContent, setCurrentContent] = useState<any>();
     const [isDirty, setDirty] = useState(false);
 
-    const draftsService: DraftsService = useDraftsService();
+    const designsService: DesignsService = useDesignsService();
 
     const nav: Navigation = useNavigation();
 
-    // Load the draft based on the draft ID (from the path param).
+    // Load the design based on the design ID (from the path param).
     useEffect(() => {
         setLoading(true);
-        const draftId: string = params["draftId"];
+        const designId: string = params["designId"];
 
-        draftsService.getDraft(draftId).then(draft => {
-            setDraft(draft);
+        designsService.getDesign(designId).then(design => {
+            setDesign(design);
         }).catch(error => {
             // TODO handle error
-            console.error(`[EditorPage] Failed to get draft with id ${draftId}: `, error);
+            console.error(`[EditorPage] Failed to get design with id ${designId}: `, error);
         })
     }, [params]);
 
-    // Load the draft content
+    // Load the design content
     useEffect(() => {
-        const draftId: string = params["draftId"];
-        draftsService.getDraftContent(draftId).then(content => {
-            setDraftContent(content);
+        const designId: string = params["designId"];
+        designsService.getDesignContent(designId).then(content => {
+            setDesignContent(content);
             setLoading(false);
             setDirty(false);
             setCurrentContent(content.data);
         }).catch(error => {
             // TODO handle error
-            console.error(`[EditorPage] Failed to get draft content with id ${draftId}: `, error);
+            console.error(`[EditorPage] Failed to get design content with id ${designId}: `, error);
         });
-    }, [draft])
+    }, [design])
 
     // Called when the user makes an edit in the editor.
     const onEditorChange = (value: any): void => {
@@ -61,17 +61,17 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorP
 
     // Called when the user makes an edit in the editor.
     const onSave = (): void => {
-        draftsService.updateDraftContent({
-            ...draftContent as DraftContent,
+        designsService.updateDesignContent({
+            ...designContent as DesignContent,
             data: currentContent
         }).then(() => {
-            setDraft({
-                ...draft,
+            setDesign({
+                ...design,
                 modifiedOn: new Date()
-            } as Draft);
+            } as Design);
         }).catch(error => {
             // TODO handle error
-            console.error("[EditorPage] Failed to save draft content: ", error);
+            console.error("[EditorPage] Failed to save design content: ", error);
         });
     };
 
@@ -81,27 +81,27 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorP
     };
 
     const textEditor: React.ReactElement = (
-        <TextEditor content={draftContent as DraftContent} onChange={onEditorChange} />
+        <TextEditor content={designContent as DesignContent} onChange={onEditorChange} />
     );
 
     const protoEditor: React.ReactElement = (
-        <ProtoEditor content={draftContent as DraftContent} onChange={onEditorChange} />
+        <ProtoEditor content={designContent as DesignContent} onChange={onEditorChange} />
     );
 
     const openapiEditor: React.ReactElement = (
-        <OpenApiEditor content={draftContent as DraftContent} onChange={onEditorChange} />
+        <OpenApiEditor content={designContent as DesignContent} onChange={onEditorChange} />
     );
 
     const asyncapiEditor: React.ReactElement = (
-        <AsyncApiEditor content={draftContent as DraftContent} onChange={onEditorChange} />
+        <AsyncApiEditor content={designContent as DesignContent} onChange={onEditorChange} />
     );
 
     const editor = (): React.ReactElement => {
-        if (draft?.type === ArtifactTypes.OPENAPI) {
+        if (design?.type === ArtifactTypes.OPENAPI) {
             return openapiEditor;
-        } else if (draft?.type === ArtifactTypes.ASYNCAPI) {
+        } else if (design?.type === ArtifactTypes.ASYNCAPI) {
             return asyncapiEditor;
-        } else if (draft?.type === ArtifactTypes.PROTOBUF) {
+        } else if (design?.type === ArtifactTypes.PROTOBUF) {
             return protoEditor;
         }
 
@@ -113,7 +113,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorP
     return (
         <IsLoading condition={isLoading}>
             <PageSection variant={PageSectionVariants.light} id="section-context">
-                <EditorContext draft={draft as Draft} dirty={isDirty} onSave={onSave} onCancel={onCancel} />
+                <EditorContext design={design as Design} dirty={isDirty} onSave={onSave} onCancel={onCancel} />
             </PageSection>
             <PageSection variant={PageSectionVariants.light} id="section-editor">
                 <div className="editor-parent">

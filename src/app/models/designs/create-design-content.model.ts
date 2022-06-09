@@ -1,4 +1,4 @@
-export interface CreateDraftContent {
+export interface CreateDesignContent {
 
     contentType: string;
     data: any;

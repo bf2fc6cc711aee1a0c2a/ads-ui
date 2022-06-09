@@ -1,7 +1,7 @@
 import YAML from "yaml";
 import {IParserResult, parse} from "protobufjs";
-import {ArtifactTypes, ContentTypes, Draft, DraftContent} from "@app/models";
-import {DraftContext} from "@app/models/drafts/draft-context.model";
+import {ArtifactTypes, ContentTypes, Design, DesignContent} from "@app/models";
+import {DesignContext} from "@app/models/designs/design-context.model";
 
 /**
  * Returns true if the given content is JSON formatted.
@@ -93,11 +93,11 @@ export function isProto(content: string): boolean {
 }
 
 
-export function fileExtensionForDraft(draft: Draft, content: DraftContent): string {
-    // If the draft was originally imported from a file, let's just use the extension
+export function fileExtensionForDesign(design: Design, content: DesignContent): string {
+    // If the design was originally imported from a file, let's just use the extension
     // from that file.
-    if (draft.contexts) {
-        const contexts: DraftContext[] = draft.contexts.filter(context => context.type === "file");
+    if (design.contexts) {
+        const contexts: DesignContext[] = design.contexts.filter(context => context.type === "file");
         if (contexts.length > 0) {
             const filename: string = contexts[0].file?.fileName as string;
             if (filename.indexOf(".") > 0) {
@@ -107,19 +107,19 @@ export function fileExtensionForDraft(draft: Draft, content: DraftContent): stri
         }
     }
 
-    if (draft.type === ArtifactTypes.PROTOBUF) {
+    if (design.type === ArtifactTypes.PROTOBUF) {
         return "proto";
     }
-    if (draft.type === ArtifactTypes.WSDL) {
+    if (design.type === ArtifactTypes.WSDL) {
         return "wsdl";
     }
-    if (draft.type === ArtifactTypes.XSD) {
+    if (design.type === ArtifactTypes.XSD) {
         return "xsd";
     }
-    if (draft.type === ArtifactTypes.XML) {
+    if (design.type === ArtifactTypes.XML) {
         return "xml";
     }
-    if (draft.type === ArtifactTypes.GRAPHQL) {
+    if (design.type === ArtifactTypes.GRAPHQL) {
         return "graphql";
     }
 
@@ -133,24 +133,24 @@ export function fileExtensionForDraft(draft: Draft, content: DraftContent): stri
     return "txt";
 }
 
-export function contentTypeForDraft(draft: Draft, content: DraftContent): string {
+export function contentTypeForDesign(design: Design, content: DesignContent): string {
     if (content.contentType) {
         return content.contentType;
     }
 
-    if (draft.type === ArtifactTypes.PROTOBUF) {
+    if (design.type === ArtifactTypes.PROTOBUF) {
         return ContentTypes.APPLICATION_PROTOBUF;
     }
-    if (draft.type === ArtifactTypes.WSDL) {
+    if (design.type === ArtifactTypes.WSDL) {
         return ContentTypes.APPLICATION_WSDL;
     }
-    if (draft.type === ArtifactTypes.XSD) {
+    if (design.type === ArtifactTypes.XSD) {
         return ContentTypes.TEXT_XML;
     }
-    if (draft.type === ArtifactTypes.XML) {
+    if (design.type === ArtifactTypes.XML) {
         return ContentTypes.TEXT_XML;
     }
-    if (draft.type === ArtifactTypes.GRAPHQL) {
+    if (design.type === ArtifactTypes.GRAPHQL) {
         return ContentTypes.APPLICATION_GRAPHQL;
     }
 

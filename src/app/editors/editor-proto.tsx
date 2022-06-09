@@ -1,11 +1,11 @@
 import React from "react";
-import {Editor as DraftEditor, EditorProps} from "@app/editors/editor-types";
+import {Editor as DesignEditor, EditorProps} from "@app/editors/editor-types";
 import Editor from "@monaco-editor/react";
 
 /**
  * Protobuf text editor with support for syntax hint and highlight.
  */
-export const ProtoEditor: DraftEditor = ({content, onChange}: EditorProps) => {
+export const ProtoEditor: DesignEditor = ({content, onChange}: EditorProps) => {
 
     let defaultValue: string = "";
     if (typeof content.data === "string") {

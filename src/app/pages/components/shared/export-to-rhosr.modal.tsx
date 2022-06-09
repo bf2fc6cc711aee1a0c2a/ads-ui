@@ -1,28 +1,28 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
 import "./export-to-rhosr.modal.css";
 import {Button, Form, FormGroup, Modal, ModalVariant, Spinner, TextInput} from "@patternfly/react-core";
-import {Draft} from "@app/models";
+import {Design} from "@app/models";
 import {Registry} from "@rhoas/registry-management-sdk";
 import {
-    DraftsService,
+    DesignsService,
     RhosrInstanceService,
     RhosrInstanceServiceFactory,
     RhosrService,
-    useDraftsService,
+    useDesignsService,
     useRhosrInstanceServiceFactory,
     useRhosrService
 } from "@app/services";
 import {If, IsLoading, ObjectSelect} from "@app/components";
-import {DraftContext} from "@app/models/drafts/draft-context.model";
+import {DesignContext} from "@app/models/designs/design-context.model";
 import {CreateOrUpdateArtifactData} from "@app/models/rhosr-instance/create-or-update-artifact-data.model";
 
 export type ExportToRhosrData = {
-    draft: Draft;
-    context: DraftContext;
+    design: Design;
+    context: DesignContext;
 };
 
 export type ExportToRhosrModalProps = {
-    draft: Draft;
+    design: Design;
     isOpen: boolean | undefined;
     onExported: (event: ExportToRhosrData) => void;
     onCancel: () => void;
@@ -30,7 +30,7 @@ export type ExportToRhosrModalProps = {
 
 
 export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
-    {draft, isOpen, onExported, onCancel}: ExportToRhosrModalProps) => {
+    {design, isOpen, onExported, onCancel}: ExportToRhosrModalProps) => {
 
     const [isValid, setValid] = useState(false);
     const [isExporting, setExporting] = useState(false);
@@ -42,16 +42,16 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
     const [version, setVersion] = useState<string>();
     const [rhosrInstance, setRhosrInstance] = useState<RhosrInstanceService>();
 
-    const drafts: DraftsService = useDraftsService();
+    const designs: DesignsService = useDesignsService();
     const rhosr: RhosrService = useRhosrService();
     const rhosrInstanceFactory: RhosrInstanceServiceFactory = useRhosrInstanceServiceFactory();
 
     // Called when the user clicks "export"
     const doExport = () => {
         setExporting(true);
-        drafts.getDraftContent(draft.id).then(content => {
+        designs.getDesignContent(design.id).then(content => {
             const data: CreateOrUpdateArtifactData = {
-                type: draft.type,
+                type: design.type,
                 groupId: group,
                 id: artifactId,
                 version: version,
@@ -60,7 +60,7 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
             };
             rhosrInstance?.createOrUpdateArtifact(data).then(amd => {
                 // TODO take the info from the artifact meta-data and return it as a context
-                const context: DraftContext = {
+                const context: DesignContext = {
                     type: "rhosr",
                     rhosr: {
                         instanceId: registry?.id as string,
@@ -70,7 +70,7 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
                     }
                 };
                 const event: ExportToRhosrData = {
-                    draft,
+                    design,
                     context
                 };
                 setExporting(false);
@@ -109,16 +109,16 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
     }, [isOpen]);
 
     useEffect(() => {
-        if (draft && draft.contexts && draft.contexts.length > 0) {
-            const filteredContexts: DraftContext[] = draft.contexts.filter(ctx => ctx.type === "rhosr");
+        if (design && design.contexts && design.contexts.length > 0) {
+            const filteredContexts: DesignContext[] = design.contexts.filter(ctx => ctx.type === "rhosr");
             if (filteredContexts.length > 0) {
-                const context: DraftContext = filteredContexts[0];
+                const context: DesignContext = filteredContexts[0];
                 setGroup(context.rhosr?.groupId);
                 setArtifactId(context.rhosr?.artifactId);
                 setVersion(context.rhosr?.version);
             }
         }
-    }, [draft]);
+    }, [design]);
 
     // Set the validity whenever one of the relevant state variables changes.
     useEffect(() => {

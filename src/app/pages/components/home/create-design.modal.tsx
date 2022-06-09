@@ -13,14 +13,14 @@ import {
     TextArea,
     TextInput
 } from "@patternfly/react-core";
-import {ArtifactTypes, CreateDraft, Template} from "@app/models";
+import {ArtifactTypes, CreateDesign, Template} from "@app/models";
 import {TemplatesService, useTemplatesService} from "@app/services";
 import {If} from "@app/components";
 import {TemplateItem} from "@app/pages/components";
 
-export type CreateDraftModalProps = {
+export type CreateDesignModalProps = {
     isOpen: boolean|undefined;
-    onCreate: (event: CreateDraft, template: Template) => void;
+    onCreate: (event: CreateDesign, template: Template) => void;
     onCancel: () => void;
 }
 
@@ -57,7 +57,7 @@ const TYPE_OPTIONS: SelectOptionObject[] = [
 });
 
 
-export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = ({isOpen, onCreate, onCancel}: CreateDraftModalProps) => {
+export const CreateDesignModal: FunctionComponent<CreateDesignModalProps> = ({isOpen, onCreate, onCancel}: CreateDesignModalProps) => {
     const [isValid, setValid] = useState(false);
     const [name, setName] = useState("");
     const [summary, setSummary] = useState("");
@@ -90,7 +90,7 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = ({isOp
 
     // Called when the user clicks the Create button in the modal
     const doCreate = (): void => {
-        const cd: CreateDraft = { type, name, summary };
+        const cd: CreateDesign = { type, name, summary };
         onCreate(cd, template as Template);
     };
 
@@ -159,35 +159,35 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = ({isOp
         >
             <Alert isInline variant="warning" title="Warning" style={{ marginBottom: "15px"}}>
                 <p>
-                    All new drafts are stored locally in your browser.  Clearing your browser cache or
+                    All new designs are stored locally in your browser.  Clearing your browser cache or
                     switching to a new browser <em>might</em> result in loss of data.  Make sure you save your
                     work locally or in a Red Hat OpenShift Service Registry instance!
                 </p>
             </Alert>
 
             <Form>
-                <FormGroup label="Name" isRequired={true} fieldId="create-draft-name">
+                <FormGroup label="Name" isRequired={true} fieldId="create-design-name">
                     <TextInput
                         isRequired
                         type="text"
-                        id="create-draft-name"
-                        name="create-draft-name"
-                        aria-describedby="create-draft-name-helper"
+                        id="create-design-name"
+                        name="create-design-name"
+                        aria-describedby="create-design-name-helper"
                         value={name}
                         onChange={(value) => {setName(value)}}
                     />
                 </FormGroup>
-                <FormGroup label="Summary" fieldId="create-draft-summary">
+                <FormGroup label="Summary" fieldId="create-design-summary">
                     <TextArea
                         type="text"
-                        id="create-draft-summary"
-                        name="create-draft-summary"
-                        aria-describedby="create-draft-summary-helper"
+                        id="create-design-summary"
+                        name="create-design-summary"
+                        aria-describedby="create-design-summary-helper"
                         value={summary}
                         onChange={(value) => {setSummary(value)}}
                     />
                 </FormGroup>
-                <FormGroup label="Type" isRequired={true} fieldId="create-draft-type">
+                <FormGroup label="Type" isRequired={true} fieldId="create-design-type">
                     <Select
                         variant={SelectVariant.single}
                         aria-label="Select type"
@@ -203,7 +203,7 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = ({isOp
                     </Select>
                 </FormGroup>
                 <If condition={type === ArtifactTypes.OPENAPI}>
-                    <FormGroup label="Version" isRequired={true} fieldId="create-draft-version">
+                    <FormGroup label="Version" isRequired={true} fieldId="create-design-version">
                         <Select
                             variant={SelectVariant.single}
                             aria-label="Select version"
@@ -219,7 +219,7 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = ({isOp
                     </FormGroup>
                 </If>
                 <If condition={(templates && templates.length > 1) as boolean}>
-                    <FormGroup label="Template" fieldId="create-draft-template">
+                    <FormGroup label="Template" fieldId="create-design-template">
                         <Gallery hasGutter minWidths={{default: "125px"}} maxWidths={{default: "125px"}}>
                         {
                             templates?.map(t => (

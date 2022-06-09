@@ -33,19 +33,12 @@ async function getTemplatesFor(type: string, version?: string): Promise<Template
     return Promise.reject(`No templates found for type ${type} and version ${version}.`);
 }
 
-async function getTemplate(id: string): Promise<Template> {
-    return Promise.resolve(
-        OPENAPI_3_TEMPLATES[0]
-    );
-}
-
 
 /**
  * The Templates Service interface.
  */
 export interface TemplatesService {
     getTemplatesFor(type: string, version?: string): Promise<Template[]>;
-    getTemplate(id: string): Promise<Template>;
 }
 
 
@@ -54,7 +47,6 @@ export interface TemplatesService {
  */
 export const useTemplatesService: () => TemplatesService = (): TemplatesService => {
     return {
-        getTemplatesFor,
-        getTemplate,
+        getTemplatesFor
     };
 };

@@ -1,6 +1,6 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
 import "./artifact-list-item.css";
-import {ArtifactTypes, ContentTypes, CreateDraftContent, SearchedArtifact, SearchedVersion} from "@app/models";
+import {ArtifactTypes, ContentTypes, CreateDesignContent, SearchedArtifact, SearchedVersion} from "@app/models";
 import {
     Badge,
     DataList,
@@ -22,7 +22,7 @@ export type ArtifactListItemProps = {
     isSelected: boolean;
     onSelected: (artifact: SearchedArtifact) => void;
     onUnselected: (artifact: SearchedArtifact) => void;
-    onArtifactLoaded: (artifact: SearchedArtifact, version: SearchedVersion, content: CreateDraftContent) => void;
+    onArtifactLoaded: (artifact: SearchedArtifact, version: SearchedVersion, content: CreateDesignContent) => void;
     fetchArtifactVersions: (artifact: SearchedArtifact) => Promise<SearchedVersion[]>;
     fetchArtifactContent: (artifact: SearchedArtifact, version?: SearchedVersion) => Promise<string>;
 }
@@ -127,7 +127,7 @@ export const ArtifactListItem: FunctionComponent<ArtifactListItemProps> = (
             } else {
                 contentType = ContentTypes.APPLICATION_JSON;
             }
-            const cdc: CreateDraftContent = {
+            const cdc: CreateDesignContent = {
                 contentType,
                 data: content
             };

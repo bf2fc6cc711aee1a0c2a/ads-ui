@@ -2,7 +2,7 @@ import React, {FunctionComponent, useEffect, useState} from "react";
 import {Registry} from "@rhoas/registry-management-sdk";
 import {
     ArtifactSearchResults,
-    CreateDraftContent,
+    CreateDesignContent,
     GetArtifactsCriteria,
     Paging,
     SearchedArtifact,
@@ -17,7 +17,7 @@ import {IfNotEmpty, IsLoading} from "@app/components";
  */
 export type ArtifactSelectorProps = {
     registries: Registry[];
-    onSelected: (registry?: Registry, artifact?: SearchedArtifact, version?: SearchedVersion, content?: CreateDraftContent) => void;
+    onSelected: (registry?: Registry, artifact?: SearchedArtifact, version?: SearchedVersion, content?: CreateDesignContent) => void;
 };
 
 /**
@@ -63,7 +63,7 @@ export const ArtifactSelector: FunctionComponent<ArtifactSelectorProps> = ({regi
         return ri.getArtifactContent(artifact.groupId, artifact.id, version?.version||"latest");
     };
 
-    const onArtifactSelected = (artifact?: SearchedArtifact, version?: SearchedVersion, content?: CreateDraftContent): void => {
+    const onArtifactSelected = (artifact?: SearchedArtifact, version?: SearchedVersion, content?: CreateDesignContent): void => {
         onSelected(registry, artifact, version, content);
     };
 

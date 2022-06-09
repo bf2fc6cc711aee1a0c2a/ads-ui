@@ -1,6 +1,6 @@
-import {DraftContext} from "@app/models/drafts/draft-context.model";
+import {DesignContext} from "@app/models/designs/design-context.model";
 
-export interface Draft {
+export interface Design {
 
     id: string;
     type: string;
@@ -8,6 +8,6 @@ export interface Draft {
     summary: string|undefined;
     createdOn: Date;
     modifiedOn: Date;
-    contexts?: DraftContext[];
+    contexts?: DesignContext[];
 
 }

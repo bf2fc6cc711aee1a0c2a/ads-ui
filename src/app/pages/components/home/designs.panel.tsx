@@ -1,31 +1,31 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
-import "./drafts.panel.css";
+import "./designs.panel.css";
 import {Alert, Card, CardBody} from "@patternfly/react-core";
-import {DownloadService, DraftsService, useDownloadService, useDraftsService} from "@app/services";
-import {Draft, DraftsSearchCriteria, DraftsSearchResults, Paging} from "@app/models";
+import {DownloadService, DesignsService, useDownloadService, useDesignsService} from "@app/services";
+import {Design, DesignsSearchCriteria, DesignsSearchResults, Paging} from "@app/models";
 import {If, ListWithToolbar} from "@app/components";
 import {
-    DeleteDraftModal,
-    DraftList,
-    DraftsEmptyState,
-    DraftsEmptyStateFiltered,
-    DraftsToolbar, ExportToRhosrData, ExportToRhosrModal
+    DeleteDesignModal,
+    DesignList,
+    DesignsEmptyState,
+    DesignsEmptyStateFiltered,
+    DesignsToolbar, ExportToRhosrData, ExportToRhosrModal
 } from "@app/pages/components";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
-import {contentTypeForDraft, fileExtensionForDraft} from "@app/utils";
+import {contentTypeForDesign, fileExtensionForDesign} from "@app/utils";
 
 
 function convertToValidFilename(value: string): string {
     return (value.replace(/[\/|\\:*?"<>]/g, ""));
 }
 
-export type DraftsPanelProps = {
+export type DesignsPanelProps = {
     onCreate: () => void;
     onImport: () => void;
 }
 
 
-export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({onCreate, onImport}: DraftsPanelProps) => {
+export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onCreate, onImport}: DesignsPanelProps) => {
     const [ isLoading, setLoading ] = useState(false);
     const [ refresh, setRefresh ] = useState(1);
     const [ isFiltered, setFiltered ] = useState(false);
@@ -33,18 +33,18 @@ export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({onCreate, onIm
         pageSize: 20,
         page: 1
     });
-    const [ criteria, setCriteria ] = useState<DraftsSearchCriteria>({
+    const [ criteria, setCriteria ] = useState<DesignsSearchCriteria>({
         filterValue: "",
         ascending: true,
         filterOn: "name"
     });
-    const [ drafts, setDrafts ] = useState<DraftsSearchResults>();
-    const [ draftToDelete, setDraftToDelete ] = useState<Draft>();
+    const [ designs, setDesigns ] = useState<DesignsSearchResults>();
+    const [ designToDelete, setDesignToDelete ] = useState<Design>();
     const [ isDeleteModalOpen, setDeleteModalOpen ] = useState(false);
-    const [ draftToRegister, setDraftToRegister ] = useState<Draft>();
+    const [ designToRegister, setDesignToRegister ] = useState<Design>();
     const [ isRegisterModalOpen, setRegisterModalOpen ] = useState(false);
 
-    const draftsSvc: DraftsService = useDraftsService();
+    const designsSvc: DesignsService = useDesignsService();
     const downloadSvc: DownloadService = useDownloadService();
     const nav: Navigation = useNavigation();
 
@@ -52,17 +52,17 @@ export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({onCreate, onIm
         setRefresh(refresh + 1);
     };
 
-    const onEditDraft = (draft: Draft): void => {
-        nav.navigateTo(`/drafts/${draft.id}/editor`);
+    const onEditDesign = (design: Design): void => {
+        nav.navigateTo(`/designs/${design.id}/editor`);
     };
 
-    const onDeleteDraft = (draft: Draft): void => {
-        setDraftToDelete(draft);
+    const onDeleteDesign = (design: Design): void => {
+        setDesignToDelete(design);
         setDeleteModalOpen(true);
     };
 
-    const onDeleteDraftConfirmed = (draft: Draft): void => {
-        draftsSvc.deleteDraft(draft.id).then(() => {
+    const onDeleteDesignConfirmed = (design: Design): void => {
+        designsSvc.deleteDesign(design.id).then(() => {
             doRefresh();
         }).catch(error => {
             // TODO handle error
@@ -71,26 +71,26 @@ export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({onCreate, onIm
         setDeleteModalOpen(false);
     };
 
-    const onRegisterDraft = (draft: Draft): void => {
-        setDraftToRegister(draft);
+    const onRegisterDesign = (design: Design): void => {
+        setDesignToRegister(design);
         setRegisterModalOpen(true);
     };
 
-    const onRegisterDraftConfirmed = (event: ExportToRhosrData): void => {
+    const onRegisterDesignConfirmed = (event: ExportToRhosrData): void => {
         // TODO anything to do here other than close the modal?
         setRegisterModalOpen(false);
     };
 
-    const onDownloadDraft = (draft: Draft): void => {
-        draftsSvc.getDraftContent(draft.id).then(content => {
-            const filename: string = `${convertToValidFilename(draft.name)}.${fileExtensionForDraft(draft, content)}`;
-            const contentType: string = contentTypeForDraft(draft, content);
+    const onDownloadDesign = (design: Design): void => {
+        designsSvc.getDesignContent(design.id).then(content => {
+            const filename: string = `${convertToValidFilename(design.name)}.${fileExtensionForDesign(design, content)}`;
+            const contentType: string = contentTypeForDesign(design, content);
             const c: string = typeof content.data === "object" ? JSON.stringify(content.data, null, 4) : content.data as string;
             downloadSvc.downloadToFS(c, contentType, filename);
         });
     };
 
-    const onCriteriaChange = (criteria: DraftsSearchCriteria): void =>  {
+    const onCriteriaChange = (criteria: DesignsSearchCriteria): void =>  {
         setCriteria(criteria);
         setPaging({
             page: 1,
@@ -107,9 +107,9 @@ export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({onCreate, onIm
 
     useEffect(() => {
         setLoading(true);
-        draftsSvc.searchDrafts(criteria, paging).then(drafts => {
-            console.debug("[DraftsPanel] Drafts loaded: ", drafts);
-            setDrafts(drafts);
+        designsSvc.searchDesigns(criteria, paging).then(designs => {
+            console.debug("[DesignsPanel] Designs loaded: ", designs);
+            setDesigns(designs);
             setLoading(false);
         }).catch(error => {
             // TODO need error handling
@@ -118,22 +118,22 @@ export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({onCreate, onIm
     }, [refresh]);
 
     const emptyState: React.ReactNode = (
-        <DraftsEmptyState onCreate={onCreate} onImport={onImport} />
+        <DesignsEmptyState onCreate={onCreate} onImport={onImport} />
     );
 
     const emptyStateFiltered: React.ReactNode = (
-        <DraftsEmptyStateFiltered />
+        <DesignsEmptyStateFiltered />
     );
 
     const toolbar: React.ReactNode = (
-        <DraftsToolbar drafts={drafts} criteria={criteria} paging={paging}
+        <DesignsToolbar designs={designs} criteria={criteria} paging={paging}
                        onCriteriaChange={onCriteriaChange} onPagingChange={onPagingChange} />
     );
 
     return (
         <React.Fragment>
             <Card isSelectable={false}>
-                <If condition={!drafts || (drafts.count === 0 && !isFiltered)}>
+                <If condition={!designs || (designs.count === 0 && !isFiltered)}>
                     <Alert className="panel-alert" isInline variant="info" title="About your data" style={{ marginBottom: "15px"}}>
                         <p>
                             All designs are stored locally in your browser.  Clearing your browser cache or
@@ -149,23 +149,23 @@ export const DraftsPanel: FunctionComponent<DraftsPanelProps> = ({onCreate, onIm
                                      filteredEmptyState={emptyStateFiltered}
                                      isLoading={isLoading}
                                      isFiltered={isFiltered}
-                                     isEmpty={!drafts || drafts.count === 0}>
-                        <DraftList drafts={drafts as DraftsSearchResults}
-                                   onEdit={onEditDraft}
-                                   onDownload={onDownloadDraft}
-                                   onRegister={onRegisterDraft}
-                                   onDelete={onDeleteDraft} />
+                                     isEmpty={!designs || designs.count === 0}>
+                        <DesignList designs={designs as DesignsSearchResults}
+                                   onEdit={onEditDesign}
+                                   onDownload={onDownloadDesign}
+                                   onRegister={onRegisterDesign}
+                                   onDelete={onDeleteDesign} />
                     </ListWithToolbar>
                 </CardBody>
             </Card>
-            <DeleteDraftModal draft={draftToDelete}
+            <DeleteDesignModal design={designToDelete}
                               isOpen={isDeleteModalOpen}
-                              onDelete={onDeleteDraftConfirmed}
-                              onDownload={onDownloadDraft}
+                              onDelete={onDeleteDesignConfirmed}
+                              onDownload={onDownloadDesign}
                               onCancel={() => setDeleteModalOpen(false)} />
-            <ExportToRhosrModal draft={draftToRegister as Draft}
+            <ExportToRhosrModal design={designToRegister as Design}
                                 isOpen={isRegisterModalOpen}
-                                onExported={onRegisterDraftConfirmed}
+                                onExported={onRegisterDesignConfirmed}
                                 onCancel={() => setRegisterModalOpen(false)} />
         </React.Fragment>
     );

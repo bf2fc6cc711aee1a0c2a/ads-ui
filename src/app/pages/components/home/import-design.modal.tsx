@@ -10,21 +10,21 @@ import {
     TextArea,
     TextInput
 } from "@patternfly/react-core";
-import {ArtifactTypes, ContentTypes, CreateDraft, CreateDraftContent} from "@app/models";
+import {ArtifactTypes, ContentTypes, CreateDesign, CreateDesignContent} from "@app/models";
 import {If} from "@app/components";
 import {UrlUpload} from "@app/pages/components";
 import {isJson, isProto, isWsdl, isXml, isXsd, isYaml, parseJson, parseYaml} from "@app/utils";
-import {DraftContext} from "@app/models/drafts/draft-context.model";
+import {DesignContext} from "@app/models/designs/design-context.model";
 
 
 const IMPORT_FROM_FILE: string = "FILE";
 const IMPORT_FROM_URL: string = "URL";
 
 
-export type ImportDraftModalProps = {
+export type ImportDesignModalProps = {
     importType: "FILE" | "URL";
     isOpen: boolean | undefined;
-    onImport: (event: CreateDraft, content: CreateDraftContent) => void;
+    onImport: (event: CreateDesign, content: CreateDesignContent) => void;
     onCancel: () => void;
 }
 
@@ -84,10 +84,10 @@ type DetectionInfo = {
 }
 
 
-export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({importType, isOpen, onImport, onCancel}: ImportDraftModalProps) => {
+export const ImportDesignModal: FunctionComponent<ImportDesignModalProps> = ({importType, isOpen, onImport, onCancel}: ImportDesignModalProps) => {
     const [isValid, setValid] = useState(false);
 
-    const [draftContent, setDraftContent] = useState<string>();
+    const [designContent, setDesignContent] = useState<string>();
     const [fileName, setFileName] = useState<string>();
     const [url, setUrl] = useState<string>();
 
@@ -104,12 +104,12 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
     const [contentType, setContentType] = useState<string>();
 
     const onFileChange = (value: string | File, fname: string): void => {
-        setDraftContent(value as string);
+        setDesignContent(value as string);
         setFileName(fname);
     };
 
     const onUrlChange = (value: string|undefined, url: string|undefined): void => {
-        setDraftContent(value);
+        setDesignContent(value);
         setUrl(url);
     };
 
@@ -127,7 +127,7 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
 
     // Called when the user clicks the Import button in the modal
     const doImport = (): void => {
-        const context: DraftContext = importType === "FILE" ? {
+        const context: DesignContext = importType === "FILE" ? {
             type: "file",
             file: {
                 fileName: fileName as string
@@ -138,24 +138,24 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
                 url: url as string
             }
         };
-        const cd: CreateDraft = {
+        const cd: CreateDesign = {
             type: type as string,
             name,
             summary,
             context
         };
-        const cdc: CreateDraftContent = {
+        const cdc: CreateDesignContent = {
             contentType: contentType as string,
-            data: draftContent
+            data: designContent
         };
 
-        console.debug("[ImportDraftModal] Importing draft: ", cd);
-        console.debug("[ImportDraftModal] Importing content-type: ", contentType);
+        console.debug("[ImportDesignModal] Importing design: ", cd);
+        console.debug("[ImportDesignModal] Importing content-type: ", contentType);
         onImport(cd, cdc);
     };
 
-    const hasDraftContent = (): boolean => {
-        return draftContent !== undefined && draftContent.trim().length > 0;
+    const hasDesignContent = (): boolean => {
+        return designContent !== undefined && designContent.trim().length > 0;
     };
 
     const title = (): string => {
@@ -241,7 +241,7 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
         } else if (isProto(content)) {
             return detectProtoInfo();
         }
-        console.warn("[ImportDraftModal] Failed to detect the type of the content.");
+        console.warn("[ImportDesignModal] Failed to detect the type of the content.");
         // Default: nothing detected
         return {
         };
@@ -265,7 +265,7 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
     // Validate the form inputs.
     useEffect(() => {
         let valid: boolean = true;
-        if (!draftContent) {
+        if (!designContent) {
             valid = false;
         }
         if (!name) {
@@ -275,11 +275,11 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
             valid = false;
         }
         setValid(valid);
-    }, [name, summary, type, draftContent]);
+    }, [name, summary, type, designContent]);
 
     // Whenever the modal is opened, set default values for the form.
     useEffect(() => {
-        setDraftContent(undefined);
+        setDesignContent(undefined);
         setName("");
         setSummary("");
         setFileName(undefined);
@@ -289,10 +289,10 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
     // Whenever the content changes (e.g. loaded from file) try to detect the
     // type of the content.
     useEffect(() => {
-        if (draftContent && draftContent.trim().length > 0) {
-            const info: DetectionInfo = detectInfo(draftContent as string);
-            console.debug("[ImportDraftModal] Content detection: ", info);
-            console.debug("[ImportDraftModal] Version detected: ", info.version || "");
+        if (designContent && designContent.trim().length > 0) {
+            const info: DetectionInfo = detectInfo(designContent as string);
+            console.debug("[ImportDesignModal] Content detection: ", info);
+            console.debug("[ImportDesignModal] Version detected: ", info.version || "");
 
             setTheType(info.type);
             setVersion(info.version || "");
@@ -300,13 +300,13 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
             setSummary(info.summary || "");
             setContentType(info.contentType);
         } else {
-            console.debug("[ImportDraftModal] Content empty, resetting form fields.");
+            console.debug("[ImportDesignModal] Content empty, resetting form fields.");
             setName("");
             setSummary("");
             setTheType(undefined);
             setContentType(undefined);
         }
-    }, [draftContent]);
+    }, [designContent]);
 
     // Whenever the type changes to OpenAPI, set the version to "3.0.2".
     useEffect(() => {
@@ -332,7 +332,7 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
         >
             <Alert isInline variant="warning" title="Warning" style={{marginBottom: "15px"}}>
                 <p>
-                    All new drafts are stored locally in your browser. Clearing your browser cache or
+                    All new designs are stored locally in your browser. Clearing your browser cache or
                     switching to a new browser <em>might</em> result in loss of data. Make sure you save your
                     work locally or in a Red Hat OpenShift Service Registry instance!
                 </p>
@@ -340,12 +340,12 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
 
             <Form>
                 <If condition={importType === IMPORT_FROM_FILE}>
-                    <FormGroup label="File" isRequired={true} fieldId="import-draft-file">
+                    <FormGroup label="File" isRequired={true} fieldId="import-design-file">
                         <FileUpload
                             isRequired={true}
-                            id="draft-text-file"
+                            id="design-text-file"
                             type="text"
-                            value={draftContent}
+                            value={designContent}
                             filename={fileName}
                             filenamePlaceholder="Drag and drop a file or upload one"
                             onChange={onFileChange}
@@ -353,16 +353,16 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
                     </FormGroup>
                 </If>
                 <If condition={importType === IMPORT_FROM_URL}>
-                    <FormGroup label="URL" isRequired={true} fieldId="import-draft-url">
+                    <FormGroup label="URL" isRequired={true} fieldId="import-design-url">
                         <UrlUpload
-                            id="draft-text-url"
+                            id="design-text-url"
                             urlPlaceholder="Enter a valid and accessible URL"
                             onChange={onUrlChange}
                         />
                     </FormGroup>
                 </If>
-                <If condition={hasDraftContent}>
-                    <FormGroup label="Type" isRequired={true} fieldId="import-draft-type">
+                <If condition={hasDesignContent}>
+                    <FormGroup label="Type" isRequired={true} fieldId="import-design-type">
                         <Select
                             variant={SelectVariant.single}
                             aria-label="Select type"
@@ -381,7 +381,7 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
                         </Select>
                     </FormGroup>
                     <If condition={type === ArtifactTypes.OPENAPI}>
-                        <FormGroup label="Version" isRequired={true} fieldId="import-draft-version">
+                        <FormGroup label="Version" isRequired={true} fieldId="import-design-version">
                             <Select
                                 variant={SelectVariant.single}
                                 aria-label="Select version"
@@ -396,23 +396,23 @@ export const ImportDraftModal: FunctionComponent<ImportDraftModalProps> = ({impo
                             </Select>
                         </FormGroup>
                     </If>
-                    <FormGroup label="Name" isRequired={true} fieldId="import-draft-name">
+                    <FormGroup label="Name" isRequired={true} fieldId="import-design-name">
                         <TextInput
                             isRequired
                             type="text"
-                            id="import-draft-name"
-                            name="import-draft-name"
-                            aria-describedby="import-draft-name-helper"
+                            id="import-design-name"
+                            name="import-design-name"
+                            aria-describedby="import-design-name-helper"
                             value={name}
                             onChange={(value) => setName(value)}
                         />
                     </FormGroup>
-                    <FormGroup label="Summary" fieldId="import-draft-summary">
+                    <FormGroup label="Summary" fieldId="import-design-summary">
                         <TextArea
                             type="text"
-                            id="import-draft-summary"
-                            name="import-draft-summary"
-                            aria-describedby="import-draft-summary-helper"
+                            id="import-design-summary"
+                            name="import-design-summary"
+                            aria-describedby="import-design-summary-helper"
                             value={summary}
                             onChange={(value) => setSummary(value)}
                         />

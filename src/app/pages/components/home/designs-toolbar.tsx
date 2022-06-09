@@ -1,5 +1,5 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
-import "./drafts-toolbar.css";
+import "./designs-toolbar.css";
 import {
     Button,
     OnPerPageSelect,
@@ -11,25 +11,25 @@ import {
     ToolbarItem
 } from "@patternfly/react-core";
 import {SortAlphaDownAltIcon, SortAlphaDownIcon} from "@patternfly/react-icons";
-import {DraftsSearchCriteria, DraftsSearchResults, Paging} from "@app/models";
+import {DesignsSearchCriteria, DesignsSearchResults, Paging} from "@app/models";
 
 
 /**
  * Properties
  */
-export type DraftsToolbarProps = {
-    criteria: DraftsSearchCriteria;
+export type DesignsToolbarProps = {
+    criteria: DesignsSearchCriteria;
     paging: Paging;
-    drafts?: DraftsSearchResults;
-    onCriteriaChange: (criteria: DraftsSearchCriteria) => void;
+    designs?: DesignsSearchResults;
+    onCriteriaChange: (criteria: DesignsSearchCriteria) => void;
     onPagingChange: (paging: Paging) => void;
 };
 
 
 /**
- * The toolbar to filter (and paginate) the collection of drafts.
+ * The toolbar to filter (and paginate) the collection of designs.
  */
-export const DraftsToolbar: FunctionComponent<DraftsToolbarProps> = ({criteria, paging, drafts, onCriteriaChange, onPagingChange}: DraftsToolbarProps) => {
+export const DesignsToolbar: FunctionComponent<DesignsToolbarProps> = ({criteria, paging, designs, onCriteriaChange, onPagingChange}: DesignsToolbarProps) => {
     const [ filterValue, setFilterValue ] = useState(criteria.filterValue);
 
     useEffect(() => {
@@ -77,15 +77,15 @@ export const DraftsToolbar: FunctionComponent<DraftsToolbarProps> = ({criteria, 
         })
     };
 
-    const totalDraftCount = (): number => {
-        return drafts?.count || 0;
+    const totalDesignCount = (): number => {
+        return designs?.count || 0;
     };
 
     return (
-        <Toolbar id="drafts-toolbar" className="drafts-toolbar">
+        <Toolbar id="designs-toolbar" className="designs-toolbar">
             <ToolbarContent>
                 <ToolbarItem variant="search-filter">
-                    <SearchInput aria-label="Filter drafts" value={filterValue} onChange={onFilterChange} onSearch={onSearch} onClear={onClear} />
+                    <SearchInput aria-label="Filter designs" value={filterValue} onChange={onFilterChange} onSearch={onSearch} onClear={onClear} />
                 </ToolbarItem>
                 <ToolbarItem className="sort-icon-item">
                     <Button variant="plain" aria-label="edit" data-testid="toolbar-btn-sort" onClick={onToggleAscending}>
@@ -94,17 +94,17 @@ export const DraftsToolbar: FunctionComponent<DraftsToolbarProps> = ({criteria, 
                         }
                     </Button>
                 </ToolbarItem>
-                <ToolbarItem className="draft-paging-item">
+                <ToolbarItem className="design-paging-item">
                     <Pagination
                         variant="bottom"
                         dropDirection="down"
-                        itemCount={totalDraftCount()}
+                        itemCount={totalDesignCount()}
                         perPage={paging.pageSize}
                         page={paging.page}
                         onSetPage={onSetPage}
                         onPerPageSelect={onPerPageSelect}
-                        widgetId="draft-list-pagination"
-                        className="draft-list-pagination"
+                        widgetId="design-list-pagination"
+                        className="design-list-pagination"
                     />
                 </ToolbarItem>
             </ToolbarContent>

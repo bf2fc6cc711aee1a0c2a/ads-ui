@@ -1,5 +1,5 @@
 import React, {FunctionComponent, useState} from "react";
-import {Draft} from "@app/models";
+import {Design} from "@app/models";
 import {
     ActionList,
     ActionListItem,
@@ -10,19 +10,19 @@ import {
     FlexItem,
     KebabToggle
 } from "@patternfly/react-core";
-import "./draft-list-item.css";
+import "./design-list-item.css";
 import {ArtifactTypeIcon} from "@app/components/artifact-type-icon";
 
-export type DraftListItemProps = {
-    draft: Draft;
+export type DesignListItemProps = {
+    design: Design;
     onEdit: () => void;
     onDelete: () => void;
     onDownload: () => void;
     onRegister: () => void;
 }
 
-export const DraftListItem: FunctionComponent<DraftListItemProps> = (
-    {draft, onEdit, onDelete, onDownload, onRegister}: DraftListItemProps) => {
+export const DesignListItem: FunctionComponent<DesignListItemProps> = (
+    {design, onEdit, onDelete, onDownload, onRegister}: DesignListItemProps) => {
 
     const [ isToggleOpen, setToggleOpen ] = useState(false);
 
@@ -47,15 +47,15 @@ export const DraftListItem: FunctionComponent<DraftListItemProps> = (
     };
 
     return (
-        <div className="draft-item">
-            <div className="draft-item-icon">
-                <ArtifactTypeIcon type={draft.type} />
+        <div className="design-item">
+            <div className="design-item-icon">
+                <ArtifactTypeIcon type={design.type} />
             </div>
-            <div className="draft-item-info">
-                <div className="name">{draft.name}</div>
-                <div className="summary">{draft.summary||"(Design or schema with no summary)"}</div>
+            <div className="design-item-info">
+                <div className="name">{design.name}</div>
+                <div className="summary">{design.summary||"(Design or schema with no summary)"}</div>
             </div>
-            <div className="draft-item-actions">
+            <div className="design-item-actions">
                 <ActionList>
                     <ActionListItem>
                         <Button variant="secondary" onClick={onEdit}>Edit</Button>

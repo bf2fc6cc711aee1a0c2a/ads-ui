@@ -1,6 +1,6 @@
 import React, {FunctionComponent, useState} from "react";
 import "./artifact-list.css";
-import {CreateDraftContent, SearchedArtifact, SearchedVersion} from "@app/models";
+import {CreateDesignContent, SearchedArtifact, SearchedVersion} from "@app/models";
 import {ArtifactListItem} from "@app/pages/components";
 
 /**
@@ -10,7 +10,7 @@ export type ArtifactListProps = {
     artifacts?: SearchedArtifact[];
     fetchArtifactVersions: (artifact: SearchedArtifact) => Promise<SearchedVersion[]>;
     fetchArtifactContent: (artifact: SearchedArtifact, version?: SearchedVersion) => Promise<string>;
-    onArtifactSelected: (artifact?: SearchedArtifact, version?: SearchedVersion, content?: CreateDraftContent) => void;
+    onArtifactSelected: (artifact?: SearchedArtifact, version?: SearchedVersion, content?: CreateDesignContent) => void;
 }
 
 /**
@@ -32,7 +32,7 @@ export const ArtifactList: FunctionComponent<ArtifactListProps> = (
         onArtifactSelected(undefined, undefined, undefined);
     };
 
-    const onArtifactLoaded = (artifact: SearchedArtifact, version: SearchedVersion, content: CreateDraftContent): void => {
+    const onArtifactLoaded = (artifact: SearchedArtifact, version: SearchedVersion, content: CreateDesignContent): void => {
         console.debug("[ArtifactList] Artifact loaded: ", artifact);
         console.debug("[ArtifactList] Selected Artifact: ", selectedArtifact);
         if (artifact === selectedArtifact) {

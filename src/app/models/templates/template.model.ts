@@ -1,9 +1,9 @@
-import {CreateDraftContent} from "@app/models/drafts/create-draft-content.model";
+import {CreateDesignContent} from "@app/models/designs/create-design-content.model";
 
 export interface Template {
 
     id: string;
     name: string;
-    content: CreateDraftContent
+    content: CreateDesignContent
 
 }

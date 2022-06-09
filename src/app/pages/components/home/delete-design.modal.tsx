@@ -1,30 +1,30 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
 import {Alert, Button, Checkbox, Form, FormGroup, Modal, ModalVariant, Text, TextContent} from "@patternfly/react-core";
-import {Draft} from "@app/models";
+import {Design} from "@app/models";
 
-export type DeleteDraftModalProps = {
-    draft: Draft|undefined;
+export type DeleteDesignModalProps = {
+    design: Design|undefined;
     isOpen: boolean|undefined;
-    onDelete: (draft: Draft) => void;
+    onDelete: (design: Design) => void;
     onCancel: () => void;
-    onDownload: (draft: Draft) => void;
+    onDownload: (design: Design) => void;
 }
 
-export const DeleteDraftModal: FunctionComponent<DeleteDraftModalProps> = ({draft, isOpen, onDelete, onDownload, onCancel}: DeleteDraftModalProps) => {
+export const DeleteDesignModal: FunctionComponent<DeleteDesignModalProps> = ({design, isOpen, onDelete, onDownload, onCancel}: DeleteDesignModalProps) => {
     const [isValid, setValid] = useState(false);
 
     // Called when the user clicks the Delete button in the modal
     const doDelete = (): void => {
-        onDelete(draft as Draft);
+        onDelete(design as Design);
     };
 
     const doDownload = (): void => {
-        onDownload(draft as Draft);
+        onDownload(design as Design);
     };
 
     useEffect(() => {
         setValid(false);
-    }, [draft, isOpen]);
+    }, [design, isOpen]);
 
     return (
         <Modal
@@ -47,13 +47,13 @@ export const DeleteDraftModal: FunctionComponent<DeleteDraftModalProps> = ({draf
             </TextContent>
 
             <Form>
-                <FormGroup label="Name" fieldId="delete-draft-name">
-                    <TextContent>{draft?.name}</TextContent>
+                <FormGroup label="Name" fieldId="delete-design-name">
+                    <TextContent>{design?.name}</TextContent>
                 </FormGroup>
-                <FormGroup label="Summary" fieldId="delete-draft-summary">
-                    <TextContent>{draft?.summary}</TextContent>
+                <FormGroup label="Summary" fieldId="delete-design-summary">
+                    <TextContent>{design?.summary}</TextContent>
                 </FormGroup>
-                <FormGroup fieldId="delete-draft-warning">
+                <FormGroup fieldId="delete-design-warning">
                     <Alert isInline variant="info" title="To save your data for future use, download the design.">
                         <p style={{lineHeight: "18px"}}>
                             To ensure you data is successfully saved, wait for the download to complete
@@ -62,7 +62,7 @@ export const DeleteDraftModal: FunctionComponent<DeleteDraftModalProps> = ({draf
                         <Button variant="link" onClick={doDownload} style={{paddingLeft:"0px"}}>Download design</Button>
                     </Alert>
                 </FormGroup>
-                <FormGroup fieldId="delete-draft-confirm">
+                <FormGroup fieldId="delete-design-confirm">
                     <Checkbox id="valid-checkbox" name="" label="I have downloaded the design or do not need to!"
                               isChecked={isValid} onChange={(checked) => setValid(checked)} />
                 </FormGroup>

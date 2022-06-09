@@ -5,22 +5,22 @@ import {AddCircleOIcon} from "@patternfly/react-icons";
 /**
  * Properties
  */
-export type DraftsEmptyStateFilteredProps = {
+export type DesignsEmptyStateFilteredProps = {
 };
 
 /**
- * The empty state UI shown to the user when no drafts are available, either due to
- * filtering or because no drafts have been created yet.
+ * The empty state UI shown to the user when no designs are available, either due to
+ * filtering or because no designs have been created yet.
  */
-export const DraftsEmptyStateFiltered: FunctionComponent<DraftsEmptyStateFilteredProps> = ({}: DraftsEmptyStateFilteredProps) => {
+export const DesignsEmptyStateFiltered: FunctionComponent<DesignsEmptyStateFilteredProps> = ({}: DesignsEmptyStateFilteredProps) => {
     return (
         <EmptyState>
             <EmptyStateIcon icon={AddCircleOIcon} />
             <Title headingLevel="h4" size="lg">
-                No matching drafts
+                No matching designs
             </Title>
             <EmptyStateBody>
-                No drafts matched your filter criteria.  Trying changing your criteria and
+                No designs matched your filter criteria.  Trying changing your criteria and
                 searching again.
             </EmptyStateBody>
         </EmptyState>

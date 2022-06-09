@@ -1,5 +1,5 @@
 import React, {RefObject, useEffect} from "react";
-import {Editor as DraftEditor, EditorProps} from "@app/editors/editor-types";
+import {Editor as DesignEditor, EditorProps} from "@app/editors/editor-types";
 import "./editor-openapi.css";
 import {Config, useConfig} from "@rhoas/app-services-ui-shared";
 import {parseJson, parseYaml, toJsonString, toYamlString} from "@app/utils";
@@ -16,7 +16,7 @@ export type OpenApiEditorProps = {
  * and loaded via an iframe.  This component is a bridge - it acts as a React component that
  * bridges to the iframe.
  */
-export const OpenApiEditor: DraftEditor = ({content, onChange, className}: OpenApiEditorProps) => {
+export const OpenApiEditor: DesignEditor = ({content, onChange, className}: OpenApiEditorProps) => {
     const ref: RefObject<any> = React.createRef();
     const cfg: Config = useConfig();
 

@@ -1,4 +1,13 @@
 /**
+ * Clones an object by stringifying it and then parsing it.  Not efficient
+ * but effective.  Use sparingly.
+ * @param object
+ */
+export function cloneObject(object: any): any {
+    return JSON.parse(JSON.stringify(object));
+}
+
+/**
  * Function to search a JS object for a property value that matches a criteria (from) and
  * replaces it with a new value (to);
  * @param object

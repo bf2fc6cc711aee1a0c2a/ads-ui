@@ -12,21 +12,21 @@ import {AddCircleOIcon} from "@patternfly/react-icons";
 /**
  * Properties
  */
-export type DraftsEmptyStateProps = {
+export type DesignsEmptyStateProps = {
     onCreate: () => void;
     onImport: () => void;
 };
 
 /**
- * The empty state UI shown to the user when no drafts are available, either due to
- * filtering or because no drafts have been created yet.
+ * The empty state UI shown to the user when no designs are available, either due to
+ * filtering or because no designs have been created yet.
  */
-export const DraftsEmptyState: FunctionComponent<DraftsEmptyStateProps> = ({onCreate, onImport}: DraftsEmptyStateProps) => {
+export const DesignsEmptyState: FunctionComponent<DesignsEmptyStateProps> = ({onCreate, onImport}: DesignsEmptyStateProps) => {
     return (
         <EmptyState>
             <EmptyStateIcon icon={AddCircleOIcon} />
             <Title headingLevel="h4" size="lg">
-                No drafts yet
+                No designs yet
             </Title>
             <EmptyStateBody>
                 Create and edit API and schema designs with the API Designer.  To get started,

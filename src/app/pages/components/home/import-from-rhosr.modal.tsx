@@ -1,6 +1,6 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
 import {Button, Modal, ModalVariant} from "@patternfly/react-core";
-import {CreateDraft, CreateDraftContent, SearchedArtifact, SearchedVersion} from "@app/models";
+import {CreateDesign, CreateDesignContent, SearchedArtifact, SearchedVersion} from "@app/models";
 import {Registry} from "@rhoas/registry-management-sdk";
 import {RhosrService, useRhosrService} from "@app/services";
 import {IsLoading} from "@app/components";
@@ -9,7 +9,7 @@ import {ArtifactSelector} from "@app/pages/components";
 
 export type ImportFromRhosrModalProps = {
     isOpen: boolean | undefined;
-    onImport: (event: CreateDraft, content: CreateDraftContent) => void;
+    onImport: (event: CreateDesign, content: CreateDesignContent) => void;
     onCancel: () => void;
 }
 
@@ -18,18 +18,18 @@ export const ImportFromRhosrModal: FunctionComponent<ImportFromRhosrModalProps> 
     const [isValid, setValid] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const [registries, setRegistries] = useState([] as Registry[]);
-    const [draft, setDraft] = useState<CreateDraft>();
-    const [draftContent, setDraftContent] = useState<CreateDraftContent>();
+    const [design, setDesign] = useState<CreateDesign>();
+    const [designContent, setDesignContent] = useState<CreateDesignContent>();
 
     const rhosr: RhosrService = useRhosrService();
 
     // Called when the user selects an artifact from the artifact selector.
-    const onArtifactSelected = (registry?: Registry, artifact?: SearchedArtifact, version?: SearchedVersion, content?: CreateDraftContent): void => {
+    const onArtifactSelected = (registry?: Registry, artifact?: SearchedArtifact, version?: SearchedVersion, content?: CreateDesignContent): void => {
         if (artifact === undefined) {
-            setDraft(undefined);
-            setDraftContent(undefined);
+            setDesign(undefined);
+            setDesignContent(undefined);
         } else {
-            const cd: CreateDraft = {
+            const cd: CreateDesign = {
                 type: artifact.type,
                 name: artifact.name || artifact.id,
                 summary: artifact.description || "",
@@ -43,14 +43,14 @@ export const ImportFromRhosrModal: FunctionComponent<ImportFromRhosrModalProps> 
                     }
                 }
             };
-            setDraft(cd);
-            setDraftContent(content);
+            setDesign(cd);
+            setDesignContent(content);
         }
     };
 
     // Called when the user clicks the Import button in the modal
     const doImport = (): void => {
-        onImport(draft as CreateDraft, draftContent as CreateDraftContent);
+        onImport(design as CreateDesign, designContent as CreateDesignContent);
     };
 
     useEffect(() => {
@@ -72,11 +72,11 @@ export const ImportFromRhosrModal: FunctionComponent<ImportFromRhosrModalProps> 
 
     useEffect(() => {
         let valid: boolean = true;
-        if (draft === undefined) {
+        if (design === undefined) {
             valid = false;
         }
         setValid(valid);
-    }, [draft, draftContent]);
+    }, [design, designContent]);
 
     return (
         <Modal
