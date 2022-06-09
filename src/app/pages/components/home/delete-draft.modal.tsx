@@ -35,7 +35,7 @@ export const DeleteDraftModal: FunctionComponent<DeleteDraftModalProps> = ({draf
             onClose={onCancel}
             actions={[
                 <Button key="delete" variant="primary" isDisabled={!isValid} onClick={doDelete}>
-                    Create
+                    Delete
                 </Button>,
                 <Button key="cancel" variant="link" onClick={onCancel}>
                     Cancel
