@@ -1,20 +1,25 @@
 import React, {FunctionComponent, useState} from "react";
 import {Dropdown, DropdownItem, DropdownSeparator, KebabToggle, MenuToggle} from "@patternfly/react-core";
 
+export enum ImportFrom {
+    FILE,
+    URL,
+    RHOSR
+};
+
 /**
  * Properties
  */
 export type ImportDropdownProps = {
-    onImportFromFile: () => void;
-    onImportFromUrl: () => void;
-    onImportFromRhosr: () => void;
+    variant: "long"|"short";
+    onImport: (from: ImportFrom) => void;
 };
 
 /**
  * A control to display the Import dropdown on the main page (used to select how to import content
  * into the API Designer).
  */
-export const ImportDropdown: FunctionComponent<ImportDropdownProps> = ({onImportFromFile, onImportFromUrl, onImportFromRhosr}: ImportDropdownProps) => {
+export const ImportDropdown: FunctionComponent<ImportDropdownProps> = ({variant, onImport}: ImportDropdownProps) => {
     const [isToggled, setToggled] = useState(false);
 
     const onToggle = (): void => {
@@ -22,7 +27,7 @@ export const ImportDropdown: FunctionComponent<ImportDropdownProps> = ({onImport
     };
 
     const menuToggle: React.ReactNode = (
-        <MenuToggle variant="secondary" onClick={onToggle} isExpanded={isToggled}>Import a schema or API design</MenuToggle>
+        <MenuToggle variant="secondary" onClick={onToggle} isExpanded={isToggled}>{variant === "short" ? "Import" : "Import a schema or API design"}</MenuToggle>
     );
 
     const onMenuSelect: (event?: React.SyntheticEvent<HTMLDivElement>) => void = (event) => {
@@ -31,13 +36,13 @@ export const ImportDropdown: FunctionComponent<ImportDropdownProps> = ({onImport
         setToggled(false);
         switch (action) {
             case "action-file":
-                onImportFromFile();
+                onImport(ImportFrom.FILE);
                 return;
             case "action-url":
-                onImportFromUrl();
+                onImport(ImportFrom.URL);
                 return;
             case "action-rhosr":
-                onImportFromRhosr();
+                onImport(ImportFrom.RHOSR);
                 return;
         }
     };

@@ -7,7 +7,6 @@ export * from "./artifact-list-toolbar";
 export * from "./create-design.modal";
 export * from "./delete-design.modal";
 export * from "./design-list";
-export * from "./design-list-item";
 export * from "./designs.panel";
 export * from "./designs-empty-state";
 export * from "./designs-empty-state-filtered";

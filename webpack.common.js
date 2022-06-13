@@ -36,7 +36,7 @@ module.exports = (env, argv) => {
           test: /\.css$/,
           use: [MiniCssExtractPlugin.loader, "css-loader"],
           include: (stylesheet => !isPatternflyStyles(stylesheet)),
-          sideEffects: true,
+          sideEffects: true
         },
         {
           test: /\.css$/,
@@ -89,6 +89,7 @@ module.exports = (env, argv) => {
       new MiniCssExtractPlugin({
         filename: "[name].[contenthash:8].css",
         chunkFilename: "[contenthash:8].css",
+        ignoreOrder: true,
         insert: (linkTag) => {
           const preloadLinkTag = document.createElement("link")
           preloadLinkTag.rel = "preload"

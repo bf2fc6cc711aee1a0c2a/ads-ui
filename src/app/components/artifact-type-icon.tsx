@@ -7,10 +7,11 @@ import {ArtifactTypes} from "@app/models";
  */
 export type ArtifactTypeIconProps = {
     type: string;
+    isShowLabel?: boolean;
 }
 
 
-export const ArtifactTypeIcon: FunctionComponent<ArtifactTypeIconProps> = ({type}: ArtifactTypeIconProps) => {
+export const ArtifactTypeIcon: FunctionComponent<ArtifactTypeIconProps> = ({type, isShowLabel}: ArtifactTypeIconProps) => {
     const getTitle = (): string => {
         let title: string = type;
         switch (type) {
@@ -48,8 +49,48 @@ export const ArtifactTypeIcon: FunctionComponent<ArtifactTypeIconProps> = ({type
         return title;
     };
 
+    const getLabel = (): string => {
+        let title: string = type;
+        switch (type) {
+            case ArtifactTypes.AVRO:
+                title = "Avro";
+                break;
+            case ArtifactTypes.PROTOBUF:
+                title = "Protobuf";
+                break;
+            case ArtifactTypes.JSON:
+                title = "JSON schema";
+                break;
+            case ArtifactTypes.OPENAPI:
+                title = "OpenAPI";
+                break;
+            case ArtifactTypes.ASYNCAPI:
+                title = "AsyncAPI";
+                break;
+            case ArtifactTypes.GRAPHQL:
+                title = "GraphQL";
+                break;
+            case ArtifactTypes.KCONNECT:
+                title = "Kafka Connect";
+                break;
+            case ArtifactTypes.WSDL:
+                title = "WSDL";
+                break;
+            case ArtifactTypes.XSD:
+                title = "XML Schema";
+                break;
+            case ArtifactTypes.XML:
+                title = "XML";
+                break;
+        }
+        return title;
+    };
+
     const getClassNames = (): string => {
         let classes: string = "artifact-type-icon";
+        if (isShowLabel) {
+            classes += " artifact-type-icon-with-label";
+        }
         switch (type) {
             case ArtifactTypes.AVRO:
                 classes += " avro-icon24";
@@ -85,7 +126,15 @@ export const ArtifactTypeIcon: FunctionComponent<ArtifactTypeIconProps> = ({type
         return classes;
     }
 
+    const renderLabel = (): React.ReactNode | undefined => {
+        if (isShowLabel) {
+            return <span>{getLabel()}</span>
+        } else {
+            return undefined;
+        }
+    };
+
     return (
-        <div className={getClassNames()} title={getTitle()} />
+        <div className={getClassNames()} title={getTitle()} children={renderLabel()} />
     );
 }

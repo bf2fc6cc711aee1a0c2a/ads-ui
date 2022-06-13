@@ -1,3 +1,6 @@
+
+export type DesignContextType = "create" | "file" | "url" | "rhosr";
+
 export interface DesignContextFile {
     fileName: string;
 }
@@ -16,7 +19,7 @@ export interface DesignContextRhosr {
 
 export interface DesignContext {
 
-    type: "create" | "file" | "url" | "rhosr";
+    type: DesignContextType;
     file?: DesignContextFile;
     url?: DesignContextUrl;
     rhosr?: DesignContextRhosr;

@@ -119,8 +119,10 @@ export const ArtifactListToolbar: FunctionComponent<ArtifactListToolbarProps> = 
                 </ToolbarItem>
                 <ToolbarItem className="artifact-paging-item">
                     <Pagination
+                        style={{padding: "5px"}}
                         variant="bottom"
                         dropDirection="down"
+                        isCompact={true}
                         itemCount={totalArtifactCount()}
                         perPage={paging.pageSize}
                         page={paging.page}

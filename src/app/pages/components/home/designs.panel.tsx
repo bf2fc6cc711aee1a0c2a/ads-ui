@@ -2,14 +2,14 @@ import React, {FunctionComponent, useEffect, useState} from "react";
 import "./designs.panel.css";
 import {Alert, Card, CardBody} from "@patternfly/react-core";
 import {DownloadService, DesignsService, useDownloadService, useDesignsService} from "@app/services";
-import {Design, DesignsSearchCriteria, DesignsSearchResults, Paging} from "@app/models";
+import {Design, DesignsSearchCriteria, DesignsSearchResults, DesignsSort, Paging} from "@app/models";
 import {If, ListWithToolbar} from "@app/components";
 import {
     DeleteDesignModal,
     DesignList,
     DesignsEmptyState,
     DesignsEmptyStateFiltered,
-    DesignsToolbar, ExportToRhosrData, ExportToRhosrModal
+    DesignsToolbar, ExportToRhosrData, ExportToRhosrModal, ImportFrom
 } from "@app/pages/components";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
 import {contentTypeForDesign, fileExtensionForDesign} from "@app/utils";
@@ -21,7 +21,7 @@ function convertToValidFilename(value: string): string {
 
 export type DesignsPanelProps = {
     onCreate: () => void;
-    onImport: () => void;
+    onImport: (from: ImportFrom) => void;
 }
 
 
@@ -35,8 +35,11 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onCreate, on
     });
     const [ criteria, setCriteria ] = useState<DesignsSearchCriteria>({
         filterValue: "",
-        ascending: true,
         filterOn: "name"
+    });
+    const [ sort, setSort ] = useState<DesignsSort>({
+        by: "name",
+        direction: "asc"
     });
     const [ designs, setDesigns ] = useState<DesignsSearchResults>();
     const [ designToDelete, setDesignToDelete ] = useState<Design>();
@@ -100,6 +103,11 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onCreate, on
         doRefresh();
     };
 
+    const onSortDesigns = (sort: DesignsSort): void => {
+        setSort(sort);
+        doRefresh();
+    };
+
     const onPagingChange = (paging: Paging): void => {
         setPaging(paging);
         doRefresh();
@@ -107,7 +115,7 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onCreate, on
 
     useEffect(() => {
         setLoading(true);
-        designsSvc.searchDesigns(criteria, paging).then(designs => {
+        designsSvc.searchDesigns(criteria, paging, sort).then(designs => {
             console.debug("[DesignsPanel] Designs loaded: ", designs);
             setDesigns(designs);
             setLoading(false);
@@ -127,22 +135,13 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onCreate, on
 
     const toolbar: React.ReactNode = (
         <DesignsToolbar designs={designs} criteria={criteria} paging={paging}
-                       onCriteriaChange={onCriteriaChange} onPagingChange={onPagingChange} />
+                        onCreate={onCreate} onImport={onImport}
+                        onCriteriaChange={onCriteriaChange} onPagingChange={onPagingChange} />
     );
 
     return (
         <React.Fragment>
             <Card isSelectable={false}>
-                <If condition={!designs || (designs.count === 0 && !isFiltered)}>
-                    <Alert className="panel-alert" isInline variant="info" title="About your data" style={{ marginBottom: "15px"}}>
-                        <p>
-                            All designs are stored locally in your browser.  Clearing your browser cache or
-                            switching to a new browser <em>might</em> result in loss of data.  Make sure you save your
-                            work locally or in a Red Hat OpenShift Service Registry instance!  In the future your
-                            designs will be saved to a persistent server, stay tuned!
-                        </p>
-                    </Alert>
-                </If>
                 <CardBody className="panel-body">
                     <ListWithToolbar toolbar={toolbar}
                                      emptyState={emptyState}
@@ -150,11 +149,21 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onCreate, on
                                      isLoading={isLoading}
                                      isFiltered={isFiltered}
                                      isEmpty={!designs || designs.count === 0}>
+                        <Alert className="panel-alert" isInline variant="info" title="About your data" style={{ marginBottom: "15px"}}>
+                            <p>
+                                All designs are stored locally in your browser.  Clearing your browser cache or
+                                switching to a new browser <em>might</em> result in loss of data.  Make sure you save your
+                                work locally or in a Red Hat OpenShift Service Registry instance!  In the future your
+                                designs will be saved to a persistent server, stay tuned!
+                            </p>
+                        </Alert>
                         <DesignList designs={designs as DesignsSearchResults}
-                                   onEdit={onEditDesign}
-                                   onDownload={onDownloadDesign}
-                                   onRegister={onRegisterDesign}
-                                   onDelete={onDeleteDesign} />
+                                    sort={sort}
+                                    onSort={onSortDesigns}
+                                    onEdit={onEditDesign}
+                                    onDownload={onDownloadDesign}
+                                    onRegister={onRegisterDesign}
+                                    onDelete={onDeleteDesign} />
                     </ListWithToolbar>
                 </CardBody>
             </Card>

@@ -12,17 +12,13 @@ import {
 } from "@patternfly/react-core";
 import {ArtifactTypes, ContentTypes, CreateDesign, CreateDesignContent} from "@app/models";
 import {If} from "@app/components";
-import {UrlUpload} from "@app/pages/components";
+import {ImportFrom, UrlUpload} from "@app/pages/components";
 import {isJson, isProto, isWsdl, isXml, isXsd, isYaml, parseJson, parseYaml} from "@app/utils";
 import {DesignContext} from "@app/models/designs/design-context.model";
 
 
-const IMPORT_FROM_FILE: string = "FILE";
-const IMPORT_FROM_URL: string = "URL";
-
-
 export type ImportDesignModalProps = {
-    importType: "FILE" | "URL";
+    importType: ImportFrom;
     isOpen: boolean | undefined;
     onImport: (event: CreateDesign, content: CreateDesignContent) => void;
     onCancel: () => void;
@@ -127,7 +123,7 @@ export const ImportDesignModal: FunctionComponent<ImportDesignModalProps> = ({im
 
     // Called when the user clicks the Import button in the modal
     const doImport = (): void => {
-        const context: DesignContext = importType === "FILE" ? {
+        const context: DesignContext = importType === ImportFrom.FILE ? {
             type: "file",
             file: {
                 fileName: fileName as string
@@ -159,7 +155,7 @@ export const ImportDesignModal: FunctionComponent<ImportDesignModalProps> = ({im
     };
 
     const title = (): string => {
-        if (importType === IMPORT_FROM_FILE) {
+        if (importType === ImportFrom.FILE) {
             return "Import from file";
         } else {
             return "Import from URL";
@@ -339,7 +335,7 @@ export const ImportDesignModal: FunctionComponent<ImportDesignModalProps> = ({im
             </Alert>
 
             <Form>
-                <If condition={importType === IMPORT_FROM_FILE}>
+                <If condition={importType === ImportFrom.FILE}>
                     <FormGroup label="File" isRequired={true} fieldId="import-design-file">
                         <FileUpload
                             isRequired={true}
@@ -352,7 +348,7 @@ export const ImportDesignModal: FunctionComponent<ImportDesignModalProps> = ({im
                         />
                     </FormGroup>
                 </If>
-                <If condition={importType === IMPORT_FROM_URL}>
+                <If condition={importType === ImportFrom.URL}>
                     <FormGroup label="URL" isRequired={true} fieldId="import-design-url">
                         <UrlUpload
                             id="design-text-url"

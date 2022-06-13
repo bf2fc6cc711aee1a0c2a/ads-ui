@@ -12,6 +12,7 @@ import {
 } from "@patternfly/react-core";
 import {SortAlphaDownAltIcon, SortAlphaDownIcon} from "@patternfly/react-icons";
 import {DesignsSearchCriteria, DesignsSearchResults, Paging} from "@app/models";
+import {ImportDropdown, ImportFrom} from "@app/pages/components";
 
 
 /**
@@ -23,25 +24,22 @@ export type DesignsToolbarProps = {
     designs?: DesignsSearchResults;
     onCriteriaChange: (criteria: DesignsSearchCriteria) => void;
     onPagingChange: (paging: Paging) => void;
+    onCreate: () => void;
+    onImport: (from: ImportFrom) => void;
 };
 
 
 /**
  * The toolbar to filter (and paginate) the collection of designs.
  */
-export const DesignsToolbar: FunctionComponent<DesignsToolbarProps> = ({criteria, paging, designs, onCriteriaChange, onPagingChange}: DesignsToolbarProps) => {
+export const DesignsToolbar: FunctionComponent<DesignsToolbarProps> = (
+    {criteria, paging, designs, onCriteriaChange, onPagingChange, onCreate, onImport}: DesignsToolbarProps) => {
+
     const [ filterValue, setFilterValue ] = useState(criteria.filterValue);
 
     useEffect(() => {
         setFilterValue(criteria.filterValue);
     }, [criteria]);
-
-    const onToggleAscending = (): void => {
-        onCriteriaChange({
-            ...criteria,
-            ascending: !criteria.ascending
-        });
-    };
 
     const onSetPage: OnSetPage = (event: any, newPage: number, perPage?: number): void => {
         onPagingChange({
@@ -87,17 +85,18 @@ export const DesignsToolbar: FunctionComponent<DesignsToolbarProps> = ({criteria
                 <ToolbarItem variant="search-filter">
                     <SearchInput aria-label="Filter designs" value={filterValue} onChange={onFilterChange} onSearch={onSearch} onClear={onClear} />
                 </ToolbarItem>
-                <ToolbarItem className="sort-icon-item">
-                    <Button variant="plain" aria-label="edit" data-testid="toolbar-btn-sort" onClick={onToggleAscending}>
-                        {
-                            criteria.ascending ? <SortAlphaDownIcon/> : <SortAlphaDownAltIcon/>
-                        }
-                    </Button>
+                <ToolbarItem>
+                    <Button variant="primary" onClick={onCreate}>Create a schema or API design</Button>
+                </ToolbarItem>
+                <ToolbarItem>
+                    <ImportDropdown variant="long" onImport={onImport} />
                 </ToolbarItem>
                 <ToolbarItem className="design-paging-item">
                     <Pagination
+                        style={{padding: "0"}}
                         variant="bottom"
                         dropDirection="down"
+                        isCompact={true}
                         itemCount={totalDesignCount()}
                         perPage={paging.pageSize}
                         page={paging.page}

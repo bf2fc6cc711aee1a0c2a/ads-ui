@@ -20,7 +20,9 @@ export type ListWithToolbarProps = {
  * Wrapper around a set of arbitrary child elements and displays them only if the
  * indicated condition is true.
  */
-export const ListWithToolbar: FunctionComponent<ListWithToolbarProps> = ({toolbar, emptyState, filteredEmptyState, isLoading, isEmpty, isFiltered, children}: ListWithToolbarProps) => {
+export const ListWithToolbar: FunctionComponent<ListWithToolbarProps> = (
+    {toolbar, emptyState, filteredEmptyState, isLoading, isEmpty, isFiltered, children}: ListWithToolbarProps) => {
+
     return (
         <React.Fragment>
             <If condition={!isEmpty || isFiltered} children={toolbar} />

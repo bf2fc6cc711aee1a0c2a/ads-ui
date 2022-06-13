@@ -1,13 +1,14 @@
 import React, {FunctionComponent, useState} from "react";
 import "./home.css";
 import {
-    ActionList,
-    ActionListItem,
     Button,
+    Flex,
+    FlexItem,
     Grid,
     GridItem,
     PageSection,
     PageSectionVariants,
+    Popover,
     Text,
     TextContent
 } from "@patternfly/react-core";
@@ -15,13 +16,14 @@ import {
     CreateDesignModal,
     DesignsPanel,
     ImportDesignModal,
-    ImportDropdown,
+    ImportFrom,
     ImportFromRhosrModal
 } from "@app/pages/components";
 import {CreateDesign, CreateDesignContent, Template} from "@app/models";
 import {cloneObject, propertyReplace} from "@app/utils";
 import {DesignsService, useDesignsService} from "@app/services";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
+import {QuestionCircleIcon} from "@patternfly/react-icons";
 
 export type HomePageProps = {
 };
@@ -30,21 +32,18 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
     const [ isCreateModalOpen, setCreateModalOpen ] = useState(false);
     const [ isImportModalOpen, setImportModalOpen ] = useState(false);
     const [ isImportFromRhosrModalOpen, setImportFromRhosrModalOpen ] = useState(false);
-    const [ importType, setImportType ] = useState<"FILE"|"URL">("FILE");
+    const [ importType, setImportType ] = useState<ImportFrom>(ImportFrom.FILE);
 
     const designsSvc: DesignsService = useDesignsService();
     const nav: Navigation = useNavigation();
 
-    const onImportFromFile = (): void => {
-        setImportType("FILE");
-        setImportModalOpen(true);
-    };
-    const onImportFromUrl = (): void => {
-        setImportType("URL");
-        setImportModalOpen(true);
-    };
-    const onImportFromRhosr = (): void => {
-        setImportFromRhosrModalOpen(true);
+    const onImport = (from: ImportFrom): void => {
+        setImportType(from);
+        if (from !== ImportFrom.RHOSR) {
+            setImportModalOpen(true);
+        } else {
+            setImportFromRhosrModalOpen(true);
+        }
     };
 
     const createDesign = async (info: CreateDesign, template: Template): Promise<void> => {
@@ -81,24 +80,33 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
         <React.Fragment>
             <PageSection variant={PageSectionVariants.light} className="summary">
                 <TextContent className="summary-title-and-description">
-                    <Text component="h1" className="title">Red Hat OpenShift API Designer</Text>
-                    <Text component="p" className="description">
-                        A tool to design your APIs (OpenAPI, AsyncAPI) and schemas (Apache Avro, Google Protobuf, JSON Schema).
-                        Manage your collection of API and schema designs below by creating, importing, and editing.
-                    </Text>
+                    <Flex>
+                        <FlexItem>
+                            <Text component="h1" className="title">API Designs</Text>
+                        </FlexItem>
+                        <FlexItem>
+                            <Popover
+                                aria-label="More information"
+                                headerContent={<div>API Designer Help</div>}
+                                bodyContent={<div>A tool to design your APIs (OpenAPI, AsyncAPI) and schemas (Apache Avro, Google Protobuf, JSON Schema). Manage your collection of API and schema designs below by creating, importing, and editing.</div>}
+                            >
+                                <Button variant="plain"><QuestionCircleIcon /></Button>
+                            </Popover>
+                        </FlexItem>
+                    </Flex>
                 </TextContent>
-                <Grid hasGutter={true}>
-                    <GridItem span={11}>
-                        <ActionList className="summary-actions">
-                            <ActionListItem>
-                                <Button className="btn-create" variant="primary" onClick={() => setCreateModalOpen(true)}>Create a schema or API design</Button>
-                            </ActionListItem>
-                            <ActionListItem>
-                                <ImportDropdown onImportFromFile={onImportFromFile} onImportFromUrl={onImportFromUrl} onImportFromRhosr={onImportFromRhosr} />
-                            </ActionListItem>
-                        </ActionList>
-                    </GridItem>
-                </Grid>
+                {/*<Grid hasGutter={true}>*/}
+                {/*    <GridItem span={11}>*/}
+                {/*        <ActionList className="summary-actions">*/}
+                {/*            <ActionListItem>*/}
+                {/*                <Button className="btn-create" variant="primary" onClick={() => setCreateModalOpen(true)}>Create a schema or API design</Button>*/}
+                {/*            </ActionListItem>*/}
+                {/*            <ActionListItem>*/}
+                {/*                <ImportDropdown onImportFromFile={onImportFromFile} onImportFromUrl={onImportFromUrl} onImportFromRhosr={onImportFromRhosr} />*/}
+                {/*            </ActionListItem>*/}
+                {/*        </ActionList>*/}
+                {/*    </GridItem>*/}
+                {/*</Grid>*/}
                 <CreateDesignModal isOpen={isCreateModalOpen} onCreate={createDesign} onCancel={() => {setCreateModalOpen(false)}} />
                 <ImportDesignModal isOpen={isImportModalOpen} onImport={importDesign} onCancel={() => {setImportModalOpen(false)}}
                                   importType={importType} />
@@ -106,8 +114,9 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
             </PageSection>
             <PageSection variant={PageSectionVariants.default} isFilled={true}>
                 <Grid hasGutter={true}>
-                    <GridItem span={11}>
-                        <DesignsPanel onCreate={() => {setCreateModalOpen(true)}} onImport={() => {setImportModalOpen(true)}} />
+                    <GridItem span={12}>
+                        <DesignsPanel onCreate={() => {setCreateModalOpen(true)}}
+                                      onImport={onImport} />
                     </GridItem>
                 </Grid>
             </PageSection>

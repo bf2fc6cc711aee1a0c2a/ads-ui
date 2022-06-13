@@ -1,4 +1,12 @@
-import {CreateDesign, Design, DesignContent, DesignsSearchCriteria, DesignsSearchResults, Paging} from "@app/models";
+import {
+    CreateDesign,
+    Design,
+    DesignContent,
+    DesignsSearchCriteria,
+    DesignsSearchResults,
+    DesignsSort,
+    Paging
+} from "@app/models";
 import Dexie, { Table } from "dexie";
 import { v4 as uuidv4 } from "uuid";
 import {CreateDesignContent} from "@app/models/designs/create-design-content.model";
@@ -43,7 +51,7 @@ async function getDesigns(): Promise<Design[]> {
     return db.designs.toArray();
 }
 
-async function searchDesigns(criteria: DesignsSearchCriteria, paging: Paging): Promise<DesignsSearchResults> {
+async function searchDesigns(criteria: DesignsSearchCriteria, paging: Paging, sort: DesignsSort): Promise<DesignsSearchResults> {
     console.debug("[DesignsService] Searching for designs: ", criteria, paging);
     const accept = (design: Design): boolean => {
         let matches: boolean = false;
@@ -62,8 +70,12 @@ async function searchDesigns(criteria: DesignsSearchCriteria, paging: Paging): P
 
         // filter and sort the results
         const filteredDesigns: Design[] = designs.filter(accept).sort((design1, design2) => {
-            let rval: number = design1.name.localeCompare(design2.name);
-            if (!criteria.ascending) {
+            let rval: number = sort.by === "name" ? (
+                design1.name.localeCompare(design2.name)
+            ) : (
+                design2.modifiedOn.getTime() - design1.modifiedOn.getTime()
+            );
+            if (sort.direction !== "asc") {
                 rval *= -1;
             }
             return rval;
@@ -120,7 +132,7 @@ export interface DesignsService {
     createDesign(cd: CreateDesign, cdc: CreateDesignContent): Promise<Design>;
     getDesigns(): Promise<Design[]>;
     getDesign(id: string): Promise<Design>;
-    searchDesigns(criteria: DesignsSearchCriteria, paging: Paging): Promise<DesignsSearchResults>;
+    searchDesigns(criteria: DesignsSearchCriteria, paging: Paging, sort: DesignsSort): Promise<DesignsSearchResults>;
     deleteDesign(id: string): Promise<void>;
     getDesignContent(id: string): Promise<DesignContent>;
     updateDesignContent(content: DesignContent): Promise<void>;
