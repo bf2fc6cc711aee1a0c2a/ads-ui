@@ -90,7 +90,14 @@ export const CreateDesignModal: FunctionComponent<CreateDesignModalProps> = ({is
 
     // Called when the user clicks the Create button in the modal
     const doCreate = (): void => {
-        const cd: CreateDesign = { type, name, summary };
+        const cd: CreateDesign = {
+            type,
+            name,
+            summary,
+            context: {
+                type: "create"
+            }
+        };
         onCreate(cd, template as Template);
     };
 

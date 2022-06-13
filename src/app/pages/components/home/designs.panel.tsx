@@ -2,7 +2,7 @@ import React, {FunctionComponent, useEffect, useState} from "react";
 import "./designs.panel.css";
 import {Alert, Card, CardBody} from "@patternfly/react-core";
 import {DownloadService, DesignsService, useDownloadService, useDesignsService} from "@app/services";
-import {Design, DesignsSearchCriteria, DesignsSearchResults, Paging} from "@app/models";
+import {Design, DesignsSearchCriteria, DesignsSearchResults, DesignsSort, Paging} from "@app/models";
 import {If, ListWithToolbar} from "@app/components";
 import {
     DeleteDesignModal,
@@ -35,8 +35,11 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onCreate, on
     });
     const [ criteria, setCriteria ] = useState<DesignsSearchCriteria>({
         filterValue: "",
-        ascending: true,
         filterOn: "name"
+    });
+    const [ sort, setSort ] = useState<DesignsSort>({
+        by: "name",
+        direction: "asc"
     });
     const [ designs, setDesigns ] = useState<DesignsSearchResults>();
     const [ designToDelete, setDesignToDelete ] = useState<Design>();
@@ -100,6 +103,11 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onCreate, on
         doRefresh();
     };
 
+    const onSortDesigns = (sort: DesignsSort): void => {
+        setSort(sort);
+        doRefresh();
+    };
+
     const onPagingChange = (paging: Paging): void => {
         setPaging(paging);
         doRefresh();
@@ -107,7 +115,7 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onCreate, on
 
     useEffect(() => {
         setLoading(true);
-        designsSvc.searchDesigns(criteria, paging).then(designs => {
+        designsSvc.searchDesigns(criteria, paging, sort).then(designs => {
             console.debug("[DesignsPanel] Designs loaded: ", designs);
             setDesigns(designs);
             setLoading(false);
@@ -150,10 +158,12 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onCreate, on
                             </p>
                         </Alert>
                         <DesignList designs={designs as DesignsSearchResults}
-                                   onEdit={onEditDesign}
-                                   onDownload={onDownloadDesign}
-                                   onRegister={onRegisterDesign}
-                                   onDelete={onDeleteDesign} />
+                                    sort={sort}
+                                    onSort={onSortDesigns}
+                                    onEdit={onEditDesign}
+                                    onDownload={onDownloadDesign}
+                                    onRegister={onRegisterDesign}
+                                    onDelete={onDeleteDesign} />
                     </ListWithToolbar>
                 </CardBody>
             </Card>

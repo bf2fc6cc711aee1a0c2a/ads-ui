@@ -41,13 +41,6 @@ export const DesignsToolbar: FunctionComponent<DesignsToolbarProps> = (
         setFilterValue(criteria.filterValue);
     }, [criteria]);
 
-    const onToggleAscending = (): void => {
-        onCriteriaChange({
-            ...criteria,
-            ascending: !criteria.ascending
-        });
-    };
-
     const onSetPage: OnSetPage = (event: any, newPage: number, perPage?: number): void => {
         onPagingChange({
             ...paging,
