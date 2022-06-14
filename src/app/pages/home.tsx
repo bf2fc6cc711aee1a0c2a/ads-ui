@@ -1,41 +1,68 @@
-import React, {FunctionComponent, useState} from "react";
+import React, {FunctionComponent, useRef, useState} from "react";
 import "./home.css";
 import {
     Button,
+    Drawer,
+    DrawerActions,
+    DrawerCloseButton,
+    DrawerContent,
+    DrawerContentBody,
+    DrawerHead,
+    DrawerPanelBody,
+    DrawerPanelContent,
     Flex,
     FlexItem,
-    Grid,
-    GridItem,
     PageSection,
     PageSectionVariants,
     Popover,
     Text,
-    TextContent
+    TextContent,
+    TextVariants,
+    Title,
+    TitleSizes
 } from "@patternfly/react-core";
 import {
-    CreateDesignModal,
+    CreateDesignModal, DesignDetailsPanel,
     DesignsPanel,
     ImportDesignModal,
     ImportFrom,
     ImportFromRhosrModal
 } from "@app/pages/components";
-import {CreateDesign, CreateDesignContent, Template} from "@app/models";
+import {CreateDesign, CreateDesignContent, Design, Template} from "@app/models";
 import {cloneObject, propertyReplace} from "@app/utils";
 import {DesignsService, useDesignsService} from "@app/services";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
 import {QuestionCircleIcon} from "@patternfly/react-icons";
+import {ArtifactTypeIcon} from "@app/components";
 
 export type HomePageProps = {
 };
 
 export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) => {
+    const [ isDrawerExpanded, setDrawerExpanded ] = useState(true);
     const [ isCreateModalOpen, setCreateModalOpen ] = useState(false);
     const [ isImportModalOpen, setImportModalOpen ] = useState(false);
     const [ isImportFromRhosrModalOpen, setImportFromRhosrModalOpen ] = useState(false);
     const [ importType, setImportType ] = useState<ImportFrom>(ImportFrom.FILE);
+    const [ selectedDesign, setSelectedDesign ] = useState<Design>();
+
+    const drawerRef: any = useRef<HTMLSpanElement>();
 
     const designsSvc: DesignsService = useDesignsService();
     const nav: Navigation = useNavigation();
+
+    const onDrawerExpand = (): void => {
+        drawerRef.current && drawerRef.current.focus();
+    };
+
+    const onDesignSelected = (design: Design | undefined): void => {
+        setSelectedDesign(design);
+        if (design) {
+            setDrawerExpanded(true);
+        } else {
+            setDrawerExpanded(false);
+        }
+    };
 
     const onImport = (from: ImportFrom): void => {
         setImportType(from);
@@ -76,50 +103,70 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
         });
     };
 
+    // The content of the side panel.  This should be a details panel with metadata and history (for example).
+    const panelContent: React.ReactNode = (
+        <DrawerPanelContent>
+            <DrawerHead>
+                <TextContent>
+                    <Text component={TextVariants.small} className="pf-u-mb-0">
+                        Name
+                    </Text>
+                    <Title
+                        headingLevel="h2"
+                        size={TitleSizes['xl']}
+                        className="pf-u-mt-0"
+                    >
+                        <div className="design-details-header">
+                            <div className="design-icon"><ArtifactTypeIcon type={selectedDesign?.type||"AVRO"} /></div>
+                            <div className="design-name">{selectedDesign?.name}</div>
+                        </div>
+                    </Title>
+                </TextContent>
+                <DrawerActions>
+                    <DrawerCloseButton onClick={() => setDrawerExpanded(false)} />
+                </DrawerActions>
+            </DrawerHead>
+            <DrawerPanelBody>
+                <DesignDetailsPanel design={selectedDesign} />
+            </DrawerPanelBody>
+        </DrawerPanelContent>
+    );
+
     return (
         <React.Fragment>
-            <PageSection variant={PageSectionVariants.light} className="summary">
-                <TextContent className="summary-title-and-description">
-                    <Flex>
-                        <FlexItem>
-                            <Text component="h1" className="title">API Designs</Text>
-                        </FlexItem>
-                        <FlexItem>
-                            <Popover
-                                aria-label="More information"
-                                headerContent={<div>API Designer Help</div>}
-                                bodyContent={<div>A tool to design your APIs (OpenAPI, AsyncAPI) and schemas (Apache Avro, Google Protobuf, JSON Schema). Manage your collection of API and schema designs below by creating, importing, and editing.</div>}
-                            >
-                                <Button variant="plain"><QuestionCircleIcon /></Button>
-                            </Popover>
-                        </FlexItem>
-                    </Flex>
-                </TextContent>
-                {/*<Grid hasGutter={true}>*/}
-                {/*    <GridItem span={11}>*/}
-                {/*        <ActionList className="summary-actions">*/}
-                {/*            <ActionListItem>*/}
-                {/*                <Button className="btn-create" variant="primary" onClick={() => setCreateModalOpen(true)}>Create a schema or API design</Button>*/}
-                {/*            </ActionListItem>*/}
-                {/*            <ActionListItem>*/}
-                {/*                <ImportDropdown onImportFromFile={onImportFromFile} onImportFromUrl={onImportFromUrl} onImportFromRhosr={onImportFromRhosr} />*/}
-                {/*            </ActionListItem>*/}
-                {/*        </ActionList>*/}
-                {/*    </GridItem>*/}
-                {/*</Grid>*/}
-                <CreateDesignModal isOpen={isCreateModalOpen} onCreate={createDesign} onCancel={() => {setCreateModalOpen(false)}} />
-                <ImportDesignModal isOpen={isImportModalOpen} onImport={importDesign} onCancel={() => {setImportModalOpen(false)}}
-                                  importType={importType} />
-                <ImportFromRhosrModal isOpen={isImportFromRhosrModalOpen} onImport={importDesign} onCancel={() => {setImportFromRhosrModalOpen(false)}} />
-            </PageSection>
-            <PageSection variant={PageSectionVariants.default} isFilled={true}>
-                <Grid hasGutter={true}>
-                    <GridItem span={12}>
-                        <DesignsPanel onCreate={() => {setCreateModalOpen(true)}}
-                                      onImport={onImport} />
-                    </GridItem>
-                </Grid>
-            </PageSection>
+            <Drawer isStatic={false} position="right" isInline={false} isExpanded={isDrawerExpanded} onExpand={onDrawerExpand}>
+                <DrawerContent panelContent={panelContent}>
+                    <DrawerContentBody>
+                        <PageSection variant={PageSectionVariants.light} className="summary">
+                            <TextContent className="summary-title-and-description">
+                                <Flex>
+                                    <FlexItem>
+                                        <Text component="h1" className="title">API Designs</Text>
+                                    </FlexItem>
+                                    <FlexItem>
+                                        <Popover
+                                            aria-label="More information"
+                                            headerContent={<div>API Designer Help</div>}
+                                            bodyContent={<div>A tool to design your APIs (OpenAPI, AsyncAPI) and schemas (Apache Avro, Google Protobuf, JSON Schema). Manage your collection of API and schema designs below by creating, importing, and editing.</div>}
+                                        >
+                                            <Button variant="plain"><QuestionCircleIcon /></Button>
+                                        </Popover>
+                                    </FlexItem>
+                                </Flex>
+                            </TextContent>
+                            <CreateDesignModal isOpen={isCreateModalOpen} onCreate={createDesign} onCancel={() => {setCreateModalOpen(false)}} />
+                            <ImportDesignModal isOpen={isImportModalOpen} onImport={importDesign} onCancel={() => {setImportModalOpen(false)}}
+                                              importType={importType} />
+                            <ImportFromRhosrModal isOpen={isImportFromRhosrModalOpen} onImport={importDesign} onCancel={() => {setImportFromRhosrModalOpen(false)}} />
+                        </PageSection>
+                        <PageSection variant={PageSectionVariants.default} isFilled={true}>
+                            <DesignsPanel onCreate={() => {setCreateModalOpen(true)}}
+                                          onDesignSelected={onDesignSelected}
+                                          onImport={onImport} />
+                        </PageSection>
+                    </DrawerContentBody>
+                </DrawerContent>
+            </Drawer>
         </React.Fragment>
     );
 }

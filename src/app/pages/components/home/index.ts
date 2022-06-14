@@ -17,3 +17,5 @@ export * from "./import-from-rhosr.modal";
 export * from "./rhosr.panel";
 export * from "./template-item";
 export * from "./url-upload";
+export * from "./design-details-panel";
+export * from "./design-history";

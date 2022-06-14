@@ -4,10 +4,11 @@
     height: 24px;
     line-height: 24px;
 }
-.artifact-type-icon-with-label {
-    display: inline-block;
-    width: auto;
+.artifact-type-icon.has-icon {
     text-indent: 32px;
+}
+.artifact-type-icon-with-label.has-label {
+    width: auto;
 }
 
 .oai-icon16 {

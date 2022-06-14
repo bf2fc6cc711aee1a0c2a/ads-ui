@@ -1,0 +1,16 @@
+.design-details-grid {
+    display: grid;
+    grid-template-columns: min-content auto;
+    margin-top: 20px;
+}
+.design-details-grid .design-details-label {
+    font-size: 15px;
+    padding-right: 15px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    white-space: nowrap;
+}
+.design-details-grid .design-details-value {
+    font-size: 15px;
+    margin-bottom: 8px;
+}

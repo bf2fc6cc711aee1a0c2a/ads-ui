@@ -20,12 +20,13 @@ function convertToValidFilename(value: string): string {
 }
 
 export type DesignsPanelProps = {
+    onDesignSelected: (design: Design | undefined) => void;
     onCreate: () => void;
     onImport: (from: ImportFrom) => void;
 }
 
 
-export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onCreate, onImport}: DesignsPanelProps) => {
+export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onDesignSelected, onCreate, onImport}: DesignsPanelProps) => {
     const [ isLoading, setLoading ] = useState(false);
     const [ refresh, setRefresh ] = useState(1);
     const [ isFiltered, setFiltered ] = useState(false);
@@ -115,6 +116,7 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onCreate, on
 
     useEffect(() => {
         setLoading(true);
+        onDesignSelected(undefined);
         designsSvc.searchDesigns(criteria, paging, sort).then(designs => {
             console.debug("[DesignsPanel] Designs loaded: ", designs);
             setDesigns(designs);
@@ -159,6 +161,7 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onCreate, on
                         </Alert>
                         <DesignList designs={designs as DesignsSearchResults}
                                     sort={sort}
+                                    onSelect={onDesignSelected}
                                     onSort={onSortDesigns}
                                     onEdit={onEditDesign}
                                     onDownload={onDownloadDesign}

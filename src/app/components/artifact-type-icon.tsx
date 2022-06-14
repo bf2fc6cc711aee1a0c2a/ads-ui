@@ -7,11 +7,12 @@ import {ArtifactTypes} from "@app/models";
  */
 export type ArtifactTypeIconProps = {
     type: string;
-    isShowLabel?: boolean;
+    isShowIcon?: boolean; // defaults to true
+    isShowLabel?: boolean; // defaults to false
 }
 
 
-export const ArtifactTypeIcon: FunctionComponent<ArtifactTypeIconProps> = ({type, isShowLabel}: ArtifactTypeIconProps) => {
+export const ArtifactTypeIcon: FunctionComponent<ArtifactTypeIconProps> = ({type, isShowIcon, isShowLabel}: ArtifactTypeIconProps) => {
     const getTitle = (): string => {
         let title: string = type;
         switch (type) {
@@ -89,39 +90,42 @@ export const ArtifactTypeIcon: FunctionComponent<ArtifactTypeIconProps> = ({type
     const getClassNames = (): string => {
         let classes: string = "artifact-type-icon";
         if (isShowLabel) {
-            classes += " artifact-type-icon-with-label";
+            classes += " has-label";
         }
-        switch (type) {
-            case ArtifactTypes.AVRO:
-                classes += " avro-icon24";
-                break;
-            case ArtifactTypes.PROTOBUF:
-                classes += " protobuf-icon24";
-                break;
-            case ArtifactTypes.JSON:
-                classes += " json-icon24";
-                break;
-            case ArtifactTypes.OPENAPI:
-                classes += " oai-icon24";
-                break;
-            case ArtifactTypes.ASYNCAPI:
-                classes += " aai-icon24";
-                break;
-            case ArtifactTypes.GRAPHQL:
-                classes += " graphql-icon24";
-                break;
-            case ArtifactTypes.KCONNECT:
-                classes += " kconnect-icon24";
-                break;
-            case ArtifactTypes.WSDL:
-                classes += " xml-icon24";
-                break;
-            case ArtifactTypes.XSD:
-                classes += " xml-icon24";
-                break;
-            case ArtifactTypes.XML:
-                classes += " xml-icon24";
-                break;
+        if (isShowIcon !== false) {
+            classes += " has-icon";
+            switch (type) {
+                case ArtifactTypes.AVRO:
+                    classes += " avro-icon24";
+                    break;
+                case ArtifactTypes.PROTOBUF:
+                    classes += " protobuf-icon24";
+                    break;
+                case ArtifactTypes.JSON:
+                    classes += " json-icon24";
+                    break;
+                case ArtifactTypes.OPENAPI:
+                    classes += " oai-icon24";
+                    break;
+                case ArtifactTypes.ASYNCAPI:
+                    classes += " aai-icon24";
+                    break;
+                case ArtifactTypes.GRAPHQL:
+                    classes += " graphql-icon24";
+                    break;
+                case ArtifactTypes.KCONNECT:
+                    classes += " kconnect-icon24";
+                    break;
+                case ArtifactTypes.WSDL:
+                    classes += " xml-icon24";
+                    break;
+                case ArtifactTypes.XSD:
+                    classes += " xml-icon24";
+                    break;
+                case ArtifactTypes.XML:
+                    classes += " xml-icon24";
+                    break;
+            }
         }
         return classes;
     }

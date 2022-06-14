@@ -18,21 +18,21 @@ export type DesignListProps = {
     onDelete: (design: Design) => void;
     onRegister: (design: Design) => void;
     onDownload: (design: Design) => void;
+    onSelect: (design: Design|undefined) => void;
 }
 
 export const DesignList: FunctionComponent<DesignListProps> = (
-    {designs, sort, onSort, onEdit, onDelete, onRegister, onDownload}: DesignListProps) => {
+    {designs, sort, onSort, onEdit, onDelete, onRegister, onDownload, onSelect}: DesignListProps) => {
 
+    const [selectedDesign, setSelectedDesign] = useState<Design>();
     const [sortByIndex, setSortByIndex] = useState<number>();
 
     const columns: any[] = [
         { index: 0, id: "name", label: "Name", width: 40, sortable: true },
         { index: 1, id: "type", label: "Type", width: 15, sortable: false },
         { index: 2, id: "modified-on", label: "Modified on", width: 15, sortable: true },
-        { index: 3, id: "context", label: "Labels", width: 25, sortable: false },
+        { index: 3, id: "context", label: "Origin", width: 25, sortable: false },
     ];
-
-    const data: any[] = [];
 
     const labels = (design: Design): string[] => {
         const theLabels: string[] = [];
@@ -43,10 +43,10 @@ export const DesignList: FunctionComponent<DesignListProps> = (
             theLabels.push("Service registry");
         }
         if (hasContext(design, "url")) {
-            theLabels.push("Url");
+            theLabels.push("URL");
         }
         if (hasContext(design, "create")) {
-            theLabels.push("Created");
+            theLabels.push("New design");
         }
         return theLabels;
     };
@@ -107,6 +107,14 @@ export const DesignList: FunctionComponent<DesignListProps> = (
         setSortByIndex(sort.by === "name" ? 0 : 2);
     }, [sort]);
 
+    useEffect(() => {
+        onSelect(selectedDesign);
+    }, [selectedDesign]);
+
+    useEffect(() => {
+        setSelectedDesign(undefined);
+    }, [designs]);
+
     return (
         <div className="design-list">
             <ResponsiveTable
@@ -114,20 +122,21 @@ export const DesignList: FunctionComponent<DesignListProps> = (
                 columns={columns}
                 data={designs.designs}
                 expectedLength={designs.count}
+                onRowClick={(row) => setSelectedDesign(row.row)}
                 renderHeader={({ column, Th, key }) => (
                     <Th sort={sortParams(column)}
                         className="design-list-header"
-                        key={key} width={column.width}
+                        key={`header-${column.id}`}
+                        width={column.width}
                         modifier="truncate">{column.label}</Th>
                 )}
                 renderCell={({ column, row, colIndex, Td, key }) => (
-                    <Td className="design-list-cell" key={key} children={renderColumnData(row as Design, colIndex)} />
+                    <Td className="design-list-cell" key={`cell-${colIndex}-${row.id}`} children={renderColumnData(row as Design, colIndex)} />
                 )}
                 renderActions={({row, ActionsColumn}) => (
-                    <ActionsColumn items={actionsFor(row)}/>
+                    <ActionsColumn key={`actions-${row['id']}`} items={actionsFor(row)}/>
                 )}
-                isRowSelected={({ row }) => false}
-                onRowClick={({ row }) => {}}
+                isRowSelected={({ row }) => row.id === selectedDesign?.id}
             />
         </div>
     );
