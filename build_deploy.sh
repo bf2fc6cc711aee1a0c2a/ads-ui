@@ -56,7 +56,7 @@ if [ -z "${NACHOBOT_TOKEN}" ]; then
 fi
 
 step "Build the image"
-${CONTAINER_ENGINE} build -t ${IMAGE} -f ./build/dockerfile .
+${CONTAINER_ENGINE} build -t ${IMAGE} -f ./build/Dockerfile .
 
 step "Push the client files"
 CID=$(${CONTAINER_ENGINE} create ${IMAGE})
