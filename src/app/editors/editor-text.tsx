@@ -19,9 +19,9 @@ export const TextEditor: DesignEditor = ({content, onChange}: EditorProps) => {
             defaultLanguage="json"
             defaultValue={defaultValue}
             onChange={onChange}
-            height="100%"
             options={{
-                automaticLayout: true
+                automaticLayout: true,
+                wordWrap: 'on'
             }}
         />
     );

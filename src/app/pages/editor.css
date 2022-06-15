@@ -15,3 +15,9 @@
 #section-editor .editor-parent {
     flex-grow: 1;
 }
+
+#dry-run-issues-panel .spinner {
+   margin-left: auto;
+   margin-right: auto;
+   display: block;
+}
