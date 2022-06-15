@@ -11,6 +11,7 @@
   "private": true,
   "scripts": {
     "prebuild": "npm run clean",
+    "postinstall": "node .fix_yaml.js",
     "build": "webpack --config webpack.prod.js",
     "start": "node server.js",
     "start:dev": "webpack serve --hot --color --progress --config webpack.dev.js",
