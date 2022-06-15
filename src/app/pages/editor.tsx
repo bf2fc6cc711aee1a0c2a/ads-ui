@@ -137,10 +137,6 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
         return textEditor;
     };
 
-    const onExpandDryRunSidepanel = () => {
-        drawerRef.current && drawerRef.current.focus();
-    };
-
     const onResizeDryRunSidepanel = (newWidth: number, id: string) => {
         // eslint-disable-next-line no-console
         console.log(`${id} has new width of: ${newWidth}`);
@@ -153,19 +149,19 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
         rhosrInstanceFactory.createFor(registry)
             .testUpdateArtifactContent(groupId, artifactId, currentContent)
             .then(() => {
-                openPanel();
+                openDryRunIssuesPanel();
             }).catch((error: DryRunErrorResponse) => {
-                openPanel(error);
+                openDryRunIssuesPanel(error);
             });
     }
 
-    const openPanel = (error?: DryRunErrorResponse) => {
+    const openDryRunIssuesPanel = (error?: DryRunErrorResponse) => {
         setDryRunIssuesDrawerIsOpen(true);
         setDryRunError(error);
         setDryRunIssuesIsLoading(false);
     }
 
-    const closePanel = () => {
+    const closeDryRunIssuesPanel = () => {
         setDryRunIssuesDrawerIsOpen(false);
         setDryRunIssuesIsLoading(false);
         setDryRunError(undefined);
@@ -175,9 +171,9 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
         return (
             <DrawerPanelContent isResizable onResize={onResizeDryRunSidepanel} minSize='35%' id="dry-run-issues-panel">
                 <DrawerHead>
-                    <h3 className="pf-c-title pf-m-3xl" tabIndex={isDryRunIssuesDrawerOpen ? 0 : -1} ref={drawerRef as any}>
+                    <h2 className="pf-c-title pf-m-2xl" tabIndex={isDryRunIssuesDrawerOpen ? 0 : -1} ref={drawerRef as any}>
                         Registration dry-run issues
-                    </h3>
+                    </h2>
                     <DrawerActions>
                         <Button variant='secondary' onClick={() => artifactRegistrationDryRun(
                             registryDryRunArgsCache?.registry as Registry,
@@ -185,7 +181,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
                             registryDryRunArgsCache?.artifactId as string
                         )
                         }>Retry</Button>
-                        <DrawerCloseButton onClick={closePanel} />
+                        <DrawerCloseButton onClick={closeDryRunIssuesPanel} />
                     </DrawerActions>
                 </DrawerHead>
                 <Divider />
@@ -200,24 +196,24 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
         if (isDryRunIssuesLoading) {
             return <Spinner className='spinner' />
         } else if (error) {
-            if (error.name === 'RuleViolationException' && error.causes?.length > 0) {
-                return error.causes.map((cause =>
-                    <DescriptionList isHorizontal>
-                        <DescriptionListGroup>
-                            <DescriptionListTerm>Code</DescriptionListTerm>
-                            <DescriptionListDescription>{cause.description}</DescriptionListDescription>
-                            <DescriptionListTerm>Context</DescriptionListTerm>
-                            <DescriptionListDescription><pre>{cause.context}</pre></DescriptionListDescription>
-                        </DescriptionListGroup>
-                        <Divider />
-                    </DescriptionList>
-                ))
-            } else {
-                return <CodeBlock>
-                    <CodeBlockCode id="code-content">{error.detail}</CodeBlockCode>
-                </CodeBlock>
-            }
+            return <DescriptionList isHorizontal>
+                {error.name === 'RuleViolationException' && error.causes?.length > 0 ?
+                    error.causes.map((cause, i) =>
+                        <React.Fragment key={'issue-' + i}>
+                            <DescriptionListGroup>
+                                <DescriptionListTerm>Code</DescriptionListTerm>
+                                <DescriptionListDescription>{cause.description}</DescriptionListDescription>
+                                <DescriptionListTerm>Context</DescriptionListTerm>
+                                <DescriptionListDescription><pre>{cause.context}</pre></DescriptionListDescription>
+                            </DescriptionListGroup>
+                            <Divider />
+                        </React.Fragment>
+                    ) : <CodeBlock>
+                        <CodeBlockCode id="code-content">{error.detail}</CodeBlockCode>
+                    </CodeBlock>}
+            </DescriptionList>
         }
+
         return <p>Artifact registration dry-run completed with no issues.</p>;
     }
 
@@ -225,13 +221,13 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
         <IsLoading condition={isLoading}>
             <PageSection variant={PageSectionVariants.light} id="section-context">
                 <EditorContext
-                    design={design as Design} 
+                    design={design as Design}
                     dirty={isDirty}
                     onSave={onSave}
                     onCancel={onCancel}
                     isPanelOpen={isDryRunIssuesDrawerOpen}
                     onRegistrationDryRun={artifactRegistrationDryRun}
-                    onExpandDryRunCausesPanel={(error: DryRunErrorResponse) => openPanel(error)}
+                    onExpandDryRunCausesPanel={(error: DryRunErrorResponse) => openDryRunIssuesPanel(error)}
                     artifactContent={currentContent}
 
                 />
