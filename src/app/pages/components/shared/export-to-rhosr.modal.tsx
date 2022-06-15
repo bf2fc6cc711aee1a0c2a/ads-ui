@@ -15,7 +15,6 @@ import {
 import {If, IsLoading, ObjectSelect} from "@app/components";
 import {DesignContext} from "@app/models/designs/design-context.model";
 import {CreateOrUpdateArtifactData} from "@app/models/rhosr-instance/create-or-update-artifact-data.model";
-import {getContexts} from "@app/utils";
 
 export type ExportToRhosrData = {
     design: Design;
@@ -122,14 +121,15 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
     }, [isOpen]);
 
     useEffect(() => {
-        if (design && design.contexts && design.contexts.length > 0) {
-            const filteredContexts: DesignContext[] = getContexts(design, "rhosr");
-            if (filteredContexts.length > 0) {
-                const context: DesignContext = filteredContexts[0];
-                setGroup(context.rhosr?.groupId);
-                setArtifactId(context.rhosr?.artifactId);
-                setVersion(context.rhosr?.version);
-            }
+        if (design && design.origin && design.origin.type === "rhosr") {
+            const context: DesignContext = design.origin;
+            setGroup(context.rhosr?.groupId);
+            setArtifactId(context.rhosr?.artifactId);
+            setVersion(context.rhosr?.version);
+        } else {
+            setGroup(undefined);
+            setArtifactId(undefined);
+            setVersion(undefined);
         }
     }, [design]);
 

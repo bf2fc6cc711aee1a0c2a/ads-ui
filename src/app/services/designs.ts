@@ -15,10 +15,10 @@ import {cloneObject} from "@app/utils";
 
 
 const db = new Dexie("designsDB");
-db.version(3).stores({
+db.version(4).stores({
     designs: "++id, type, name, createdOn, modifiedOn", // Primary key and indexed props
     content: "++id",
-    events: "++id, type, on"
+    events: "++eventId, id, type, on"
 });
 
 
@@ -31,7 +31,7 @@ async function createDesign(cd: CreateDesign, cdc: CreateDesignContent): Promise
         type: cd.type,
         createdOn: new Date(),
         modifiedOn: new Date(),
-        contexts: []
+        origin: cloneObject(cd.context)
     };
     const newDesignContent: DesignContent = {
         id,
@@ -45,7 +45,6 @@ async function createDesign(cd: CreateDesign, cdc: CreateDesignContent): Promise
         data: {}
     };
     if (cd.context) {
-        newDesign.contexts?.push(cloneObject(cd.context));
         newEvent.data.context = cloneObject(cd.context);
         if (cd.context.type !== "create") {
             newEvent.type = "import";
@@ -59,8 +58,7 @@ async function createDesign(cd: CreateDesign, cdc: CreateDesignContent): Promise
         db.designs.add(newDesign),
         // @ts-ignore
         db.content.add(newDesignContent),
-        // @ts-ignore
-        db.events.add(newEvent),
+        createEvent(newEvent)
     ]).then(() => newDesign);
 }
 
@@ -152,19 +150,19 @@ async function updateDesignContent(content: DesignContent): Promise<void> {
         db.designs.update(content.id, {
             modifiedOn: new Date()
         }),
-        // @ts-ignore
-        db.events.add(newEvent),
+        createEvent(newEvent)
     ]).then(() => {});
 }
 
 
 async function getEvents(id: string): Promise<DesignEvent[]> {
     // @ts-ignore
-    return db.events.where("id").equals(id).toArray();
+    return db.events.where("id").equals(id).reverse().sortBy("on");
 }
 
 
 async function createEvent(event: DesignEvent): Promise<void> {
+    event.eventId = uuidv4();
     // @ts-ignore
     return db.events.add(event);
 }

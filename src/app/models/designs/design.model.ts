@@ -8,6 +8,6 @@ export interface Design {
     summary: string|undefined;
     createdOn: Date;
     modifiedOn: Date;
-    contexts?: DesignContext[];
+    origin: DesignContext;
 
 }

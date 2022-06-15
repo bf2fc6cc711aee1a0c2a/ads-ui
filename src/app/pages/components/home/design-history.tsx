@@ -4,6 +4,7 @@ import {Design, DesignEvent} from "@app/models";
 import {DesignsService, useDesignsService} from "@app/services";
 import Moment from "react-moment";
 import {IfNotEmpty, IsLoading} from "@app/components";
+import {DesignEventType} from "@app/pages/components";
 
 /**
  * Properties
@@ -33,12 +34,11 @@ export const DesignHistory: FunctionComponent<DesignHistoryProps> = ({design}: D
             <IfNotEmpty collection={events}>
                 <div className="design-history">
                     {
-                        events?.map(event => (
-                            <div className="design-history-item">
-                                <span>{event.type}</span>
-                                <span> at </span>
-                                <Moment date={event.on} fromNow={true} />
-                            </div>
+                        events?.map((event, idx) => (
+                            <React.Fragment key={idx}>
+                                <div key={`${idx}-type`} className="event-type"><DesignEventType event={event} /></div>
+                                <div key={`${idx}-time`} className="event-time"><Moment date={event.on} format="MMMM DD, YYYY h:mma" /></div>
+                            </React.Fragment>
                         ))
                     }
                 </div>

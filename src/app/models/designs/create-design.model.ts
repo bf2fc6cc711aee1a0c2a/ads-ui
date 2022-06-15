@@ -5,6 +5,6 @@ export interface CreateDesign {
     type: string;
     name: string;
     summary: string|undefined;
-    context?: DesignContext;
+    context: DesignContext;
 
 }

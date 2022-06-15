@@ -4,7 +4,7 @@ import {Design} from "@app/models";
 import {Flex, FlexItem, Form, FormGroup, Tab, Tabs, TabTitleText} from "@patternfly/react-core";
 import {ArtifactTypeIcon} from "@app/components";
 import Moment from "react-moment";
-import {DesignHistory} from "@app/pages/components";
+import {DesignEvents, DesignHistory, DesignOriginLabel} from "@app/pages/components";
 
 /**
  * Properties
@@ -37,18 +37,23 @@ export const DesignDetailsPanel: FunctionComponent<DesignDetailsPanelProps> = ({
                             <ArtifactTypeIcon type={design?.type as string} isShowLabel={true} isShowIcon={false} />
                         </div>
 
-                        <div className="design-details-label">Created</div>
+                        <div className="design-details-label">Time created</div>
                         <div className="design-details-value"><Moment date={design?.createdOn} fromNow={true} /></div>
 
-                        <div className="design-details-label">Last updated</div>
+                        <div className="design-details-label">Time updated</div>
                         <div className="design-details-value"><Moment date={design?.modifiedOn} fromNow={true} /></div>
+
+                        <div className="design-details-label">Origin</div>
+                        <div className="design-details-value">
+                            <DesignOriginLabel design={design} />
+                        </div>
                     </div>
+                </Tab>
+                <Tab eventKey="events" title={<TabTitleText>Events</TabTitleText>}>
+                    <DesignEvents design={design as Design} />
                 </Tab>
                 <Tab eventKey="history" title={<TabTitleText>History</TabTitleText>}>
                     <DesignHistory design={design as Design} />
-                </Tab>
-                <Tab eventKey="events" title={<TabTitleText>Events</TabTitleText>}>
-                    Events
                 </Tab>
             </Tabs>
         </React.Fragment>

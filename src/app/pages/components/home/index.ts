@@ -19,3 +19,6 @@ export * from "./template-item";
 export * from "./url-upload";
 export * from "./design-details-panel";
 export * from "./design-history";
+export * from "./design-events";
+export * from "./design-event-type";
+export * from "./design-origin-label";

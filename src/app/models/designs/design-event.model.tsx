@@ -3,6 +3,7 @@ export type DesignEventType = "create" | "import" | "update" | "download" | "reg
 
 export interface DesignEvent {
 
+    eventId?: string;
     id: string;
     type: DesignEventType;
     on: Date;

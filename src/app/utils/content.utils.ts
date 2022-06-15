@@ -1,7 +1,6 @@
 import YAML from "yaml";
 import {IParserResult, parse} from "protobufjs";
 import {ArtifactTypes, ContentTypes, Design, DesignContent} from "@app/models";
-import {DesignContext} from "@app/models/designs/design-context.model";
 
 /**
  * Returns true if the given content is JSON formatted.
@@ -96,14 +95,11 @@ export function isProto(content: string): boolean {
 export function fileExtensionForDesign(design: Design, content: DesignContent): string {
     // If the design was originally imported from a file, let's just use the extension
     // from that file.
-    if (design.contexts) {
-        const contexts: DesignContext[] = design.contexts.filter(context => context.type === "file");
-        if (contexts.length > 0) {
-            const filename: string = contexts[0].file?.fileName as string;
-            if (filename.indexOf(".") > 0) {
-                const split: string[] = filename.split(".");
-                return split[split.length - 1];
-            }
+    if (design.origin && design.origin.type === "file") {
+        const filename: string = design.origin.file?.fileName as string;
+        if (filename.indexOf(".") > 0) {
+            const split: string[] = filename.split(".");
+            return split[split.length - 1];
         }
     }
 

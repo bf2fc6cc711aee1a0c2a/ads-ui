@@ -111,7 +111,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = ({ design, d
 
     useEffect(() => {
         if (design) {
-            const context: DesignContext|undefined = (design.contexts && design.contexts.length > 0) ? design.contexts[0] : undefined;
+            const context: DesignContext|undefined = design.origin;
             setDesignContext(context);
         }
     }, [design]);

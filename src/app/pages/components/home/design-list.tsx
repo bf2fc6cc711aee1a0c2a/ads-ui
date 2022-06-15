@@ -4,11 +4,12 @@ import {Design, DesignsSearchResults, DesignsSort} from "@app/models";
 import {ResponsiveTable} from "@rhoas/app-services-ui-components";
 import {ArtifactTypeIcon, NavLink} from "@app/components";
 import Moment from "react-moment";
-import {hasContext} from "@app/utils";
 import {KebabToggle, Label} from "@patternfly/react-core";
 import {IAction} from "@patternfly/react-table";
 import {ThProps} from "@patternfly/react-table/src/components/TableComposable/Th";
 import {CustomActionsToggleProps} from "@patternfly/react-table/src/components/Table/ActionsColumn";
+import {hasOrigin} from "@app/utils";
+import {DesignOriginLabel} from "@app/pages/components";
 
 
 export type DesignListProps = {
@@ -35,23 +36,6 @@ export const DesignList: FunctionComponent<DesignListProps> = (
         { index: 3, id: "context", label: "Origin", width: 25, sortable: false },
     ];
 
-    const labels = (design: Design): string[] => {
-        const theLabels: string[] = [];
-        if (hasContext(design, "file")) {
-            theLabels.push("Local file");
-        }
-        if (hasContext(design, "rhosr")) {
-            theLabels.push("Service registry");
-        }
-        if (hasContext(design, "url")) {
-            theLabels.push("URL");
-        }
-        if (hasContext(design, "create")) {
-            theLabels.push("New design");
-        }
-        return theLabels;
-    };
-
     const renderColumnData = (column: Design, colIndex: number): React.ReactNode => {
         // Name.
         if (colIndex === 0) {
@@ -70,9 +54,9 @@ export const DesignList: FunctionComponent<DesignListProps> = (
         if (colIndex === 2) {
             return <Moment date={column.modifiedOn} fromNow={true} />
         }
-        // Labels.
+        // Origin.
         if (colIndex === 3) {
-            return labels(column).map(label => <Label color="blue">{label}</Label>);
+            return <DesignOriginLabel design={column} />;
         }
         return <span />
     };
