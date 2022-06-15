@@ -26,7 +26,7 @@ const initialFormState = {
 		errorMessage: ""
 	},
 	artifactIdValue: {
-		value: '6a44eac0-ac69-459c-baf6-3f21e7bb12d0',
+		value: '',
 		validated: 'default' as ValidatedValue,
 		errorMessage: ""
 	}
