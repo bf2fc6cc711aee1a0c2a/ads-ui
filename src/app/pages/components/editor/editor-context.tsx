@@ -146,7 +146,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = ({ design, d
                             [
                                 <DropdownItem key="action-export-to-rhosr" data-id="action-export-to-rhosr">Export to Service Registry</DropdownItem>,
                                 <DropdownItem key="action-compare" data-id="action-compare">Compare differences</DropdownItem>,
-                                <DropdownItem key="action-validate" data-id="action-validate" onClick={() => setIsDryRunModalOpen(true)}>Validate</DropdownItem>,
+                                <DropdownItem key="action-validate" data-id="action-validate" onClick={() => setIsDryRunModalOpen(true)}>Registration dry-run</DropdownItem>,
                                 <DropdownItem key="action-compatibility" data-id="action-compatibility">Check compatibility</DropdownItem>,
                             ]
                         }
