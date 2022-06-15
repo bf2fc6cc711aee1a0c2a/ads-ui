@@ -11,10 +11,9 @@
   "private": true,
   "scripts": {
     "prebuild": "npm run clean",
-    "build": "npm run fix:yaml:package && webpack --config webpack.prod.js",
-    "start": "npm run fix:yaml:package && node server.js",
-    "start:dev": "npm run fix:yaml:package && webpack serve --hot --color --progress --config webpack.dev.js",
-    "fix:yaml:package": "node .fix_yaml.js",
+    "build": "webpack --config webpack.prod.js",
+    "start": "node server.js",
+    "start:dev": "webpack serve --hot --color --progress --config webpack.dev.js",
     "type-check": "tsc --noEmit",
     "ci-checks": "npm run type-check",
     "build:bundle-profile": "webpack --config webpack.prod.js --profile --json > stats.json",
