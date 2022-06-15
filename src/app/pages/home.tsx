@@ -28,7 +28,7 @@ import {
     ImportFrom,
     ImportFromRhosrModal
 } from "@app/pages/components";
-import {CreateDesign, CreateDesignContent, Design, Template} from "@app/models";
+import {CreateDesign, CreateDesignContent, Design, DesignEvent, Template} from "@app/models";
 import {cloneObject, propertyReplace} from "@app/utils";
 import {DesignsService, useDesignsService} from "@app/services";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
@@ -93,8 +93,8 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
         });
     };
 
-    const importDesign = async (event: CreateDesign, content: CreateDesignContent): Promise<void> => {
-        return designsSvc.createDesign(event, content).then((design) => {
+    const importDesign = async (cd: CreateDesign, content: CreateDesignContent): Promise<void> => {
+        return designsSvc.createDesign(cd, content).then((design) => {
             setImportModalOpen(false);
             nav.navigateTo(`/designs/${design.id}/editor`);
         }).catch(error => {

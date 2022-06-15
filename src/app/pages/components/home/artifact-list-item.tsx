@@ -1,15 +1,7 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
 import "./artifact-list-item.css";
 import {ArtifactTypes, ContentTypes, CreateDesignContent, SearchedArtifact, SearchedVersion} from "@app/models";
-import {
-    Badge,
-    DataList,
-    DataListCell,
-    DataListCheck,
-    DataListItemCells,
-    DataListItemRow,
-    Radio, Spinner
-} from "@patternfly/react-core";
+import {Badge, Radio, Spinner} from "@patternfly/react-core";
 import {ArtifactTypeIcon, If, IsLoading, ObjectSelect} from "@app/components";
 import {ArtifactGroup, ArtifactName} from "@app/pages/components";
 import {isJson, isXml, isYaml} from "@app/utils";

@@ -4,7 +4,7 @@ import React, {FunctionComponent} from "react";
  * Properties
  */
 export type ArtifactGroupProps = {
-    groupId: string|null;
+    groupId: string|undefined;
 }
 
 /**

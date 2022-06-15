@@ -1,6 +1,6 @@
 export interface SearchedArtifact {
 
-    groupId: string|null;
+    groupId: string|undefined;
     id: string;
     type: string;
     state: string;

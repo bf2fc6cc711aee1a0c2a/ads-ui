@@ -1,7 +1,7 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
 import "./export-to-rhosr.modal.css";
 import {Button, Form, FormGroup, Modal, ModalVariant, Spinner, TextInput} from "@patternfly/react-core";
-import {Design} from "@app/models";
+import {Design, DesignEvent} from "@app/models";
 import {Registry} from "@rhoas/registry-management-sdk";
 import {
     DesignsService,
@@ -60,7 +60,6 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
                 contentType: content.contentType
             };
             rhosrInstance?.createOrUpdateArtifact(data).then(amd => {
-                // TODO take the info from the artifact meta-data and return it as a context
                 const context: DesignContext = {
                     type: "rhosr",
                     rhosr: {
@@ -70,12 +69,25 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
                         version: amd.version
                     }
                 };
-                const event: ExportToRhosrData = {
+                const data: ExportToRhosrData = {
                     design,
                     context
                 };
-                setExporting(false);
-                onExported(event);
+
+                const event: DesignEvent = {
+                    id: design.id,
+                    type: "register",
+                    on: new Date(),
+                    data: context.rhosr
+                };
+
+                // Create an event (add to the design's history).
+                designs.createEvent(event).then(() => {
+                    setExporting(false);
+                    onExported(data);
+                }).catch(error => {
+                    // TODO error handling
+                });
             }).catch(error => {
                 // TODO error handling
             });

@@ -1,21 +1,24 @@
 import {
     CreateDesign,
+    CreateDesignContent,
     Design,
     DesignContent,
+    DesignEvent,
     DesignsSearchCriteria,
     DesignsSearchResults,
     DesignsSort,
     Paging
 } from "@app/models";
-import Dexie, { Table } from "dexie";
-import { v4 as uuidv4 } from "uuid";
-import {CreateDesignContent} from "@app/models/designs/create-design-content.model";
+import Dexie from "dexie";
+import {v4 as uuidv4} from "uuid";
+import {cloneObject} from "@app/utils";
 
 
 const db = new Dexie("designsDB");
-db.version(2).stores({
-    designs: "++id, type, name, summary, createdOn, modifiedOn", // Primary key and indexed props
-    content: "++id, data"
+db.version(3).stores({
+    designs: "++id, type, name, createdOn, modifiedOn", // Primary key and indexed props
+    content: "++id",
+    events: "++id, type, on"
 });
 
 
@@ -30,19 +33,34 @@ async function createDesign(cd: CreateDesign, cdc: CreateDesignContent): Promise
         modifiedOn: new Date(),
         contexts: []
     };
-    if (cd.context) {
-        newDesign.contexts?.push(cd.context);
-    }
     const newDesignContent: DesignContent = {
         id,
         contentType: cdc.contentType,
         data: cdc.data
     };
+    const newEvent: DesignEvent = {
+        id,
+        type: "create",
+        on: new Date(),
+        data: {}
+    };
+    if (cd.context) {
+        newDesign.contexts?.push(cloneObject(cd.context));
+        newEvent.data.context = cloneObject(cd.context);
+        if (cd.context.type !== "create") {
+            newEvent.type = "import";
+        }
+    }
+    // Make sure the ID is properly set always.
+    newEvent.id = id;
+
     return Promise.all([
         // @ts-ignore
         db.designs.add(newDesign),
         // @ts-ignore
-        db.content.add(newDesignContent)
+        db.content.add(newDesignContent),
+        // @ts-ignore
+        db.events.add(newEvent),
     ]).then(() => newDesign);
 }
 
@@ -102,8 +120,14 @@ async function getDesign(id: string): Promise<Design> {
 }
 
 async function deleteDesign(id: string): Promise<void> {
-    // @ts-ignore
-    return db.designs.where("id").equals(id).delete();
+    return Promise.all([
+        // @ts-ignore
+        db.designs.where("id").equals(id).delete(),
+        // @ts-ignore
+        db.content.where("id").equals(id).delete(),
+        // @ts-ignore
+        db.events.where("id").equals(id).delete(),
+    ]).then(r => {});
 }
 
 async function getDesignContent(id: string): Promise<DesignContent> {
@@ -112,6 +136,13 @@ async function getDesignContent(id: string): Promise<DesignContent> {
 }
 
 async function updateDesignContent(content: DesignContent): Promise<void> {
+    const newEvent: DesignEvent = {
+        id: content.id,
+        type: "update",
+        on: new Date(),
+        data: {}
+    };
+
     return Promise.all([
         // @ts-ignore
         db.content.update(content.id, {
@@ -120,8 +151,22 @@ async function updateDesignContent(content: DesignContent): Promise<void> {
         // @ts-ignore
         db.designs.update(content.id, {
             modifiedOn: new Date()
-        })
+        }),
+        // @ts-ignore
+        db.events.add(newEvent),
     ]).then(() => {});
+}
+
+
+async function getEvents(id: string): Promise<DesignEvent[]> {
+    // @ts-ignore
+    return db.events.where("id").equals(id).toArray();
+}
+
+
+async function createEvent(event: DesignEvent): Promise<void> {
+    // @ts-ignore
+    return db.events.add(event);
 }
 
 
@@ -136,6 +181,8 @@ export interface DesignsService {
     deleteDesign(id: string): Promise<void>;
     getDesignContent(id: string): Promise<DesignContent>;
     updateDesignContent(content: DesignContent): Promise<void>;
+    getEvents(id: string): Promise<DesignEvent[]>;
+    createEvent(event: DesignEvent): Promise<void>;
 }
 
 
@@ -150,6 +197,8 @@ export const useDesignsService: () => DesignsService = (): DesignsService => {
         getDesign,
         deleteDesign,
         getDesignContent,
-        updateDesignContent
+        updateDesignContent,
+        getEvents,
+        createEvent
     };
 };

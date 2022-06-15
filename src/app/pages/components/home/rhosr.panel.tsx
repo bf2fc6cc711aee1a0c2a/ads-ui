@@ -1,18 +1,8 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
-import {
-    Button,
-    Card,
-    CardBody,
-    CardTitle,
-    EmptyState,
-    EmptyStateBody,
-    EmptyStateVariant, Spinner,
-    Title
-} from "@patternfly/react-core";
+import {Card, CardBody, CardTitle} from "@patternfly/react-core";
 import {RhosrService, useRhosrService} from "@app/services/rhosr";
-import {If, IfNotEmpty, IsLoading} from "@app/components";
+import {IfNotEmpty, IsLoading, NavLink} from "@app/components";
 import {Registry} from "@rhoas/registry-management-sdk";
-import {NavLink} from "@app/components/navlink";
 
 export type RhosrPanelProps = {
 }

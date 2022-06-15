@@ -89,8 +89,8 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onDesignSele
         designsSvc.getDesignContent(design.id).then(content => {
             const filename: string = `${convertToValidFilename(design.name)}.${fileExtensionForDesign(design, content)}`;
             const contentType: string = contentTypeForDesign(design, content);
-            const c: string = typeof content.data === "object" ? JSON.stringify(content.data, null, 4) : content.data as string;
-            downloadSvc.downloadToFS(c, contentType, filename);
+            const theContent: string = typeof content.data === "object" ? JSON.stringify(content.data, null, 4) : content.data as string;
+            downloadSvc.downloadToFS(design, theContent, contentType, filename);
         });
     };
 

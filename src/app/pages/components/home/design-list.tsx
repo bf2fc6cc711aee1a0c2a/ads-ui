@@ -5,9 +5,10 @@ import {ResponsiveTable} from "@rhoas/app-services-ui-components";
 import {ArtifactTypeIcon, NavLink} from "@app/components";
 import Moment from "react-moment";
 import {hasContext} from "@app/utils";
-import {Label} from "@patternfly/react-core";
+import {KebabToggle, Label} from "@patternfly/react-core";
 import {IAction} from "@patternfly/react-table";
 import {ThProps} from "@patternfly/react-table/src/components/TableComposable/Th";
+import {CustomActionsToggleProps} from "@patternfly/react-table/src/components/Table/ActionsColumn";
 
 
 export type DesignListProps = {
@@ -76,6 +77,14 @@ export const DesignList: FunctionComponent<DesignListProps> = (
         return <span />
     };
 
+    const renderActionsToggle = (props: CustomActionsToggleProps): React.ReactNode => {
+        return <KebabToggle isDisabled={props.isDisabled} isOpen={props.isOpen} onToggle={(value, event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            props.onToggle(value);
+        }} />
+    }
+
     const actionsFor = (design: any): IAction[] => {
         return [
             { title: "Edit", onClick: () => onEdit(design) },
@@ -122,7 +131,7 @@ export const DesignList: FunctionComponent<DesignListProps> = (
                 columns={columns}
                 data={designs.designs}
                 expectedLength={designs.count}
-                onRowClick={(row) => setSelectedDesign(row.row)}
+                onRowClick={(row) => setSelectedDesign(row.row.id === selectedDesign?.id ? undefined : row.row)}
                 renderHeader={({ column, Th, key }) => (
                     <Th sort={sortParams(column)}
                         className="design-list-header"
@@ -134,7 +143,9 @@ export const DesignList: FunctionComponent<DesignListProps> = (
                     <Td className="design-list-cell" key={`cell-${colIndex}-${row.id}`} children={renderColumnData(row as Design, colIndex)} />
                 )}
                 renderActions={({row, ActionsColumn}) => (
-                    <ActionsColumn key={`actions-${row['id']}`} items={actionsFor(row)}/>
+                    <ActionsColumn key={`actions-${row['id']}`}
+                                   actionsToggle={renderActionsToggle}
+                                   items={actionsFor(row)}/>
                 )}
                 isRowSelected={({ row }) => row.id === selectedDesign?.id}
             />

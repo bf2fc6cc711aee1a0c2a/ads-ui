@@ -5,7 +5,11 @@
  * @param contentType
  * @param filename
  */
-async function downloadToFS(content: string, contentType: string, filename: string): Promise<void> {
+import {DesignsService, useDesignsService} from "@app/services/designs";
+import {Design, DesignEvent} from "@app/models";
+
+
+async function downloadToFS(designsSvc: DesignsService, design: Design, content: string, contentType: string, filename: string): Promise<void> {
     console.info("[DownloadService] Downloading a design.");
     const _w: any = window;
 
@@ -25,6 +29,17 @@ async function downloadToFS(content: string, contentType: string, filename: stri
         let file = new File([content], filename, { type: 'application/force-download' });
         _w.open(URL.createObjectURL(file));
     }
+
+    // Create an event for this download
+    const event: DesignEvent = {
+        id: design.id,
+        type: "download",
+        on: new Date(),
+        data: {
+            filename
+        }
+    };
+    designsSvc.createEvent(event);
 }
 
 
@@ -32,7 +47,7 @@ async function downloadToFS(content: string, contentType: string, filename: stri
  * The Download Service interface.
  */
 export interface DownloadService {
-    downloadToFS(content: string, contentType: string, filename: string): Promise<void>;
+    downloadToFS(design: Design, content: string, contentType: string, filename: string): Promise<void>;
 }
 
 
@@ -40,7 +55,11 @@ export interface DownloadService {
  * React hook to get the Download service.
  */
 export const useDownloadService: () => DownloadService = (): DownloadService => {
+    // Note: inject the designs services so that events can be created.
+    const designsSvc: DesignsService = useDesignsService();
     return {
-        downloadToFS
+        downloadToFS: (design: Design, content: string, contentType: string, filename: string): Promise<void> => {
+            return downloadToFS(designsSvc, design, content, contentType, filename);
+        }
     };
 };
