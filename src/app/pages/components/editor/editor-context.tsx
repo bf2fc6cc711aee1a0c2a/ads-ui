@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import "./editor-context.css";
 import {ArtifactTypes, Design} from "@app/models";
 import {
@@ -9,13 +9,15 @@ import {
     DropdownItem, Gallery, GalleryItem,
     MenuToggle,
     Text,
-    TextContent
-} from "@patternfly/react-core";
-import {If, NavLink, ToggleIcon} from "@app/components";
+    TextContent} from "@patternfly/react-core";
+import { If, NavLink, ToggleIcon } from "@app/components";
 import Moment from "react-moment";
-import {LocalStorageService, useLocalStorageService} from "@app/services";
 import {DesignContext} from "@app/models/designs/design-context.model";
 import {ExportToRhosrData, ExportToRhosrModal} from "@app/pages/components";
+import { LocalStorageService, useLocalStorageService } from "@app/services";
+import { Registry } from "@rhoas/registry-management-sdk";
+import { RegistryDryRunFormModal } from "./dry-run.modal";
+import { DryRunErrorResponse } from "@app/pages/editor";
 
 /**
  * Properties
@@ -23,20 +25,25 @@ import {ExportToRhosrData, ExportToRhosrModal} from "@app/pages/components";
 export type EditorContextProps = {
     design: Design;
     dirty: boolean;
+    artifactContent: string;
     onSave: () => void;
     onCancel: () => void;
+    onExpandDryRunCausesPanel: (error: DryRunErrorResponse) => void;
+    onRegistrationDryRun: (registry: Registry, group: string | undefined, artifactId: string) => void;
+    isPanelOpen?: boolean;
 }
 
 /**
  * The context of the design when editing a design on the editor page.
  */
-export const EditorContext: FunctionComponent<EditorContextProps> = ({design, dirty, onSave, onCancel}: EditorContextProps) => {
+export const EditorContext: FunctionComponent<EditorContextProps> = ({ design, dirty, onSave, onRegistrationDryRun, onExpandDryRunCausesPanel }: EditorContextProps) => {
     const lss: LocalStorageService = useLocalStorageService();
 
     const [designContext, setDesignContext] = useState<DesignContext>();
     const [isActionMenuToggled, setActionMenuToggled] = useState(false);
     const [isExpanded, setExpanded] = useState(lss.getConfigProperty("editor-context.isExpanded", "false") === "true");
     const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
+    const [isDryRunModalOpen, setIsDryRunModalOpen] = useState(false);
 
     const onActionMenuToggle = (): void => {
         setActionMenuToggled(!isActionMenuToggled);
@@ -111,9 +118,13 @@ export const EditorContext: FunctionComponent<EditorContextProps> = ({design, di
 
     return (
         <React.Fragment>
+            <RegistryDryRunFormModal isOpen={isDryRunModalOpen} onCancel={() => setIsDryRunModalOpen(false)} onSubmit={(...params) => {
+                onRegistrationDryRun(...params);
+                setIsDryRunModalOpen(false);
+            }} />
             <div className="editor-context">
                 <div className="editor-context-breadcrumbs">
-                    <Breadcrumb style={{marginBottom: "10px"}}>
+                    <Breadcrumb style={{ marginBottom: "10px" }}>
                         <BreadcrumbItem component="button">
                             <NavLink location="/">Red Hat OpenShift API Designer</NavLink>
                         </BreadcrumbItem>
@@ -128,13 +139,14 @@ export const EditorContext: FunctionComponent<EditorContextProps> = ({design, di
                     <Dropdown
                         onSelect={onActionMenuSelect}
                         toggle={actionMenuToggle}
+                        style={{ zIndex: 1000 }}
                         isOpen={isActionMenuToggled}
                         isPlain
                         dropdownItems={
                             [
                                 <DropdownItem key="action-export-to-rhosr" data-id="action-export-to-rhosr">Export to Service Registry</DropdownItem>,
                                 <DropdownItem key="action-compare" data-id="action-compare">Compare differences</DropdownItem>,
-                                <DropdownItem key="action-validate" data-id="action-validate">Validate</DropdownItem>,
+                                <DropdownItem key="action-validate" data-id="action-validate" onClick={() => setIsDryRunModalOpen(true)}>Registration dry-run</DropdownItem>,
                                 <DropdownItem key="action-compatibility" data-id="action-compatibility">Check compatibility</DropdownItem>,
                             ]
                         }
@@ -155,7 +167,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = ({design, di
                         <Text component="h1" className="title">{design?.name}</Text>
                         <Text component="p" className="summary">{design?.summary || "(Design or schema with no summary)"}</Text>
                     </TextContent>
-                    <Gallery className="metadata" minWidths={{default: "300px"}}>
+                    <Gallery className="metadata" minWidths={{ default: "300px" }}>
                         <GalleryItem className="md-property">
                             <span className="md-name">Type</span>
                             <span className="md-value">{typeForDisplay()}</span>

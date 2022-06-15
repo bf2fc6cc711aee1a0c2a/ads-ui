@@ -1,4 +1,4 @@
-import {Auth, useAuth} from "@rhoas/app-services-ui-shared";
+import { Auth, useAuth } from "@rhoas/app-services-ui-shared";
 import {
     ArtifactMetaData,
     ArtifactSearchResults,
@@ -10,10 +10,10 @@ import {
     SearchedVersion,
     VersionMetaData
 } from "@app/models";
-import {createEndpoint, createHref, createOptions, httpGet, httpPostWithReturn} from "@app/utils/rest.utils";
-import {Registry} from "@rhoas/registry-management-sdk";
-import {isJson, isXml, isYaml} from "@app/utils";
-import {CreateOrUpdateArtifactData} from "@app/models/rhosr-instance/create-or-update-artifact-data.model";
+import { createEndpoint, createHref, createOptions, httpGet, httpPut, httpPostWithReturn } from "@app/utils/rest.utils";
+import { Registry } from "@rhoas/registry-management-sdk";
+import { isJson, isXml, isYaml } from "@app/utils";
+import { CreateOrUpdateArtifactData } from "@app/models/rhosr-instance/create-or-update-artifact-data.model";
 
 
 /**
@@ -44,13 +44,13 @@ function determineContentType(type: string, content: string): string {
 }
 
 
-function normalizeGroupId(groupId: string|undefined): string {
+function normalizeGroupId(groupId: string | undefined): string {
     return groupId || "default";
 }
 
 
 async function createArtifact(auth: Auth, basePath: string, data: CreateArtifactData): Promise<ArtifactMetaData> {
-    const endpoint: string = createEndpoint(basePath, "/groups/:groupId/artifacts", {groupId: data.groupId});
+    const endpoint: string = createEndpoint(basePath, "/groups/:groupId/artifacts", { groupId: data.groupId });
     const headers: any = {};
     if (data.id) {
         headers["X-Registry-ArtifactId"] = data.id;
@@ -66,8 +66,8 @@ async function createArtifact(auth: Auth, basePath: string, data: CreateArtifact
 async function createOrUpdateArtifact(auth: Auth, basePath: string, data: CreateOrUpdateArtifactData): Promise<ArtifactMetaData> {
     const endpoint: string = createEndpoint(basePath,
         "/groups/:groupId/artifacts",
-        {groupId: data.groupId||"default"},
-        {ifExists: "UPDATE"}
+        { groupId: data.groupId || "default" },
+        { ifExists: "UPDATE" }
     );
     const headers: any = {};
     if (data.id) {
@@ -88,7 +88,7 @@ async function createArtifactVersion(auth: Auth, basePath: string, groupId: stri
     groupId = normalizeGroupId(groupId);
 
     const endpoint: string = createEndpoint(basePath, "/groups/:groupId/artifacts/:artifactId/versions", {
-        groupId: groupId||"default",
+        groupId: groupId || "default",
         artifactId
     });
     const headers: any = {};
@@ -141,7 +141,7 @@ async function getArtifactContent(auth: Auth, basePath: string, groupId: string 
         version
     });
     if (version === "latest") {
-        endpoint = createEndpoint(basePath, "/groups/:groupId/artifacts/:artifactId", {groupId, artifactId});
+        endpoint = createEndpoint(basePath, "/groups/:groupId/artifacts/:artifactId", { groupId, artifactId });
     }
 
     const options: any = createOptions({
@@ -170,6 +170,17 @@ async function getArtifactVersions(auth: Auth, basePath: string, groupId: string
     });
 }
 
+async function testUpdateArtifactContent(auth: Auth, basePath: string, groupId: string | undefined, artifactId: string, content: string): Promise<void> {
+    groupId = normalizeGroupId(groupId);
+
+    console.info("[RhosrInstanceService] Testing updating of artifact content: ", groupId, artifactId);
+    const endpoint: string = createEndpoint(basePath, "/groups/:groupId/artifacts/:artifactId/test", {
+        groupId,
+        artifactId
+    });
+    return httpPut<any>(endpoint, content);
+}
+
 
 /**
  * The RHOSR Instance service interface.
@@ -181,6 +192,7 @@ export interface RhosrInstanceService {
     getArtifacts(criteria: GetArtifactsCriteria, paging: Paging): Promise<ArtifactSearchResults>;
     getArtifactContent(groupId: string | undefined, artifactId: string, version: string): Promise<string>;
     getArtifactVersions(groupId: string | undefined, artifactId: string): Promise<SearchedVersion[]>;
+    testUpdateArtifactContent(groupId: string | undefined, artifactId: string, content: string): Promise<void>;
 }
 
 /**
@@ -199,7 +211,7 @@ export const useRhosrInstanceServiceFactory: () => RhosrInstanceServiceFactory =
 
     return {
         createFor: (registry) => {
-            const instanceUrl: string = createHref(registry.registryUrl as string,"/apis/registry/v2");
+            const instanceUrl: string = createHref(registry.registryUrl as string, "/apis/registry/v2");
             return {
                 createArtifact: (data) => createArtifact(auth, instanceUrl, data),
                 createArtifactVersion: (groupId, artifactId, data) => createArtifactVersion(auth, instanceUrl, groupId, artifactId, data),
@@ -207,6 +219,8 @@ export const useRhosrInstanceServiceFactory: () => RhosrInstanceServiceFactory =
                 getArtifacts: (criteria, paging) => getArtifacts(auth, instanceUrl, criteria, paging),
                 getArtifactContent: (groupId, artifactId, version) => getArtifactContent(auth, instanceUrl, groupId, artifactId, version),
                 getArtifactVersions: (groupId, artifactId) => getArtifactVersions(auth, instanceUrl, groupId, artifactId),
+                testUpdateArtifactContent: (groupId, artifactId, content) => testUpdateArtifactContent(auth, instanceUrl, groupId, artifactId, content)
+
             };
         }
     };
