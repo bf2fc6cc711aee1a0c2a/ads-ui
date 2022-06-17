@@ -115,22 +115,18 @@ module.exports = (env, argv) => {
         shared: {
           ...dependencies,
           react: {
-            eager: true,
             singleton: true,
             requiredVersion: dependencies["react"],
           },
           "react-dom": {
-            eager: true,
             singleton: true,
             requiredVersion: dependencies["react-dom"],
           },
           "react-router-dom": {
             singleton: true,
-            eager: true,
             requiredVersion: dependencies["react-router-dom"],
           },
           "@rhoas/app-services-ui-shared": {
-            eager: true,
             singleton: true,
             requiredVersion: dependencies["@rhoas/app-services-ui-shared"]
           },
