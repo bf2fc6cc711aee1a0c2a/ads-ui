@@ -50,8 +50,12 @@ function normalizeGroupId(groupId: string | undefined): string {
 
 
 async function createArtifact(auth: Auth, basePath: string, data: CreateArtifactData): Promise<ArtifactMetaData> {
+    const token: string | undefined = auth?.apicurio_registry ? await auth?.apicurio_registry.getToken() : "";
+
     const endpoint: string = createEndpoint(basePath, "/groups/:groupId/artifacts", { groupId: data.groupId });
-    const headers: any = {};
+    const headers: any = {
+        "Authorization": `Bearer ${token}`
+    };
     if (data.id) {
         headers["X-Registry-ArtifactId"] = data.id;
     }
@@ -64,12 +68,16 @@ async function createArtifact(auth: Auth, basePath: string, data: CreateArtifact
 
 
 async function createOrUpdateArtifact(auth: Auth, basePath: string, data: CreateOrUpdateArtifactData): Promise<ArtifactMetaData> {
+    const token: string | undefined = auth?.apicurio_registry ? await auth?.apicurio_registry.getToken() : "";
+
     const endpoint: string = createEndpoint(basePath,
         "/groups/:groupId/artifacts",
         { groupId: data.groupId || "default" },
         { ifExists: "UPDATE" }
     );
-    const headers: any = {};
+    const headers: any = {
+        "Authorization": `Bearer ${token}`
+    };
     if (data.id) {
         headers["X-Registry-ArtifactId"] = data.id;
     }
@@ -85,13 +93,17 @@ async function createOrUpdateArtifact(auth: Auth, basePath: string, data: Create
 
 
 async function createArtifactVersion(auth: Auth, basePath: string, groupId: string | undefined, artifactId: string, data: CreateVersionData): Promise<VersionMetaData> {
+    const token: string | undefined = auth?.apicurio_registry ? await auth?.apicurio_registry.getToken() : "";
+
     groupId = normalizeGroupId(groupId);
 
     const endpoint: string = createEndpoint(basePath, "/groups/:groupId/artifacts/:artifactId/versions", {
         groupId: groupId || "default",
         artifactId
     });
-    const headers: any = {};
+    const headers: any = {
+        "Authorization": `Bearer ${token}`
+    };
     if (data.type) {
         headers["X-Registry-ArtifactType"] = data.type;
     }
@@ -102,6 +114,8 @@ async function createArtifactVersion(auth: Auth, basePath: string, groupId: stri
 
 async function getArtifacts(auth: Auth, basePath: string, criteria: GetArtifactsCriteria, paging: Paging): Promise<ArtifactSearchResults> {
     console.debug("[RhosrInstanceService] Getting artifacts: ", criteria, paging);
+    const token: string | undefined = auth?.apicurio_registry ? await auth?.apicurio_registry.getToken() : "";
+
     const start: number = (paging.page - 1) * paging.pageSize;
     const end: number = start + paging.pageSize;
     const queryParams: any = {
@@ -120,7 +134,10 @@ async function getArtifacts(auth: Auth, basePath: string, criteria: GetArtifacts
         }
     }
     const endpoint: string = createEndpoint(basePath, "/search/artifacts", {}, queryParams);
-    return httpGet<ArtifactSearchResults>(endpoint, undefined, (data) => {
+    const headers: any = {
+        "Authorization": `Bearer ${token}`
+    };
+    return httpGet<ArtifactSearchResults>(endpoint, createOptions(headers), (data) => {
         const results: ArtifactSearchResults = {
             artifacts: data.artifacts,
             count: data.count,
@@ -133,6 +150,8 @@ async function getArtifacts(auth: Auth, basePath: string, criteria: GetArtifacts
 
 
 async function getArtifactContent(auth: Auth, basePath: string, groupId: string | undefined, artifactId: string, version: string): Promise<string> {
+    const token: string | undefined = auth?.apicurio_registry ? await auth?.apicurio_registry.getToken() : "";
+
     groupId = normalizeGroupId(groupId);
 
     let endpoint: string = createEndpoint(basePath, "/groups/:groupId/artifacts/:artifactId/versions/:version", {
@@ -140,13 +159,15 @@ async function getArtifactContent(auth: Auth, basePath: string, groupId: string 
         artifactId,
         version
     });
+    const headers: any = {
+        "Accept": "*",
+        "Authorization": `Bearer ${token}`
+    };
     if (version === "latest") {
         endpoint = createEndpoint(basePath, "/groups/:groupId/artifacts/:artifactId", { groupId, artifactId });
     }
 
-    const options: any = createOptions({
-        "Accept": "*"
-    });
+    const options: any = createOptions(headers);
     options.maxContentLength = "5242880"; // TODO 5MB hard-coded, make this configurable?
     options.responseType = "text";
     options.transformResponse = (data: any) => data;
@@ -155,6 +176,8 @@ async function getArtifactContent(auth: Auth, basePath: string, groupId: string 
 
 
 async function getArtifactVersions(auth: Auth, basePath: string, groupId: string | undefined, artifactId: string): Promise<SearchedVersion[]> {
+    const token: string | undefined = auth?.apicurio_registry ? await auth?.apicurio_registry.getToken() : "";
+
     groupId = normalizeGroupId(groupId);
 
     console.info("[RhosrInstanceService] Getting the list of versions for artifact: ", groupId, artifactId);
@@ -165,12 +188,17 @@ async function getArtifactVersions(auth: Auth, basePath: string, groupId: string
         limit: 500,
         offset: 0
     });
-    return httpGet<SearchedVersion[]>(endpoint, undefined, (data) => {
+    const headers: any = {
+        "Authorization": `Bearer ${token}`
+    };
+    return httpGet<SearchedVersion[]>(endpoint, createOptions(headers), (data) => {
         return data.versions;
     });
 }
 
 async function testUpdateArtifactContent(auth: Auth, basePath: string, groupId: string | undefined, artifactId: string, content: string): Promise<void> {
+    const token: string | undefined = auth?.apicurio_registry ? await auth?.apicurio_registry.getToken() : "";
+
     groupId = normalizeGroupId(groupId);
 
     console.info("[RhosrInstanceService] Testing updating of artifact content: ", groupId, artifactId);
@@ -178,7 +206,10 @@ async function testUpdateArtifactContent(auth: Auth, basePath: string, groupId: 
         groupId,
         artifactId
     });
-    return httpPut<any>(endpoint, content);
+    const headers: any = {
+        "Authorization": `Bearer ${token}`
+    };
+    return httpPut<any>(endpoint, content, createOptions(headers));
 }
 
 
