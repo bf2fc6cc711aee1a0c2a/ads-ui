@@ -4,7 +4,9 @@ import {useHistory} from "react-router-dom";
 
 export const navigateTo: (path: string, basename: Basename, history: History) => void = (path: string, basename: Basename, history: History) => {
     const to: string = `${basename.getBasename()}${path}`;
-    history.push(to);
+    setTimeout(() => {
+        history.push(to);
+    }, 50);
 };
 
 export type Navigation = {

@@ -3,7 +3,7 @@ import "./designs.panel.css";
 import {Alert, Card, CardBody} from "@patternfly/react-core";
 import {DownloadService, DesignsService, useDownloadService, useDesignsService} from "@app/services";
 import {Design, DesignsSearchCriteria, DesignsSearchResults, DesignsSort, Paging} from "@app/models";
-import {If, ListWithToolbar} from "@app/components";
+import {ListWithToolbar} from "@app/components";
 import {
     DeleteDesignModal,
     DesignList,

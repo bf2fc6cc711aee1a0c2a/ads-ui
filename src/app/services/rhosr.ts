@@ -115,6 +115,15 @@ function createMockService(mockData: Registry[]): RhosrService {
     };
 }
 
+let mockWarningSent: boolean = false;
+const mockWarning = (message: string): void => {
+    if (!mockWarningSent) {
+        console.info("[RhosrService] ----------------------------------");
+        console.info("[RhosrService]", message);
+        console.info("[RhosrService] ----------------------------------");
+        mockWarningSent = true;
+    }
+};
 
 /**
  * React hook to get the RHOSR service.
@@ -124,12 +133,12 @@ export const useRhosrService: () => RhosrService = (): RhosrService => {
     const cfg: Config = useConfig();
 
     if (cfg.srs.apiBasePath && cfg.srs.apiBasePath.startsWith("local-mock")) {
-        console.warn("[RhosrService] RHOSR mocking enabled.");
+        mockWarning("RHOSR mocking enabled.");
         return createMockService(RHOSR_MOCK_DATA);
     }
 
     if (cfg.srs.apiBasePath && cfg.srs.apiBasePath.startsWith("operate-first-mock")) {
-        console.warn("[RhosrService] RHOSR mocking enabled (Operate First).");
+        mockWarning("RHOSR mocking enabled (Operate First).");
         return createMockService(RHOSR_MOCK_DATA_OF);
     }
 

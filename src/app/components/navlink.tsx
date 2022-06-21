@@ -1,5 +1,6 @@
 import React, {FunctionComponent} from "react";
-import {useNavigation, Navigation} from "@app/contexts/navigation";
+import {Link} from "react-router-dom";
+import {Basename, useBasename} from "@rhoas/app-services-ui-shared";
 
 export type NavLinkProps = {
     location: string;
@@ -8,8 +9,11 @@ export type NavLinkProps = {
 }
 
 export const NavLink: FunctionComponent<NavLinkProps> = ({location, className, children}: NavLinkProps) => {
-    const nav: Navigation = useNavigation();
+
+    const basename: Basename = useBasename();
+    const to: string = `${basename.getBasename()}${location}`;
+
     return (
-        <a className={className} onClick={() => nav.navigateTo(location)} children={children} />
+        <Link className={className} to={to} children={children} />
     );
 };
