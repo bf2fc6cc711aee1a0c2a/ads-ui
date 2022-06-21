@@ -21,6 +21,8 @@ export const OpenApiEditor: DesignEditor = ({content, onChange, className}: Open
     const cfg: Config = useConfig();
 
     useEffect(() => {
+        console.info("[OpenApiEditor] URL location of ads-editors: ", cfg.ads.editorsBasePath);
+
         const eventListener: any = (event) => {
             if (event.data && event.data.type === "apicurio_onChange") {
                 let newContent: any = event.data.data.content;
