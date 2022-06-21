@@ -8,7 +8,6 @@ import {KebabToggle, Label} from "@patternfly/react-core";
 import {IAction} from "@patternfly/react-table";
 import {ThProps} from "@patternfly/react-table/src/components/TableComposable/Th";
 import {CustomActionsToggleProps} from "@patternfly/react-table/src/components/Table/ActionsColumn";
-import {hasOrigin} from "@app/utils";
 import {DesignOriginLabel} from "@app/pages/components";
 
 
@@ -72,13 +71,12 @@ export const DesignList: FunctionComponent<DesignListProps> = (
 
     const actionsFor = (design: any): IAction[] => {
         return [
-            { title: "View details", onClick: () => setSelectedDesign(design) },
-            { isSeparator: true, },
+            { title: "Details", onClick: () => setSelectedDesign(design) },
             { title: "Rename", onClick: () => onRename(design) },
             { title: "Edit", onClick: () => onEdit(design) },
             { title: "Download", onClick: () => onDownload(design) },
             { title: "Register in Service Registry", onClick: () => onRegister(design) },
-            { isSeparator: true, },
+            { isSeparator: true},
             { title: "Delete", onClick: () => onDelete(design) }
         ];
     }
@@ -119,7 +117,6 @@ export const DesignList: FunctionComponent<DesignListProps> = (
                 columns={columns}
                 data={designs.designs}
                 expectedLength={designs.count}
-                onRowClick={(row) => setSelectedDesign(row.row.id === selectedDesign?.id ? undefined : row.row)}
                 renderHeader={({ column, Th, key }) => (
                     <Th sort={sortParams(column)}
                         className="design-list-header"
