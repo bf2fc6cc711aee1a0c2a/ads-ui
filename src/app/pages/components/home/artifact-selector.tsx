@@ -106,6 +106,7 @@ export const ArtifactSelector: FunctionComponent<ArtifactSelectorProps> = ({regi
     const toolbar: React.ReactNode = (
         <ArtifactListToolbar registries={registries} criteria={criteria} paging={paging}
                              onRegistrySelected={onRegistrySelected}
+                             menuAppendTo={document.getElementById('artifact-selector')}
                              onCriteriaChange={onCriteriaChange} onPagingChange={onPagingChange}
                              artifacts={artifacts} />
     );
@@ -130,18 +131,19 @@ export const ArtifactSelector: FunctionComponent<ArtifactSelectorProps> = ({regi
 
     return (
         <div id="artifact-selector">
-            <ArtifactListToolbar registries={registries} criteria={criteria} paging={paging}
-                                 onRegistrySelected={onRegistrySelected}
-                                 menuAppendTo={document.getElementById('artifact-selector')}
-                                 onCriteriaChange={onCriteriaChange} onPagingChange={onPagingChange}
-                                 artifacts={artifacts} />
-            <IsLoading condition={querying}>
-                <IfNotEmpty collection={artifacts?.artifacts} emptyStateMessage={`No artifacts found matching the search criteria.`}>
-                    <ArtifactList artifacts={artifacts?.artifacts} fetchArtifactContent={fetchArtifactContent}
-                                  onArtifactSelected={onArtifactSelected}
-                                  fetchArtifactVersions={fetchArtifactVersions} />
-                </IfNotEmpty>
-            </IsLoading>
+            <ListWithToolbar toolbar={toolbar}
+                alwaysShowToolbar={true}
+                emptyState={emptyState}
+                filteredEmptyState={filteredEmptyState}
+                isFiltered={criteria.filterValue !== ""}
+                isLoading={querying}
+                loadingComponent={loadingComponent}
+                isEmpty={!artifacts || artifacts.count === 0}
+            >
+                <ArtifactList artifacts={artifacts?.artifacts} fetchArtifactContent={fetchArtifactContent}
+                    onArtifactSelected={onArtifactSelected}
+                    fetchArtifactVersions={fetchArtifactVersions} />
+            </ListWithToolbar>
         </div>
     );
 };

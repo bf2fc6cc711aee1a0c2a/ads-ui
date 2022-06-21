@@ -9,6 +9,7 @@ import {
     OnSetPage,
     Pagination,
     SearchInput,
+    SelectVariant,
     Toolbar,
     ToolbarContent,
     ToolbarItem
@@ -107,6 +108,7 @@ export const ArtifactListToolbar: FunctionComponent<ArtifactListToolbarProps> = 
             <ToolbarContent>
                 <ToolbarItem variant="search-filter">
                     <ObjectSelect value={registry} items={registries}
+                                  variant={SelectVariant.typeahead}
                                   onSelect={onRegistrySelectInternal}
                                   menuAppendTo={menuAppendTo || 'parent'}
                                   itemToString={item => item.name} />
