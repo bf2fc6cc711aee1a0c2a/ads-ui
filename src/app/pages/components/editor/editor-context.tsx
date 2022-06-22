@@ -214,7 +214,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
                         </If>
                         <If condition={hasFileContext}>
                             <GalleryItem className="md-property">
-                                <span className="md-name">Filename</span>
+                                <span className="md-name">File name</span>
                                 <span className="md-value">{designContext?.file?.fileName}</span>
                             </GalleryItem>
                         </If>

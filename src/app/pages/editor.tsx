@@ -29,6 +29,7 @@ import {AsyncApiEditor} from "@app/editors/editor-asyncapi";
 import {Registry} from "@rhoas/registry-management-sdk";
 import {formatContent} from "@app/utils";
 import {AlertVariant, useAlert} from "@rhoas/app-services-ui-shared";
+import {Prompt} from "react-router-dom";
 
 export type EditorPageProps = {
     params: any;
@@ -54,6 +55,16 @@ interface DryRunRequestParams {
     artifactId: string
 }
 
+
+// Event listener used to prevent navigation when the editor is dirty
+const onBeforeUnload = (e): void => {
+    // Cancel the event
+    e.preventDefault();
+    // Chrome requires returnValue to be set
+    e.returnValue = "";
+}
+
+
 export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: EditorPageProps) => {
     const [isLoading, setLoading] = useState(true);
     const [design, setDesign] = useState<Design>();
@@ -72,6 +83,13 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
     const rhosrInstanceFactory = useRhosrInstanceServiceFactory();
     const { addAlert } = useAlert() || {};
 
+    useEffect(() => {
+        // Cleanup any possible event listener we might still have registered
+        return () => {
+            window.removeEventListener("beforeunload", onBeforeUnload);
+        };
+    }, []);
+
     // Load the design based on the design ID (from the path param).
     useEffect(() => {
         setLoading(true);
@@ -85,9 +103,19 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
         })
     }, [params]);
 
+    // Add browser hook to prevent navigation and tab closing when the editor is dirty
+    useEffect(() => {
+        if (isDirty) {
+            console.info("[EditorPage] Adding beforeunload hook!");
+            window.addEventListener("beforeunload", onBeforeUnload);
+        } else {
+            console.info("[EditorPage] Removing beforeunload hook...");
+            window.removeEventListener("beforeunload", onBeforeUnload);
+        }
+    }, [isDirty]);
+
     // Load the design content
     useEffect(() => {
-        console.info("=========> DESIGN CHANGED!");
         const designId: string = params["designId"];
         designsService.getDesignContent(designId).then(content => {
             setDesignContent(content);
@@ -218,13 +246,13 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
 
     const renderPanelContent = (error?: DryRunErrorResponse) => {
         return (
-            <DrawerPanelContent isResizable onResize={onResizeDryRunSidepanel} minSize='35%' id="dry-run-issues-panel">
+            <DrawerPanelContent isResizable onResize={onResizeDryRunSidepanel} minSize="35%" id="dry-run-issues-panel">
                 <DrawerHead>
                     <h2 className="pf-c-title pf-m-2xl" tabIndex={isDryRunIssuesDrawerOpen ? 0 : -1} ref={drawerRef as any}>
                         Registration dry-run issues
                     </h2>
                     <DrawerActions>
-                        <Button variant='secondary' onClick={() => artifactRegistrationDryRun(
+                        <Button variant="secondary" onClick={() => artifactRegistrationDryRun(
                             registryDryRunArgsCache?.registry as Registry,
                             registryDryRunArgsCache?.groupId,
                             registryDryRunArgsCache?.artifactId as string
@@ -243,12 +271,12 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
 
     const renderPanelBody = (error?: DryRunErrorResponse) => {
         if (isDryRunIssuesLoading) {
-            return <Spinner className='spinner' />
+            return <Spinner className="spinner" />
         } else if (error) {
             return <DescriptionList isHorizontal>
-                {error.name === 'RuleViolationException' && error.causes?.length > 0 ?
+                {error.name === "RuleViolationException" && error.causes?.length > 0 ?
                     error.causes.map((cause, i) =>
-                        <React.Fragment key={'issue-' + i}>
+                        <React.Fragment key={`issue-${i}`}>
                             <DescriptionListGroup>
                                 <DescriptionListTerm>Code</DescriptionListTerm>
                                 <DescriptionListDescription>{cause.description}</DescriptionListDescription>
@@ -280,13 +308,9 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
                     onExpandDryRunCausesPanel={(error: DryRunErrorResponse) => openDryRunIssuesPanel(error)}
                     artifactContent={currentContent}
                 />
-                <RenameModal design={design}
-                             isOpen={isRenameModalOpen}
-                             onRename={doRenameDesign}
-                             onCancel={() => setRenameModalOpen(false)} />
             </PageSection>
             <PageSection variant={PageSectionVariants.light} id="section-editor">
-                <Drawer isExpanded={isDryRunIssuesDrawerOpen} isInline position='right'>
+                <Drawer isExpanded={isDryRunIssuesDrawerOpen} isInline={true} position="right">
                     <DrawerContent panelContent={renderPanelContent(dryRunError)}>
                         <div className="editor-parent">
                             {editor()}
@@ -294,6 +318,11 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
                     </DrawerContent>
                 </Drawer>
             </PageSection>
+            <RenameModal design={design}
+                         isOpen={isRenameModalOpen}
+                         onRename={doRenameDesign}
+                         onCancel={() => setRenameModalOpen(false)} />
+            <Prompt when={isDirty} message={`You have unsaved changes.  Do you really want to leave?`} />
         </IsLoading>
     );
 }

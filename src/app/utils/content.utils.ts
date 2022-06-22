@@ -161,11 +161,8 @@ export function contentTypeForDesign(design: Design, content: DesignContent): st
  * @param contentType
  */
 export function formatContent(value: string, contentType: string): string {
-    console.info("====> formatting content of type: ", contentType);
-    console.info("====> source value: ", value);
     try {
         if (contentType === ContentTypes.APPLICATION_JSON) {
-            console.info("====> DOING IT!");
             const parsed: any = JSON.parse(value);
             return JSON.stringify(parsed, null, 4);
         }

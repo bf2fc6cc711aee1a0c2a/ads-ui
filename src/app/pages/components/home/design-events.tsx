@@ -69,7 +69,7 @@ export const DesignEvents: FunctionComponent<DesignEventsProps> = ({design}: Des
                 </If>
 
                 <If condition={hasOrigin(design, "file")}>
-                    <div className="design-events-origin-label">Filename</div>
+                    <div className="design-events-origin-label">File name</div>
                     <div className="design-events-origin-value">{originFilename()}</div>
                 </If>
 
@@ -85,7 +85,7 @@ export const DesignEvents: FunctionComponent<DesignEventsProps> = ({design}: Des
                     <div></div>
 
                     <IfNotEmpty collection={exports} emptyState={(
-                        <span>This design has never been exported.</span>
+                        <span>This design has not been exported.</span>
                     )}>
                         {
                             exports?.map((event, idx) => (

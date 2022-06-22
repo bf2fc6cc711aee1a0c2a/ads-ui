@@ -12,7 +12,9 @@ import {
     DesignsToolbar,
     ExportToRhosrData,
     ExportToRhosrModal,
-    ImportFrom, RenameData, RenameModal
+    ImportFrom,
+    RenameData,
+    RenameModal
 } from "@app/pages/components";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
 import {contentTypeForDesign, fileExtensionForDesign} from "@app/utils";
