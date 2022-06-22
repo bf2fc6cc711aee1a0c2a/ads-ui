@@ -1,6 +1,6 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
 import "./export-to-rhosr.modal.css";
-import {Button, Form, FormGroup, Modal, ModalVariant, Spinner, TextInput} from "@patternfly/react-core";
+import {Button, Form, FormGroup, Modal, ModalVariant, SelectVariant, Spinner, TextInput} from "@patternfly/react-core";
 import {Design, DesignEvent} from "@app/models";
 import {Registry} from "@rhoas/registry-management-sdk";
 import {
@@ -173,6 +173,7 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
                     <FormGroup label="Registry Instance" isRequired={true} fieldId="export-registry-instance">
                         <ObjectSelect value={registry} items={registries}
                                       onSelect={onRegistrySelect}
+                                      variant={SelectVariant.typeahead}
                                       menuAppendTo="parent"
                                       itemToString={item => item.name} />
                     </FormGroup>

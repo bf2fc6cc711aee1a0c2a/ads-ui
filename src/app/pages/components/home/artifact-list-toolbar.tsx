@@ -2,10 +2,14 @@ import React, {FunctionComponent, useEffect, useState} from "react";
 import "./artifact-list-toolbar.css";
 import {
     Button,
+    Dropdown,
+    DropdownItem,
+    DropdownToggle,
     OnPerPageSelect,
     OnSetPage,
     Pagination,
     SearchInput,
+    SelectVariant,
     Toolbar,
     ToolbarContent,
     ToolbarItem
@@ -27,6 +31,7 @@ export type ArtifactListToolbarProps = {
     criteria: ArtifactListToolbarCriteria;
     paging: Paging;
     artifacts?: ArtifactSearchResults;
+    menuAppendTo?: HTMLElement | (() => HTMLElement) | 'parent' | 'inline' | undefined | null;
     onRegistrySelected: (registry: Registry) => void;
     onCriteriaChange: (criteria: ArtifactListToolbarCriteria) => void;
     onPagingChange: (paging: Paging) => void;
@@ -34,7 +39,7 @@ export type ArtifactListToolbarProps = {
 
 
 export const ArtifactListToolbar: FunctionComponent<ArtifactListToolbarProps> = ({registries, criteria, onCriteriaChange, paging,
-                                                                            onPagingChange, artifacts, onRegistrySelected}: ArtifactListToolbarProps) => {
+                                                                            onPagingChange, artifacts, onRegistrySelected, menuAppendTo}: ArtifactListToolbarProps) => {
     const [ registry, setRegistry ] = useState<Registry>();
     const [ filterValue, setFilterValue ] = useState(criteria.filterValue);
 
@@ -103,8 +108,9 @@ export const ArtifactListToolbar: FunctionComponent<ArtifactListToolbarProps> = 
             <ToolbarContent>
                 <ToolbarItem variant="search-filter">
                     <ObjectSelect value={registry} items={registries}
+                                  variant={SelectVariant.typeahead}
                                   onSelect={onRegistrySelectInternal}
-                                  menuAppendTo="parent"
+                                  menuAppendTo={menuAppendTo || 'parent'}
                                   itemToString={item => item.name} />
                 </ToolbarItem>
                 <ToolbarItem variant="search-filter">
