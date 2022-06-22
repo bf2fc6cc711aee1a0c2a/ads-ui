@@ -32,6 +32,7 @@ export type EditorContextProps = {
     artifactContent: string;
     onSave: () => void;
     onFormat: () => void;
+    onRename: () => void;
     onExpandDryRunCausesPanel: (error: DryRunErrorResponse) => void;
     onRegistrationDryRun: (registry: Registry, group: string | undefined, artifactId: string) => void;
     isPanelOpen?: boolean;
@@ -41,7 +42,7 @@ export type EditorContextProps = {
  * The context of the design when editing a design on the editor page.
  */
 export const EditorContext: FunctionComponent<EditorContextProps> = (
-    { design, dirty, onSave, onRegistrationDryRun, onFormat, onExpandDryRunCausesPanel }: EditorContextProps) => {
+    { design, dirty, onSave, onRegistrationDryRun, onFormat, onRename, onExpandDryRunCausesPanel }: EditorContextProps) => {
 
     const lss: LocalStorageService = useLocalStorageService();
 
@@ -79,6 +80,9 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
                 return;
             case "action-format":
                 onFormat();
+                return;
+            case "action-rename":
+                onRename();
                 return;
         }
     };
@@ -129,6 +133,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
 
 
     const menuItems: any[] = [
+        <DropdownItem key="action-rename" data-id="action-rename">Rename</DropdownItem>,
         <DropdownItem key="action-compare" data-id="action-compare">Show changes</DropdownItem>,
         <DropdownSeparator key="action-separator-1" />,
         <DropdownItem key="action-export-to-rhosr" data-id="action-export-to-rhosr">Export to Service Registry</DropdownItem>,

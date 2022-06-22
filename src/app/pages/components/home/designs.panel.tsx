@@ -12,7 +12,7 @@ import {
     DesignsToolbar,
     ExportToRhosrData,
     ExportToRhosrModal,
-    ImportFrom
+    ImportFrom, RenameData, RenameModal
 } from "@app/pages/components";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
 import {contentTypeForDesign, fileExtensionForDesign} from "@app/utils";
@@ -51,6 +51,8 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onDesignSele
     const [ isDeleteModalOpen, setDeleteModalOpen ] = useState(false);
     const [ designToRegister, setDesignToRegister ] = useState<Design>();
     const [ isRegisterModalOpen, setRegisterModalOpen ] = useState(false);
+    const [ designToRename, setDesignToRename ] = useState<Design>();
+    const [ isRenameModalOpen, setRenameModalOpen ] = useState(false);
 
     const designsSvc: DesignsService = useDesignsService();
     const downloadSvc: DownloadService = useDownloadService();
@@ -63,6 +65,28 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onDesignSele
 
     const onEditDesign = (design: Design): void => {
         nav.navigateTo(`/designs/${design.id}/editor`);
+    };
+
+    const onRenameDesign = (design: Design): void => {
+        setDesignToRename(design);
+        setRenameModalOpen(true);
+    };
+
+    const doRenameDesign = (event: RenameData): void => {
+        designsSvc.renameDesign(designToRename?.id as string, event.name, event.summary).then(() => {
+            if (designToRename) {
+                designToRename.name = event.name;
+                designToRename.summary = event.summary;
+            }
+            setRenameModalOpen(false);
+            addAlert({
+                title: `Design '${event.name}' successfully renamed.`,
+                variant: AlertVariant.success,
+                dataTestId: "toast-design-renamed"
+            });
+        }).catch(e => {
+            // TODO error handling
+        })
     };
 
     const onDeleteDesign = (design: Design): void => {
@@ -182,6 +206,7 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onDesignSele
                                     onSelect={onDesignSelected}
                                     onSort={onSortDesigns}
                                     onEdit={onEditDesign}
+                                    onRename={onRenameDesign}
                                     onDownload={onDownloadDesign}
                                     onRegister={onRegisterDesign}
                                     onDelete={onDeleteDesign} />
@@ -197,6 +222,10 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onDesignSele
                                 isOpen={isRegisterModalOpen}
                                 onExported={onRegisterDesignConfirmed}
                                 onCancel={() => setRegisterModalOpen(false)} />
+            <RenameModal design={designToRename}
+                         isOpen={isRenameModalOpen}
+                         onRename={doRenameDesign}
+                         onCancel={() => setRenameModalOpen(false)} />
         </React.Fragment>
     );
 };

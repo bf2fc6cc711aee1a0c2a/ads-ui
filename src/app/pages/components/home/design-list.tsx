@@ -16,6 +16,7 @@ export type DesignListProps = {
     designs: DesignsSearchResults;
     sort: DesignsSort;
     onSort: (sort: DesignsSort) => void;
+    onRename: (design: Design) => void;
     onEdit: (design: Design) => void;
     onDelete: (design: Design) => void;
     onRegister: (design: Design) => void;
@@ -24,7 +25,7 @@ export type DesignListProps = {
 }
 
 export const DesignList: FunctionComponent<DesignListProps> = (
-    {designs, sort, onSort, onEdit, onDelete, onRegister, onDownload, onSelect}: DesignListProps) => {
+    {designs, sort, onSort, onEdit, onRename, onDelete, onRegister, onDownload, onSelect}: DesignListProps) => {
 
     const [selectedDesign, setSelectedDesign] = useState<Design>();
     const [sortByIndex, setSortByIndex] = useState<number>();
@@ -73,6 +74,7 @@ export const DesignList: FunctionComponent<DesignListProps> = (
         return [
             { title: "View details", onClick: () => setSelectedDesign(design) },
             { isSeparator: true, },
+            { title: "Rename", onClick: () => onRename(design) },
             { title: "Edit", onClick: () => onEdit(design) },
             { title: "Download", onClick: () => onDownload(design) },
             { title: "Register in Service Registry", onClick: () => onRegister(design) },

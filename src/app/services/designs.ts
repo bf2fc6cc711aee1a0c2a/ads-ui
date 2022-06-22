@@ -128,6 +128,14 @@ async function deleteDesign(id: string): Promise<void> {
     ]).then(r => {});
 }
 
+async function renameDesign(id: string, newName: string, newSummary?: string): Promise<void> {
+    // @ts-ignore
+    return db.designs.update(id, {
+        name: newName,
+        summary: newSummary
+    });
+}
+
 async function getDesignContent(id: string): Promise<DesignContent> {
     // @ts-ignore
     return db.content.where("id").equals(id).first();
@@ -177,6 +185,7 @@ export interface DesignsService {
     getDesign(id: string): Promise<Design>;
     searchDesigns(criteria: DesignsSearchCriteria, paging: Paging, sort: DesignsSort): Promise<DesignsSearchResults>;
     deleteDesign(id: string): Promise<void>;
+    renameDesign(id: string, newName: string, newSummary?: string): Promise<void>;
     getDesignContent(id: string): Promise<DesignContent>;
     updateDesignContent(content: DesignContent): Promise<void>;
     getEvents(id: string): Promise<DesignEvent[]>;
@@ -194,6 +203,7 @@ export const useDesignsService: () => DesignsService = (): DesignsService => {
         searchDesigns,
         getDesign,
         deleteDesign,
+        renameDesign,
         getDesignContent,
         updateDesignContent,
         getEvents,

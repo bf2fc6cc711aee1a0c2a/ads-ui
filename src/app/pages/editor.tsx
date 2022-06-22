@@ -23,7 +23,7 @@ import {
 import {DesignsService, useDesignsService, useRhosrInstanceServiceFactory} from "@app/services";
 import {ArtifactTypes, ContentTypes, Design, DesignContent} from "@app/models";
 import {IsLoading} from "@app/components";
-import {EditorContext} from "@app/pages/components";
+import {EditorContext, RenameData, RenameModal} from "@app/pages/components";
 import {OpenApiEditor, ProtoEditor, TextEditor} from "@app/editors";
 import {AsyncApiEditor} from "@app/editors/editor-asyncapi";
 import {Registry} from "@rhoas/registry-management-sdk";
@@ -64,6 +64,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
     const [registryDryRunArgsCache, setRegistryDryRunArgsCache] = useState<DryRunRequestParams>();
     const [isDryRunIssuesLoading, setDryRunIssuesIsLoading] = useState(false);
     const [isDryRunIssuesDrawerOpen, setDryRunIssuesDrawerIsOpen] = useState(false);
+    const [isRenameModalOpen, setRenameModalOpen] = useState(false);
 
     const drawerRef = useRef<HTMLDivElement>();
 
@@ -136,6 +137,23 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
             data: formattedContent
         });
         setCurrentContent(formattedContent);
+    }
+
+    const doRenameDesign = (event: RenameData): void => {
+        designsService.renameDesign(design?.id as string, event.name, event.summary).then(() => {
+            if (design) {
+                design.name = event.name;
+                design.summary = event.summary;
+            }
+            setRenameModalOpen(false);
+            addAlert({
+                title: `Design '${event.name}' successfully renamed.`,
+                variant: AlertVariant.success,
+                dataTestId: "toast-design-renamed"
+            });
+        }).catch(e => {
+            // TODO error handling
+        });
     }
 
     const textEditor: React.ReactElement = (
@@ -256,11 +274,16 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
                     dirty={isDirty}
                     onSave={onSave}
                     onFormat={onFormat}
+                    onRename={() => setRenameModalOpen(true)}
                     isPanelOpen={isDryRunIssuesDrawerOpen}
                     onRegistrationDryRun={artifactRegistrationDryRun}
                     onExpandDryRunCausesPanel={(error: DryRunErrorResponse) => openDryRunIssuesPanel(error)}
                     artifactContent={currentContent}
                 />
+                <RenameModal design={design}
+                             isOpen={isRenameModalOpen}
+                             onRename={doRenameDesign}
+                             onCancel={() => setRenameModalOpen(false)} />
             </PageSection>
             <PageSection variant={PageSectionVariants.light} id="section-editor">
                 <Drawer isExpanded={isDryRunIssuesDrawerOpen} isInline position='right'>
