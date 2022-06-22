@@ -1,16 +1,17 @@
 import { useRhosrService } from "@app/services";
 import { Button, Dropdown, DropdownItem, DropdownToggle, Form, FormGroup, Modal, ModalVariant, Popover, TextInput } from "@patternfly/react-core";
-import { HelpIcon } from "@patternfly/react-icons";
 import { Registry } from "@rhoas/registry-management-sdk";
 import React, { useEffect, useState } from "react";
+import {Design} from "@app/models";
 
-export interface DryRunArgs {
+export interface TestRegistryArgs {
 	registry: Registry
 	group?: string
 	artifactId: string
 }
 
-export interface RegistryDryRunFormModalProps {
+export interface TestRegistryFormModalProps {
+	design: Design;
 	isOpen?: boolean;
 	onCancel: () => void;
 	onSubmit: (registry: Registry, groupId: string | undefined, artifactId: string) => void;
@@ -21,18 +22,18 @@ type ValidatedValue = "error" | "default" | "warning" | "success" | undefined;
 const initialFormState = {
 	hasErrors: false,
 	groupValue: {
-		value: '',
-		validated: 'default' as ValidatedValue,
+		value: "",
+		validated: "default" as ValidatedValue,
 		errorMessage: ""
 	},
 	artifactIdValue: {
-		value: '',
-		validated: 'default' as ValidatedValue,
+		value: "",
+		validated: "default" as ValidatedValue,
 		errorMessage: ""
 	}
 }
 
-export const RegistryDryRunFormModal: React.FunctionComponent<RegistryDryRunFormModalProps> = (props) => {
+export const TestRegistryFormModal: React.FunctionComponent<TestRegistryFormModalProps> = ({design, isOpen, onCancel, onSubmit}) => {
 	const [registryList, setRegistryList] = useState<Registry[]>([]);
 	const [registryValue, setRegistryValue] = useState<Registry>();
 	const [formState, setFormState] = useState(initialFormState);
@@ -46,9 +47,25 @@ export const RegistryDryRunFormModal: React.FunctionComponent<RegistryDryRunForm
 			setRegistryList(results);
 			setRegistryValue(results[0]);
 		}).catch((error) => {
-			console.error("[RegistryDryRunForm] Error fetching available registries: ", error);
+			console.error("[TestRegistryForm] Error fetching available registries: ", error);
 		});
 	}, []);
+
+	useEffect(() => {
+		if (design && design.origin && design.origin.type === "rhosr") {
+			setFormState({
+				...formState,
+				artifactIdValue: {
+					...formState.artifactIdValue,
+					value: design.origin.rhosr?.artifactId as string
+				},
+				groupValue: {
+					...formState.groupValue,
+					value: design.origin.rhosr?.groupId as string
+				}
+			})
+		}
+	}, [design]);
 
 	const onToggleRegistryInstanceDropdown = (isOpen: boolean) => {
 		setIsRegistryInstanceDropdownOpen(isOpen);
@@ -58,22 +75,22 @@ export const RegistryDryRunFormModal: React.FunctionComponent<RegistryDryRunForm
 		// @ts-ignore
 		const registryId: string = event?.target.attributes["data-id"].value;
 		rhosrService.getRegistry(registryId).then(setRegistryValue).catch(error => {
-			console.log(`[RegistryDryRunForm] Error fetching registry with ID ${registryId} registries:`, error);
+			console.log(`[TestRegistryForm] Error fetching registry with ID ${registryId} registries:`, error);
 		});
 		setIsRegistryInstanceDropdownOpen(false);
 	}
 
-	const registryDropdownItems = (registries: Registry[]) => registries.map((registry => <DropdownItem key={'registry-' + registry.id} data-id={registry.id}>{registry.name}</DropdownItem>));
+	const registryDropdownItems = (registries: Registry[]) => registries.map((registry => <DropdownItem key={`registry-${registry.id}`} data-id={registry.id}>{registry.name}</DropdownItem>));
 
 	const setGroupValue = (val: string) => {
 		setFormState({
 			...formState,
 			groupValue: {
 				...formState.groupValue,
-				validated: 'default',
+				validated: "default",
 				value: val
 			}
-		})
+		});
 	}
 
 	const setArtifactIdValue = (val: string) => {
@@ -84,8 +101,8 @@ export const RegistryDryRunFormModal: React.FunctionComponent<RegistryDryRunForm
 			hasErrors,
 			artifactIdValue: {
 				...formState.artifactIdValue,
-				validated: hasErrors ? 'error' : 'default',
-				errorMessage: 'Artifact ID is a required field.',
+				validated: hasErrors ? "error" : "default",
+				errorMessage: "Artifact ID is a required field.",
 				value: val
 			}
 		});
@@ -94,18 +111,18 @@ export const RegistryDryRunFormModal: React.FunctionComponent<RegistryDryRunForm
 	return (
 		<Modal
 			variant={ModalVariant.medium}
-			title="Registration dry-run"
-			isOpen={props.isOpen}
-			onClose={props.onCancel}
+			title="Test in Service Registry"
+			isOpen={isOpen}
+			onClose={onCancel}
 			actions={[
-				<Button key="confirm" variant="primary" onClick={() => props.onSubmit(
+				<Button key="confirm" variant="primary" onClick={() => onSubmit(
 					registryValue as Registry,
 					formState.groupValue.value,
 					formState.artifactIdValue.value
 				)}>
-					Run dry-run
+					Test
 				</Button>,
-				<Button key="cancel" variant="link" onClick={props.onCancel}>
+				<Button key="cancel" variant="link" onClick={onCancel}>
 					Cancel
 				</Button>
 			]}
@@ -113,22 +130,6 @@ export const RegistryDryRunFormModal: React.FunctionComponent<RegistryDryRunForm
 			<Form>
 				<FormGroup
 					label="Registry instance"
-					labelIcon={
-						<Popover
-							headerContent="TODO title"
-							bodyContent="TODO body"
-						>
-							<button
-								type="button"
-								aria-label="More info for Registry instance field"
-								onClick={e => e.preventDefault()}
-								aria-describedby="modal-with-form-form-registry-instance"
-								className="pf-c-form__group-label-help"
-							>
-								<HelpIcon noVerticalAlign />
-							</button>
-						</Popover>
-					}
 					fieldId="modal-with-form-form-registry-instance"
 				>
 					<Dropdown
@@ -136,7 +137,7 @@ export const RegistryDryRunFormModal: React.FunctionComponent<RegistryDryRunForm
 						menuAppendTo="parent"
 						toggle={
 							<DropdownToggle id="toggle-basic" onToggle={onToggleRegistryInstanceDropdown}>
-								{registryValue ? registryValue.name : 'Select a Registry instance'}
+								{registryValue ? registryValue.name : "Select a Registry instance"}
 							</DropdownToggle>
 						}
 						isOpen={isRegistryInstanceDropdownOpen}
@@ -147,22 +148,6 @@ export const RegistryDryRunFormModal: React.FunctionComponent<RegistryDryRunForm
 					label="Group"
 					validated={formState.groupValue.validated}
 					helperTextInvalid={formState.groupValue.errorMessage}
-					labelIcon={
-						<Popover
-							headerContent="TODO title"
-							bodyContent="TODO body"
-						>
-							<button
-								type="button"
-								aria-label="More info for Group field"
-								onClick={e => e.preventDefault()}
-								aria-describedby="modal-with-form-form-group"
-								className="pf-c-form__group-label-help"
-							>
-								<HelpIcon noVerticalAlign />
-							</button>
-						</Popover>
-					}
 					fieldId="modal-with-form-form-group"
 				>
 					<TextInput value={formState.groupValue.value} onChange={setGroupValue} />
@@ -171,22 +156,6 @@ export const RegistryDryRunFormModal: React.FunctionComponent<RegistryDryRunForm
 					label="Artifact ID"
 					validated={formState.artifactIdValue.validated}
 					helperTextInvalid={formState.artifactIdValue.errorMessage}
-					labelIcon={
-						<Popover
-							headerContent="TODO title"
-							bodyContent="TODO body"
-						>
-							<button
-								type="button"
-								aria-label="More info for Artifact ID field"
-								onClick={e => e.preventDefault()}
-								aria-describedby="modal-with-form-form-artifactId"
-								className="pf-c-form__group-label-help"
-							>
-								<HelpIcon noVerticalAlign />
-							</button>
-						</Popover>
-					}
 					isRequired
 					fieldId="modal-with-form-form-artifactId"
 				>

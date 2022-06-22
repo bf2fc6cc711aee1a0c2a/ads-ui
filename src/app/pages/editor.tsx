@@ -21,7 +21,7 @@ import {
     Spinner
 } from "@patternfly/react-core";
 import {DesignsService, useDesignsService, useRhosrInstanceServiceFactory} from "@app/services";
-import {ArtifactTypes, ContentTypes, Design, DesignContent} from "@app/models";
+import {ArtifactTypes, ContentTypes, Design, DesignContent, TestRegistryErrorResponse} from "@app/models";
 import {IsLoading} from "@app/components";
 import {EditorContext, RenameData, RenameModal} from "@app/pages/components";
 import {OpenApiEditor, ProtoEditor, TextEditor} from "@app/editors";
@@ -33,23 +33,11 @@ import {Prompt} from "react-router-dom";
 
 export type EditorPageProps = {
     params: any;
-    toggleExpandDryRunIssuesDrawer: (isExpanded: boolean) => void;
+    toggleExpandTestRegistryIssuesDrawer: (isExpanded: boolean) => void;
 };
 
-export interface DryRunErrorResponse {
-    causes: [
-        {
-            description: string,
-            context: string
-        }
-    ],
-    message: string,
-    error_code: number,
-    detail: string,
-    name: string
-}
 
-interface DryRunRequestParams {
+interface TestRegistryRequestParams {
     registry: Registry
     groupId: string | undefined
     artifactId: string
@@ -71,10 +59,10 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
     const [designContent, setDesignContent] = useState<DesignContent>();
     const [currentContent, setCurrentContent] = useState<any>();
     const [isDirty, setDirty] = useState(false);
-    const [dryRunError, setDryRunError] = useState<DryRunErrorResponse>();
-    const [registryDryRunArgsCache, setRegistryDryRunArgsCache] = useState<DryRunRequestParams>();
-    const [isDryRunIssuesLoading, setDryRunIssuesIsLoading] = useState(false);
-    const [isDryRunIssuesDrawerOpen, setDryRunIssuesDrawerIsOpen] = useState(false);
+    const [testRegistryError, setTestRegistryError] = useState<TestRegistryErrorResponse>();
+    const [registryTestRegistryArgsCache, setTestRegistryArgsCache] = useState<TestRegistryRequestParams>();
+    const [isTestRegistryIssuesLoading, setTestRegistryIssuesIsLoading] = useState(false);
+    const [isTestRegistryIssuesDrawerOpen, setTestRegistryIssuesDrawerIsOpen] = useState(false);
     const [isRenameModalOpen, setRenameModalOpen] = useState(false);
 
     const drawerRef = useRef<HTMLDivElement>();
@@ -106,10 +94,8 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
     // Add browser hook to prevent navigation and tab closing when the editor is dirty
     useEffect(() => {
         if (isDirty) {
-            console.info("[EditorPage] Adding beforeunload hook!");
             window.addEventListener("beforeunload", onBeforeUnload);
         } else {
-            console.info("[EditorPage] Removing beforeunload hook...");
             window.removeEventListener("beforeunload", onBeforeUnload);
         }
     }, [isDirty]);
@@ -214,51 +200,51 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
         return textEditor;
     };
 
-    const onResizeDryRunSidepanel = (newWidth: number, id: string) => {
+    const onResizeTestRegistrySidepanel = (newWidth: number, id: string) => {
         // eslint-disable-next-line no-console
         console.log(`${id} has new width of: ${newWidth}`);
     };
 
-    const artifactRegistrationDryRun = (registry: Registry, groupId: string | undefined, artifactId: string) => {
-        setDryRunIssuesIsLoading(true);
-        // cache registry used during dry-run to allow for a retry from the sidepanel
-        setRegistryDryRunArgsCache({ registry, groupId, artifactId });
+    const artifactRegistrationTestRegistry = (registry: Registry, groupId: string | undefined, artifactId: string) => {
+        setTestRegistryIssuesIsLoading(true);
+        // cache registry used during registry test to allow for a retry from the sidepanel
+        setTestRegistryArgsCache({ registry, groupId, artifactId });
         rhosrInstanceFactory.createFor(registry)
             .testUpdateArtifactContent(groupId, artifactId, currentContent)
             .then(() => {
-                openDryRunIssuesPanel();
-            }).catch((error: DryRunErrorResponse) => {
-                openDryRunIssuesPanel(error);
+                openTestRegistryIssuesPanel();
+            }).catch((error: TestRegistryErrorResponse) => {
+                openTestRegistryIssuesPanel(error);
             });
     }
 
-    const openDryRunIssuesPanel = (error?: DryRunErrorResponse) => {
-        setDryRunIssuesDrawerIsOpen(true);
-        setDryRunError(error);
-        setDryRunIssuesIsLoading(false);
+    const openTestRegistryIssuesPanel = (error?: TestRegistryErrorResponse) => {
+        setTestRegistryIssuesDrawerIsOpen(true);
+        setTestRegistryError(error);
+        setTestRegistryIssuesIsLoading(false);
     }
 
-    const closeDryRunIssuesPanel = () => {
-        setDryRunIssuesDrawerIsOpen(false);
-        setDryRunIssuesIsLoading(false);
-        setDryRunError(undefined);
+    const closeTestRegistryIssuesPanel = () => {
+        setTestRegistryIssuesDrawerIsOpen(false);
+        setTestRegistryIssuesIsLoading(false);
+        setTestRegistryError(undefined);
     }
 
-    const renderPanelContent = (error?: DryRunErrorResponse) => {
+    const renderPanelContent = (error?: TestRegistryErrorResponse) => {
         return (
-            <DrawerPanelContent isResizable onResize={onResizeDryRunSidepanel} minSize="35%" id="dry-run-issues-panel">
+            <DrawerPanelContent isResizable onResize={onResizeTestRegistrySidepanel} minSize="35%" id="test-registry-issues-panel">
                 <DrawerHead>
-                    <h2 className="pf-c-title pf-m-2xl" tabIndex={isDryRunIssuesDrawerOpen ? 0 : -1} ref={drawerRef as any}>
-                        Registration dry-run issues
+                    <h2 className="pf-c-title pf-m-2xl" tabIndex={isTestRegistryIssuesDrawerOpen ? 0 : -1} ref={drawerRef as any}>
+                        Test Registration issues
                     </h2>
                     <DrawerActions>
-                        <Button variant="secondary" onClick={() => artifactRegistrationDryRun(
-                            registryDryRunArgsCache?.registry as Registry,
-                            registryDryRunArgsCache?.groupId,
-                            registryDryRunArgsCache?.artifactId as string
+                        <Button variant="secondary" onClick={() => artifactRegistrationTestRegistry(
+                            registryTestRegistryArgsCache?.registry as Registry,
+                            registryTestRegistryArgsCache?.groupId,
+                            registryTestRegistryArgsCache?.artifactId as string
                         )
                         }>Retry</Button>
-                        <DrawerCloseButton onClick={closeDryRunIssuesPanel} />
+                        <DrawerCloseButton onClick={closeTestRegistryIssuesPanel} />
                     </DrawerActions>
                 </DrawerHead>
                 <Divider />
@@ -269,8 +255,8 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
         )
     };
 
-    const renderPanelBody = (error?: DryRunErrorResponse) => {
-        if (isDryRunIssuesLoading) {
+    const renderPanelBody = (error?: TestRegistryErrorResponse) => {
+        if (isTestRegistryIssuesLoading) {
             return <Spinner className="spinner" />
         } else if (error) {
             return <DescriptionList isHorizontal>
@@ -291,7 +277,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
             </DescriptionList>
         }
 
-        return <p>Artifact registration dry-run completed with no issues.</p>;
+        return <p>Registry Test completed with no issues.</p>;
     }
 
     return (
@@ -303,15 +289,15 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
                     onSave={onSave}
                     onFormat={onFormat}
                     onRename={() => setRenameModalOpen(true)}
-                    isPanelOpen={isDryRunIssuesDrawerOpen}
-                    onRegistrationDryRun={artifactRegistrationDryRun}
-                    onExpandDryRunCausesPanel={(error: DryRunErrorResponse) => openDryRunIssuesPanel(error)}
+                    isPanelOpen={isTestRegistryIssuesDrawerOpen}
+                    onRegistrationTestRegistry={artifactRegistrationTestRegistry}
+                    onExpandTestRegistryCausesPanel={(error: TestRegistryErrorResponse) => openTestRegistryIssuesPanel(error)}
                     artifactContent={currentContent}
                 />
             </PageSection>
             <PageSection variant={PageSectionVariants.light} id="section-editor">
-                <Drawer isExpanded={isDryRunIssuesDrawerOpen} isInline={true} position="right">
-                    <DrawerContent panelContent={renderPanelContent(dryRunError)}>
+                <Drawer isExpanded={isTestRegistryIssuesDrawerOpen} isInline={true} position="right">
+                    <DrawerContent panelContent={renderPanelContent(testRegistryError)}>
                         <div className="editor-parent">
                             {editor()}
                         </div>

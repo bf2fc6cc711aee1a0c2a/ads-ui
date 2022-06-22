@@ -1,6 +1,6 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
 import "./editor-context.css";
-import {ArtifactTypes, Design} from "@app/models";
+import {ArtifactTypes, Design, TestRegistryErrorResponse} from "@app/models";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -16,11 +16,9 @@ import {
 import {If, NavLink, ToggleIcon} from "@app/components";
 import Moment from "react-moment";
 import {DesignContext} from "@app/models/designs/design-context.model";
-import {ExportToRhosrData, ExportToRhosrModal} from "@app/pages/components";
+import {ExportToRhosrData, ExportToRhosrModal, TestRegistryFormModal} from "@app/pages/components";
 import {LocalStorageService, useLocalStorageService} from "@app/services";
 import {Registry} from "@rhoas/registry-management-sdk";
-import {RegistryDryRunFormModal} from "./dry-run.modal";
-import {DryRunErrorResponse} from "@app/pages/editor";
 import {AlertVariant, useAlert} from "@rhoas/app-services-ui-shared";
 
 /**
@@ -33,8 +31,8 @@ export type EditorContextProps = {
     onSave: () => void;
     onFormat: () => void;
     onRename: () => void;
-    onExpandDryRunCausesPanel: (error: DryRunErrorResponse) => void;
-    onRegistrationDryRun: (registry: Registry, group: string | undefined, artifactId: string) => void;
+    onExpandTestRegistryCausesPanel: (error: TestRegistryErrorResponse) => void;
+    onRegistrationTestRegistry: (registry: Registry, group: string | undefined, artifactId: string) => void;
     isPanelOpen?: boolean;
 }
 
@@ -42,7 +40,7 @@ export type EditorContextProps = {
  * The context of the design when editing a design on the editor page.
  */
 export const EditorContext: FunctionComponent<EditorContextProps> = (
-    { design, dirty, onSave, onRegistrationDryRun, onFormat, onRename, onExpandDryRunCausesPanel }: EditorContextProps) => {
+    { design, dirty, onSave, onRegistrationTestRegistry, onFormat, onRename, onExpandTestRegistryCausesPanel }: EditorContextProps) => {
 
     const lss: LocalStorageService = useLocalStorageService();
 
@@ -50,7 +48,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
     const [isActionMenuToggled, setActionMenuToggled] = useState(false);
     const [isExpanded, setExpanded] = useState(lss.getConfigProperty("editor-context.isExpanded", "false") === "true");
     const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
-    const [isDryRunModalOpen, setIsDryRunModalOpen] = useState(false);
+    const [isTestRegistryModalOpen, setIsTestRegistryModalOpen] = useState(false);
 
     const { addAlert } = useAlert() || {};
 
@@ -137,7 +135,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
         <DropdownItem key="action-compare" data-id="action-compare">Show changes</DropdownItem>,
         <DropdownSeparator key="action-separator-1" />,
         <DropdownItem key="action-export-to-rhosr" data-id="action-export-to-rhosr">Export to Service Registry</DropdownItem>,
-        <DropdownItem key="action-validate" data-id="action-validate" onClick={() => setIsDryRunModalOpen(true)}>Registration dry-run</DropdownItem>,
+        <DropdownItem key="action-test-registry" data-id="action-test-registry" onClick={() => setIsTestRegistryModalOpen(true)}>Test in Service Registry</DropdownItem>,
     ];
 
     if ([ArtifactTypes.AVRO, ArtifactTypes.JSON].includes(design.type)) {
@@ -151,10 +149,13 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
 
     return (
         <React.Fragment>
-            <RegistryDryRunFormModal isOpen={isDryRunModalOpen} onCancel={() => setIsDryRunModalOpen(false)} onSubmit={(...params) => {
-                onRegistrationDryRun(...params);
-                setIsDryRunModalOpen(false);
-            }} />
+            <TestRegistryFormModal isOpen={isTestRegistryModalOpen}
+                                   design={design}
+                                   onCancel={() => setIsTestRegistryModalOpen(false)}
+                                   onSubmit={(...params) => {
+                                        onRegistrationTestRegistry(...params);
+                                        setIsTestRegistryModalOpen(false);
+                                   }} />
             <div className="editor-context">
                 <div className="editor-context-breadcrumbs">
                     <Breadcrumb style={{ marginBottom: "10px" }}>

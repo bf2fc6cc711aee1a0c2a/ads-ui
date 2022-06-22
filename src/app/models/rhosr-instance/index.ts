@@ -13,3 +13,4 @@ export * from "./searched-version.model";
 export * from "./user-info.model";
 export * from "./version-meta-data.model";
 export * from "./version-search-results.model";
+export * from "./test-registry-error-response.model";
