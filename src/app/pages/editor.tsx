@@ -37,6 +37,8 @@ import {Registry} from "@rhoas/registry-management-sdk";
 import {contentTypeForDesign, convertToValidFilename, fileExtensionForDesign, formatContent} from "@app/utils";
 import {Prompt} from "react-router-dom";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
+import {EditorCompare} from "@app/editors/editor-compare";
+
 
 export type EditorPageProps = {
     params: any;
@@ -71,6 +73,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
     const [isTestRegistryIssuesLoading, setTestRegistryIssuesIsLoading] = useState(false);
     const [isTestRegistryIssuesDrawerOpen, setTestRegistryIssuesDrawerIsOpen] = useState(false);
     const [isRenameModalOpen, setRenameModalOpen] = useState(false);
+    const [isCompareContentEditor, setIsCompareContentEditor] = useState(false);
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
     const drawerRef = useRef<HTMLDivElement>();
@@ -196,6 +199,10 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
         });
     }
 
+    const compareEditor = (updatedContent, currentContent) : React.ReactElement =>  {
+        return <EditorCompare currentContent={currentContent} updatedContent={updatedContent}/>
+    }
+
     const textEditor: React.ReactElement = (
         <TextEditor content={designContent as DesignContent} onChange={onEditorChange} />
     );
@@ -213,6 +220,10 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
     );
 
     const editor = (): React.ReactElement => {
+        if (isCompareContentEditor) {
+            return compareEditor(currentContent, designContent);
+        }
+
         if (design?.type === ArtifactTypes.OPENAPI) {
             return openapiEditor;
         } else if (design?.type === ArtifactTypes.ASYNCAPI) {
@@ -231,9 +242,16 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
         console.log(`${id} has new width of: ${newWidth}`);
     };
 
+    const onCompareContent = () => {
+        setIsCompareContentEditor(true);
+    }
+
+    const closeCompareEditor = () => {
+        setIsCompareContentEditor(false);
+    }
+
     const testArtifactRegistration = (registry: Registry, groupId: string | undefined, artifactId: string) => {
         setTestRegistryIssuesIsLoading(true);
-        openTestRegistryIssuesPanel();
         // cache registry used during registry test to allow for a retry from the sidepanel
         setTestRegistryArgsCache({ registry, groupId, artifactId });
         rhosrInstanceFactory.createFor(registry)
@@ -320,12 +338,13 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
                     onRename={() => setRenameModalOpen(true)}
                     isPanelOpen={isTestRegistryIssuesDrawerOpen}
                     onRegistrationTestRegistry={testArtifactRegistration}
+                    onCompareContent={onCompareContent}
                     onExpandTestRegistryCausesPanel={(error: TestRegistryErrorResponse) => openTestRegistryIssuesPanel(error)}
                     artifactContent={currentContent}
                 />
             </PageSection>
             <PageSection variant={PageSectionVariants.light} id="section-editor">
-                <Drawer isExpanded={isTestRegistryIssuesDrawerOpen} isInline={true} position="right">
+                <Drawer isExpanded={isTestRegistryIssuesDrawerOpen} isInline position='right'>
                     <DrawerContent panelContent={renderPanelContent(testRegistryError)}>
                         <div className="editor-parent">
                             {editor()}
@@ -333,6 +352,18 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
                     </DrawerContent>
                 </Drawer>
             </PageSection>
+            {isCompareContentEditor ? <PageSection variant={PageSectionVariants.light} id="section-editor">
+                <Drawer>
+                    <DrawerContent panelContent={renderPanelContent(testRegistryError)}>
+                        <DrawerActions>
+                            <Button variant={"primary"} onClick={closeCompareEditor}>Cancel</Button>
+                        </DrawerActions>
+                        <div className="editor-parent">
+                            {editor()}
+                        </div>
+                    </DrawerContent>
+                </Drawer>
+            </PageSection> : null}
             <RenameModal design={design}
                          isOpen={isRenameModalOpen}
                          onRename={doRenameDesign}

@@ -36,6 +36,7 @@ export type EditorContextProps = {
     onDelete: () => void;
     onDownload: () => void;
     onRename: () => void;
+    onCompareContent: () => void;
     onExpandTestRegistryCausesPanel: (error: TestRegistryErrorResponse) => void;
     onRegistrationTestRegistry: (registry: Registry, group: string | undefined, artifactId: string) => void;
     isPanelOpen?: boolean;
@@ -60,7 +61,7 @@ const menuActions: EditorContextMenuItem[] = [
     },
     {
         label: "Show changes",
-        key: "action-compare"
+        key: "action-compare",
     },
     {
         key: "action-separator-1",
@@ -93,7 +94,7 @@ const menuActions: EditorContextMenuItem[] = [
  * The context of the design when editing a design on the editor page.
  */
 export const EditorContext: FunctionComponent<EditorContextProps> = (
-    { design, dirty, onSave, onRegistrationTestRegistry, onFormat, onRename, onDownload, onDelete }: EditorContextProps) => {
+    { design, dirty, onSave, onRegistrationTestRegistry, onFormat, onRename, onExpandTestRegistryCausesPanel, onDownload, onDelete, onCompareContent }: EditorContextProps) => {
 
     const lss: LocalStorageService = useLocalStorageService();
 
@@ -125,6 +126,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
         setActionMenuToggled(false);
         switch (action) {
             case "action-compare":
+                onCompareContent();
                 return;
             case "action-export-to-rhosr":
                 setRegisterModalOpen(true);
