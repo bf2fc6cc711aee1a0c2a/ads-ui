@@ -141,13 +141,13 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
                             <TextContent className="summary-title-and-description">
                                 <Flex>
                                     <FlexItem>
-                                        <Text component="h1" className="title">API Designs</Text>
+                                        <Text component="h1" className="title">Schema and API Designs</Text>
                                     </FlexItem>
                                     <FlexItem>
                                         <Popover
                                             aria-label="More information"
                                             headerContent={<div>API Designer Help</div>}
-                                            bodyContent={<div>A tool to design your APIs (OpenAPI, AsyncAPI) and schemas (Apache Avro, Google Protobuf, JSON Schema). Manage your collection of API and schema designs below by creating, importing, and editing.</div>}
+                                            bodyContent={<div>A tool to design your APIs (OpenAPI, AsyncAPI) and schemas (Apache Avro, Google Protobuf, JSON Schema). Manage your collection of schema and API designs below by creating, importing, and editing.</div>}
                                         >
                                             <Button variant="plain"><QuestionCircleIcon /></Button>
                                         </Popover>

@@ -30,7 +30,7 @@ export const DesignsEmptyState: FunctionComponent<DesignsEmptyStateProps> = ({on
                 No designs
             </Title>
             <EmptyStateBody>
-                Create and edit API and schema designs with the API Designer.  To get started,
+                Create and edit schema and API designs with the API Designer.  To get started,
                 create a new design or import one.
             </EmptyStateBody>
             <Button variant="primary" onClick={onCreate}>Create a schema or API design</Button>

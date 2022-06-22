@@ -10,7 +10,8 @@ import {
 } from "@app/models";
 import {RhosrInstanceService, RhosrInstanceServiceFactory, useRhosrInstanceServiceFactory} from "@app/services";
 import {ArtifactList, ArtifactListToolbar, ArtifactListToolbarCriteria} from "@app/pages/components";
-import {IfNotEmpty, IsLoading} from "@app/components";
+import {ListWithToolbar} from "@app/components";
+import {EmptyState, EmptyStateBody, EmptyStateVariant, Spinner, Title} from "@patternfly/react-core";
 
 /**
  * Properties
@@ -102,19 +103,44 @@ export const ArtifactSelector: FunctionComponent<ArtifactSelectorProps> = ({regi
         onSelected(undefined, undefined, undefined);
     }, [rhosrInstance, criteria, paging]);
 
+    const toolbar: React.ReactNode = (
+        <ArtifactListToolbar registries={registries} criteria={criteria} paging={paging}
+                             onRegistrySelected={onRegistrySelected}
+                             onCriteriaChange={onCriteriaChange} onPagingChange={onPagingChange}
+                             artifacts={artifacts} />
+    );
+
+    const emptyState: React.ReactNode = (
+        <EmptyState variant={EmptyStateVariant.xs}>
+            <Title headingLevel="h4" size="md">{"None found"}</Title>
+            <EmptyStateBody>{"No artifacts found in the registry instance."}</EmptyStateBody>
+        </EmptyState>
+    );
+
+    const filteredEmptyState: React.ReactNode = (
+        <EmptyState variant={EmptyStateVariant.xs}>
+            <Title headingLevel="h4" size="md">{"None found"}</Title>
+            <EmptyStateBody>{"No artifacts matched the filter criteria."}</EmptyStateBody>
+        </EmptyState>
+    );
+
+    const loadingComponent: React.ReactNode = (
+        <Spinner size="lg" style={{marginTop: "10px"}} />
+    );
+
     return (
-        <React.Fragment>
-            <ArtifactListToolbar registries={registries} criteria={criteria} paging={paging}
-                                 onRegistrySelected={onRegistrySelected}
-                                 onCriteriaChange={onCriteriaChange} onPagingChange={onPagingChange}
-                                 artifacts={artifacts} />
-            <IsLoading condition={querying}>
-                <IfNotEmpty collection={artifacts?.artifacts} emptyStateMessage={`No artifacts found matching the search criteria.`}>
-                    <ArtifactList artifacts={artifacts?.artifacts} fetchArtifactContent={fetchArtifactContent}
-                                  onArtifactSelected={onArtifactSelected}
-                                  fetchArtifactVersions={fetchArtifactVersions} />
-                </IfNotEmpty>
-            </IsLoading>
-        </React.Fragment>
+        <ListWithToolbar toolbar={toolbar}
+                         alwaysShowToolbar={true}
+                         emptyState={emptyState}
+                         filteredEmptyState={filteredEmptyState}
+                         isFiltered={criteria.filterValue !== ""}
+                         isLoading={querying}
+                         loadingComponent={loadingComponent}
+                         isEmpty={!artifacts || artifacts.count === 0}
+        >
+            <ArtifactList artifacts={artifacts?.artifacts} fetchArtifactContent={fetchArtifactContent}
+                          onArtifactSelected={onArtifactSelected}
+                          fetchArtifactVersions={fetchArtifactVersions} />
+        </ListWithToolbar>
     );
 };

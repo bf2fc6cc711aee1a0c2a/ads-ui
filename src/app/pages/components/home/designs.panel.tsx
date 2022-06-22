@@ -1,7 +1,7 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
 import "./designs.panel.css";
 import {Alert, Card, CardBody} from "@patternfly/react-core";
-import {DownloadService, DesignsService, useDownloadService, useDesignsService} from "@app/services";
+import {DesignsService, DownloadService, useDesignsService, useDownloadService} from "@app/services";
 import {Design, DesignsSearchCriteria, DesignsSearchResults, DesignsSort, Paging} from "@app/models";
 import {ListWithToolbar} from "@app/components";
 import {
@@ -9,10 +9,14 @@ import {
     DesignList,
     DesignsEmptyState,
     DesignsEmptyStateFiltered,
-    DesignsToolbar, ExportToRhosrData, ExportToRhosrModal, ImportFrom
+    DesignsToolbar,
+    ExportToRhosrData,
+    ExportToRhosrModal,
+    ImportFrom
 } from "@app/pages/components";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
 import {contentTypeForDesign, fileExtensionForDesign} from "@app/utils";
+import {AlertVariant, useAlert} from "@rhoas/app-services-ui-shared";
 
 
 function convertToValidFilename(value: string): string {
@@ -51,6 +55,7 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onDesignSele
     const designsSvc: DesignsService = useDesignsService();
     const downloadSvc: DownloadService = useDownloadService();
     const nav: Navigation = useNavigation();
+    const { addAlert } = useAlert() || {};
 
     const doRefresh = (): void => {
         setRefresh(refresh + 1);
@@ -68,9 +73,18 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onDesignSele
     const onDeleteDesignConfirmed = (design: Design): void => {
         designsSvc.deleteDesign(design.id).then(() => {
             doRefresh();
+            addAlert({
+                title: `Design '${design.name}' successfully deleted.`,
+                variant: AlertVariant.success,
+                dataTestId: "toast-design-deleted"
+            });
         }).catch(error => {
-            // TODO handle error
             console.error(error);
+            addAlert({
+                title: `Failed to delete design '${design.name}'.`,
+                variant: AlertVariant.danger,
+                dataTestId: "toast-design-delete-error"
+            });
         });
         setDeleteModalOpen(false);
     };
@@ -81,8 +95,12 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onDesignSele
     };
 
     const onRegisterDesignConfirmed = (event: ExportToRhosrData): void => {
-        // TODO anything to do here other than close the modal?
         setRegisterModalOpen(false);
+        addAlert({
+            title: `Design '${event.design.name}' successfully registered in Service Registry.`,
+            variant: AlertVariant.success,
+            dataTestId: "toast-design-registered"
+        });
     };
 
     const onDownloadDesign = (design: Design): void => {

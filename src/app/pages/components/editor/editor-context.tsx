@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, {FunctionComponent, useEffect, useState} from "react";
 import "./editor-context.css";
 import {ArtifactTypes, Design} from "@app/models";
 import {
@@ -6,18 +6,22 @@ import {
     BreadcrumbItem,
     Button,
     Dropdown,
-    DropdownItem, Gallery, GalleryItem,
+    DropdownItem,
+    Gallery,
+    GalleryItem,
     MenuToggle,
     Text,
-    TextContent} from "@patternfly/react-core";
-import { If, NavLink, ToggleIcon } from "@app/components";
+    TextContent
+} from "@patternfly/react-core";
+import {If, NavLink, ToggleIcon} from "@app/components";
 import Moment from "react-moment";
 import {DesignContext} from "@app/models/designs/design-context.model";
 import {ExportToRhosrData, ExportToRhosrModal} from "@app/pages/components";
-import { LocalStorageService, useLocalStorageService } from "@app/services";
-import { Registry } from "@rhoas/registry-management-sdk";
-import { RegistryDryRunFormModal } from "./dry-run.modal";
-import { DryRunErrorResponse } from "@app/pages/editor";
+import {LocalStorageService, useLocalStorageService} from "@app/services";
+import {Registry} from "@rhoas/registry-management-sdk";
+import {RegistryDryRunFormModal} from "./dry-run.modal";
+import {DryRunErrorResponse} from "@app/pages/editor";
+import {AlertVariant, useAlert} from "@rhoas/app-services-ui-shared";
 
 /**
  * Properties
@@ -44,6 +48,8 @@ export const EditorContext: FunctionComponent<EditorContextProps> = ({ design, d
     const [isExpanded, setExpanded] = useState(lss.getConfigProperty("editor-context.isExpanded", "false") === "true");
     const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
     const [isDryRunModalOpen, setIsDryRunModalOpen] = useState(false);
+
+    const { addAlert } = useAlert() || {};
 
     const onActionMenuToggle = (): void => {
         setActionMenuToggled(!isActionMenuToggled);
@@ -105,8 +111,12 @@ export const EditorContext: FunctionComponent<EditorContextProps> = ({ design, d
     };
 
     const onRegisterDesignConfirmed = (event: ExportToRhosrData): void => {
-        // TODO anything to do here other than close the modal?
         setRegisterModalOpen(false);
+        addAlert({
+            title: `Design '${event.design.name}' successfully registered in Service Registry.`,
+            variant: AlertVariant.success,
+            dataTestId: "toast-design-registered"
+        });
     };
 
     useEffect(() => {
@@ -126,7 +136,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = ({ design, d
                 <div className="editor-context-breadcrumbs">
                     <Breadcrumb style={{ marginBottom: "10px" }}>
                         <BreadcrumbItem component="button">
-                            <NavLink location="/">Red Hat OpenShift API Designer</NavLink>
+                            <NavLink location="/">Schema and API Designs</NavLink>
                         </BreadcrumbItem>
                         <BreadcrumbItem isActive={true}>{design?.name}</BreadcrumbItem>
                     </Breadcrumb>

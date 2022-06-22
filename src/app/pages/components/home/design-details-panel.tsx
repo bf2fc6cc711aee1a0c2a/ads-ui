@@ -30,7 +30,7 @@ export const DesignDetailsPanel: FunctionComponent<DesignDetailsPanelProps> = ({
                 <Tab eventKey="details" title={<TabTitleText>Details</TabTitleText>}>
                     <div className="design-details-grid">
                         <div className="design-details-label">Description</div>
-                        <div className="design-details-value">{design?.summary}</div>
+                        <div className="design-details-value">{design?.summary || "(A design without a description)"}</div>
 
                         <div className="design-details-label">Type</div>
                         <div className="design-details-value">
@@ -38,10 +38,10 @@ export const DesignDetailsPanel: FunctionComponent<DesignDetailsPanelProps> = ({
                         </div>
 
                         <div className="design-details-label">Time created</div>
-                        <div className="design-details-value"><Moment date={design?.createdOn} fromNow={true} /></div>
+                        <div className="design-details-value"><Moment date={design?.createdOn} format="MMMM DD, YYYY h:mma" /></div>
 
                         <div className="design-details-label">Time updated</div>
-                        <div className="design-details-value"><Moment date={design?.modifiedOn} fromNow={true} /></div>
+                        <div className="design-details-value"><Moment date={design?.modifiedOn} format="MMMM DD, YYYY h:mma" /></div>
 
                         <div className="design-details-label">Origin</div>
                         <div className="design-details-value">

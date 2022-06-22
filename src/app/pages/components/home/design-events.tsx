@@ -3,7 +3,7 @@ import "./design-events.css";
 import {Design, DesignEvent} from "@app/models";
 import {DesignsService, useDesignsService} from "@app/services";
 import Moment from "react-moment";
-import {ArtifactTypeIcon, If, IfNotEmpty, IsLoading} from "@app/components";
+import {If, IfNotEmpty, IsLoading} from "@app/components";
 import {DesignEventType, DesignOriginLabel} from "@app/pages/components";
 import {hasOrigin} from "@app/utils";
 import {Divider} from "@patternfly/react-core";
@@ -55,7 +55,7 @@ export const DesignEvents: FunctionComponent<DesignEventsProps> = ({design}: Des
                 </div>
 
                 <div className="design-events-origin-label">Time created</div>
-                <div className="design-events-origin-value"><Moment date={design?.createdOn} fromNow={true} /></div>
+                <div className="design-events-origin-value"><Moment date={design?.createdOn} format="MMMM DD, YYYY h:mma" /></div>
 
                 <If condition={hasOrigin(design, "rhosr")}>
                     <div className="design-events-origin-label">Group ID</div>
@@ -84,7 +84,9 @@ export const DesignEvents: FunctionComponent<DesignEventsProps> = ({design}: Des
                     <div className="design-events-origin-exports-label">Exported to</div>
                     <div></div>
 
-                    <IfNotEmpty collection={exports}>
+                    <IfNotEmpty collection={exports} emptyState={(
+                        <span>This design has never been exported.</span>
+                    )}>
                         {
                             exports?.map((event, idx) => (
                                 <React.Fragment key={idx}>

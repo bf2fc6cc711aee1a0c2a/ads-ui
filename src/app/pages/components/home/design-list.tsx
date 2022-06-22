@@ -71,6 +71,8 @@ export const DesignList: FunctionComponent<DesignListProps> = (
 
     const actionsFor = (design: any): IAction[] => {
         return [
+            { title: "View details", onClick: () => setSelectedDesign(design) },
+            { isSeparator: true, },
             { title: "Edit", onClick: () => onEdit(design) },
             { title: "Download", onClick: () => onDownload(design) },
             { title: "Register in Service Registry", onClick: () => onRegister(design) },

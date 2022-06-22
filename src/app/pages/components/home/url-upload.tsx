@@ -37,7 +37,7 @@ export const UrlUpload: FunctionComponent<UrlUploadProps> = ({id, urlPlaceholder
         return downloadError != undefined && downloadError.trim().length > 0;
     };
 
-    const onDownload = (): void => {
+    const onFetch = (): void => {
         setLoading(true);
         urlService.fetchUrlContent(url as string).then(content => {
             setDownloadError(undefined);
@@ -71,7 +71,7 @@ export const UrlUpload: FunctionComponent<UrlUploadProps> = ({id, urlPlaceholder
                                onChange={onTextInputChange} aria-label="url input" />
                 </div>
                 <div className="url-upload-button">
-                    <Button variant="control" isDisabled={!hasUrl()} onClick={onDownload}>Download</Button>
+                    <Button variant="control" isDisabled={!hasUrl()} onClick={onFetch}>Fetch</Button>
                 </div>
                 <div className="url-upload-button">
                     <Button variant="control" isDisabled={!hasUrl()} onClick={onClear}>Clear</Button>

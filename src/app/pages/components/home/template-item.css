@@ -2,6 +2,7 @@
     width: 125px;
     height: 120px;
     border: 1px solid #ccc;
+    padding: 2px;
 }
 
 .template-item .icon {

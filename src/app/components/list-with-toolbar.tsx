@@ -8,11 +8,13 @@ import {IfNotEmpty} from "@app/components/if-not-empty";
  */
 export type ListWithToolbarProps = {
     toolbar: React.ReactNode;
+    alwaysShowToolbar?: boolean;
     emptyState: React.ReactNode;
     filteredEmptyState: React.ReactNode;
     isLoading: boolean;
     isFiltered: boolean;
     isEmpty: boolean;
+    loadingComponent?: React.ReactNode;
     children?: React.ReactNode;
 };
 
@@ -21,12 +23,12 @@ export type ListWithToolbarProps = {
  * indicated condition is true.
  */
 export const ListWithToolbar: FunctionComponent<ListWithToolbarProps> = (
-    {toolbar, emptyState, filteredEmptyState, isLoading, isEmpty, isFiltered, children}: ListWithToolbarProps) => {
+    {toolbar, alwaysShowToolbar, emptyState, filteredEmptyState, isLoading, loadingComponent, isEmpty, isFiltered, children}: ListWithToolbarProps) => {
 
     return (
         <React.Fragment>
-            <If condition={!isEmpty || isFiltered} children={toolbar} />
-            <IsLoading condition={isLoading}>
+            <If condition={alwaysShowToolbar || !isEmpty || isFiltered} children={toolbar} />
+            <IsLoading condition={isLoading} loadingComponent={loadingComponent}>
                 <If condition={!isEmpty} children={children} />
                 <If condition={isEmpty && isFiltered} children={filteredEmptyState} />
                 <If condition={isEmpty && !isFiltered} children={emptyState} />
