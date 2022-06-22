@@ -1,18 +1,18 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {Editor as DesignEditor, EditorProps} from "@app/editors/editor-types";
 import Editor from "@monaco-editor/react";
+import {contentToString} from "@app/editors/editor-text";
 
 /**
  * Protobuf text editor with support for syntax hint and highlight.
  */
 export const ProtoEditor: DesignEditor = ({content, onChange}: EditorProps) => {
+    const defaultValue: string = contentToString(content);
+    const [value, setValue] = useState<string>(defaultValue);
 
-    let defaultValue: string = "";
-    if (typeof content.data === "string") {
-        defaultValue = content.data as string;
-    } else {
-        defaultValue = JSON.stringify(content.data as string, null, 4);
-    }
+    useEffect(() => {
+        setValue(contentToString(content));
+    }, [content]);
 
     const registerProto = (monaco) => {
         monaco.languages.register({id: 'protobuf'});
@@ -110,7 +110,7 @@ export const ProtoEditor: DesignEditor = ({content, onChange}: EditorProps) => {
             beforeMount={registerProto}
             className="text-editor"
             defaultLanguage="protobuf"
-            defaultValue={defaultValue}
+            defaultValue={value}
             onChange={onChange}
             height="100%"
             options={{

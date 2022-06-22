@@ -1,14 +1,34 @@
-import React, { FunctionComponent, useEffect, useRef, useState } from "react";
+import React, {FunctionComponent, useEffect, useRef, useState} from "react";
 import "./editor.css";
-import { Button, CodeBlock, CodeBlockCode, DescriptionList, DescriptionListDescription, DescriptionListGroup, DescriptionListTerm, Divider, Drawer, DrawerActions, DrawerCloseButton, DrawerContent, DrawerHead, DrawerPanelBody, DrawerPanelContent, List, ListItem, PageSection, PageSectionVariants, SimpleListGroup, Spinner } from "@patternfly/react-core";
-import { DesignsService, useDesignsService, useRhosrInstanceServiceFactory } from "@app/services";
-import { ArtifactTypes, Design, DesignContent } from "@app/models";
-import { IsLoading } from "@app/components";
-import { EditorContext } from "@app/pages/components";
-import { OpenApiEditor, ProtoEditor, TextEditor } from "@app/editors";
-import { Navigation, useNavigation } from "@app/contexts/navigation";
-import { AsyncApiEditor } from "@app/editors/editor-asyncapi";
-import { Registry } from "@rhoas/registry-management-sdk";
+import {
+    Button,
+    CodeBlock,
+    CodeBlockCode,
+    DescriptionList,
+    DescriptionListDescription,
+    DescriptionListGroup,
+    DescriptionListTerm,
+    Divider,
+    Drawer,
+    DrawerActions,
+    DrawerCloseButton,
+    DrawerContent,
+    DrawerHead,
+    DrawerPanelBody,
+    DrawerPanelContent,
+    PageSection,
+    PageSectionVariants,
+    Spinner
+} from "@patternfly/react-core";
+import {DesignsService, useDesignsService, useRhosrInstanceServiceFactory} from "@app/services";
+import {ArtifactTypes, ContentTypes, Design, DesignContent} from "@app/models";
+import {IsLoading} from "@app/components";
+import {EditorContext} from "@app/pages/components";
+import {OpenApiEditor, ProtoEditor, TextEditor} from "@app/editors";
+import {AsyncApiEditor} from "@app/editors/editor-asyncapi";
+import {Registry} from "@rhoas/registry-management-sdk";
+import {formatContent} from "@app/utils";
+import {AlertVariant, useAlert} from "@rhoas/app-services-ui-shared";
 
 export type EditorPageProps = {
     params: any;
@@ -49,8 +69,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
 
     const designsService: DesignsService = useDesignsService();
     const rhosrInstanceFactory = useRhosrInstanceServiceFactory();
-
-    const nav: Navigation = useNavigation();
+    const { addAlert } = useAlert() || {};
 
     // Load the design based on the design ID (from the path param).
     useEffect(() => {
@@ -63,11 +82,11 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
             // TODO handle error
             console.error(`[EditorPage] Failed to get design with id ${designId}: `, error);
         })
-
     }, [params]);
 
     // Load the design content
     useEffect(() => {
+        console.info("=========> DESIGN CHANGED!");
         const designId: string = params["designId"];
         designsService.getDesignContent(designId).then(content => {
             setDesignContent(content);
@@ -92,20 +111,32 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
             ...designContent as DesignContent,
             data: currentContent
         }).then(() => {
-            setDesign({
-                ...design,
-                modifiedOn: new Date()
-            } as Design);
+            if (design) {
+                design.modifiedOn = new Date();
+                setDesign(design);
+                setDirty(false);
+            }
+            addAlert({
+                title: `Design '${design?.name}' successfully saved.`,
+                variant: AlertVariant.success,
+                dataTestId: "toast-design-saved"
+            });
         }).catch(error => {
             // TODO handle error
             console.error("[EditorPage] Failed to save design content: ", error);
         });
     };
 
-    // Called when the user makes an edit in the editor.
-    const onCancel = (): void => {
-        nav.navigateTo("/");
-    };
+    const onFormat = (): void => {
+        console.info("[EditorPage] Formatting content.");
+        const formattedContent: string = formatContent(currentContent, designContent?.contentType || ContentTypes.APPLICATION_JSON);
+        console.info("[EditorPage] New content is: ", formattedContent);
+        setDesignContent({
+            ...designContent as DesignContent,
+            data: formattedContent
+        });
+        setCurrentContent(formattedContent);
+    }
 
     const textEditor: React.ReactElement = (
         <TextEditor content={designContent as DesignContent} onChange={onEditorChange} />
@@ -224,12 +255,11 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
                     design={design as Design}
                     dirty={isDirty}
                     onSave={onSave}
-                    onCancel={onCancel}
+                    onFormat={onFormat}
                     isPanelOpen={isDryRunIssuesDrawerOpen}
                     onRegistrationDryRun={artifactRegistrationDryRun}
                     onExpandDryRunCausesPanel={(error: DryRunErrorResponse) => openDryRunIssuesPanel(error)}
                     artifactContent={currentContent}
-
                 />
             </PageSection>
             <PageSection variant={PageSectionVariants.light} id="section-editor">

@@ -6,7 +6,7 @@ import {
     BreadcrumbItem,
     Button,
     Dropdown,
-    DropdownItem,
+    DropdownItem, DropdownSeparator,
     Gallery,
     GalleryItem,
     MenuToggle,
@@ -31,7 +31,7 @@ export type EditorContextProps = {
     dirty: boolean;
     artifactContent: string;
     onSave: () => void;
-    onCancel: () => void;
+    onFormat: () => void;
     onExpandDryRunCausesPanel: (error: DryRunErrorResponse) => void;
     onRegistrationDryRun: (registry: Registry, group: string | undefined, artifactId: string) => void;
     isPanelOpen?: boolean;
@@ -40,7 +40,9 @@ export type EditorContextProps = {
 /**
  * The context of the design when editing a design on the editor page.
  */
-export const EditorContext: FunctionComponent<EditorContextProps> = ({ design, dirty, onSave, onRegistrationDryRun, onExpandDryRunCausesPanel }: EditorContextProps) => {
+export const EditorContext: FunctionComponent<EditorContextProps> = (
+    { design, dirty, onSave, onRegistrationDryRun, onFormat, onExpandDryRunCausesPanel }: EditorContextProps) => {
+
     const lss: LocalStorageService = useLocalStorageService();
 
     const [designContext, setDesignContext] = useState<DesignContext>();
@@ -72,12 +74,11 @@ export const EditorContext: FunctionComponent<EditorContextProps> = ({ design, d
         switch (action) {
             case "action-compare":
                 return;
-            case "action-validate":
-                return;
-            case "action-compatibility":
-                return;
             case "action-export-to-rhosr":
                 setRegisterModalOpen(true);
+                return;
+            case "action-format":
+                onFormat();
                 return;
         }
     };
@@ -126,6 +127,23 @@ export const EditorContext: FunctionComponent<EditorContextProps> = ({ design, d
         }
     }, [design]);
 
+
+    const menuItems: any[] = [
+        <DropdownItem key="action-compare" data-id="action-compare">Show changes</DropdownItem>,
+        <DropdownSeparator key="action-separator-1" />,
+        <DropdownItem key="action-export-to-rhosr" data-id="action-export-to-rhosr">Export to Service Registry</DropdownItem>,
+        <DropdownItem key="action-validate" data-id="action-validate" onClick={() => setIsDryRunModalOpen(true)}>Registration dry-run</DropdownItem>,
+    ];
+
+    if ([ArtifactTypes.AVRO, ArtifactTypes.JSON].includes(design.type)) {
+        menuItems.push(
+            <DropdownSeparator key="action-separator-2" />
+        );
+        menuItems.push(
+            <DropdownItem key="action-format" data-id="action-format">Format content</DropdownItem>,
+        );
+    }
+
     return (
         <React.Fragment>
             <RegistryDryRunFormModal isOpen={isDryRunModalOpen} onCancel={() => setIsDryRunModalOpen(false)} onSubmit={(...params) => {
@@ -152,14 +170,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = ({ design, d
                         style={{ zIndex: 1000 }}
                         isOpen={isActionMenuToggled}
                         isPlain
-                        dropdownItems={
-                            [
-                                <DropdownItem key="action-export-to-rhosr" data-id="action-export-to-rhosr">Export to Service Registry</DropdownItem>,
-                                <DropdownItem key="action-compare" data-id="action-compare">Compare differences</DropdownItem>,
-                                <DropdownItem key="action-validate" data-id="action-validate" onClick={() => setIsDryRunModalOpen(true)}>Registration dry-run</DropdownItem>,
-                                <DropdownItem key="action-compatibility" data-id="action-compatibility">Check compatibility</DropdownItem>,
-                            ]
-                        }
+                        dropdownItems={menuItems}
                     />
                 </div>
                 <div className="editor-context-save">

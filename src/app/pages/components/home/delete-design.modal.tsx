@@ -56,7 +56,7 @@ export const DeleteDesignModal: FunctionComponent<DeleteDesignModalProps> = ({de
                 <FormGroup fieldId="delete-design-warning">
                     <Alert isInline variant="info" title="To save your data for future use, download the design.">
                         <p style={{lineHeight: "18px"}}>
-                            To ensure you data is successfully saved, wait for the download to complete
+                            To ensure your data is successfully saved, wait for the download to complete
                             before deleting the design.
                         </p>
                         <Button variant="link" onClick={doDownload} style={{paddingLeft:"0px"}}>Download design</Button>

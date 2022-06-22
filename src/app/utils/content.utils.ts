@@ -152,3 +152,26 @@ export function contentTypeForDesign(design: Design, content: DesignContent): st
 
     return ContentTypes.APPLICATION_JSON;
 }
+
+
+/**
+ * Called to format (pretty print) the given content.  For example, if the content is JSON
+ * then the content will be parsed and then stringified with better whitespace.
+ * @param value
+ * @param contentType
+ */
+export function formatContent(value: string, contentType: string): string {
+    console.info("====> formatting content of type: ", contentType);
+    console.info("====> source value: ", value);
+    try {
+        if (contentType === ContentTypes.APPLICATION_JSON) {
+            console.info("====> DOING IT!");
+            const parsed: any = JSON.parse(value);
+            return JSON.stringify(parsed, null, 4);
+        }
+    } catch (e) {
+        console.error(e);
+        return value;
+    }
+    return value;
+}
