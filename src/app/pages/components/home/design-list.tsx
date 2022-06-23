@@ -76,7 +76,6 @@ export const DesignList: FunctionComponent<DesignListProps> = (
             { title: "Edit", onClick: () => onEdit(design) },
             { title: "Download", onClick: () => onDownload(design) },
             { title: "Register in Service Registry", onClick: () => onRegister(design) },
-            { isSeparator: true},
             { title: "Delete", onClick: () => onDelete(design) }
         ];
     }
@@ -124,6 +123,7 @@ export const DesignList: FunctionComponent<DesignListProps> = (
                         width={column.width}
                         modifier="truncate">{column.label}</Th>
                 )}
+                onRowClick={({ row }) => setSelectedDesign(row)}
                 renderCell={({ column, row, colIndex, Td, key }) => (
                     <Td className="design-list-cell" key={`cell-${colIndex}-${row.id}`} children={renderColumnData(row as Design, colIndex)} />
                 )}
