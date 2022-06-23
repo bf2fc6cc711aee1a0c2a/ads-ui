@@ -403,12 +403,12 @@ export const ImportDesignModal: FunctionComponent<ImportDesignModalProps> = ({im
                             onChange={(value) => setName(value)}
                         />
                     </FormGroup>
-                    <FormGroup label="Summary" fieldId="import-design-summary">
+                    <FormGroup label="Description" fieldId="import-design-description">
                         <TextArea
                             type="text"
-                            id="import-design-summary"
-                            name="import-design-summary"
-                            aria-describedby="import-design-summary-helper"
+                            id="import-design-description"
+                            name="import-design-description"
+                            aria-describedby="import-design-description-helper"
                             value={summary}
                             onChange={(value) => setSummary(value)}
                         />

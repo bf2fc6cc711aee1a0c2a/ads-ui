@@ -14,6 +14,7 @@ import {DesignOriginLabel} from "@app/pages/components";
 
 export type DesignListProps = {
     designs: DesignsSearchResults;
+    selectedDesign: Design | undefined;
     sort: DesignsSort;
     onSort: (sort: DesignsSort) => void;
     onRename: (design: Design) => void;
@@ -25,9 +26,8 @@ export type DesignListProps = {
 }
 
 export const DesignList: FunctionComponent<DesignListProps> = (
-    {designs, sort, onSort, onEdit, onRename, onDelete, onRegister, onDownload, onSelect}: DesignListProps) => {
+    {designs, selectedDesign, sort, onSort, onEdit, onRename, onDelete, onRegister, onDownload, onSelect}: DesignListProps) => {
 
-    const [selectedDesign, setSelectedDesign] = useState<Design>();
     const [sortByIndex, setSortByIndex] = useState<number>();
 
     const columns: any[] = [
@@ -72,7 +72,7 @@ export const DesignList: FunctionComponent<DesignListProps> = (
 
     const actionsFor = (design: any): IAction[] => {
         return [
-            { title: "View details", onClick: () => setSelectedDesign(design) },
+            { title: "View details", onClick: () => onSelect(design) },
             { isSeparator: true, },
             { title: "Rename", onClick: () => onRename(design) },
             { title: "Edit", onClick: () => onEdit(design) },
@@ -104,14 +104,6 @@ export const DesignList: FunctionComponent<DesignListProps> = (
         setSortByIndex(sort.by === "name" ? 0 : 2);
     }, [sort]);
 
-    useEffect(() => {
-        onSelect(selectedDesign);
-    }, [selectedDesign]);
-
-    useEffect(() => {
-        setSelectedDesign(undefined);
-    }, [designs]);
-
     return (
         <div className="design-list">
             <ResponsiveTable
@@ -119,7 +111,7 @@ export const DesignList: FunctionComponent<DesignListProps> = (
                 columns={columns}
                 data={designs.designs}
                 expectedLength={designs.count}
-                onRowClick={(row) => setSelectedDesign(row.row.id === selectedDesign?.id ? undefined : row.row)}
+                onRowClick={(row) => onSelect(row.row.id === selectedDesign?.id ? undefined : row.row)}
                 renderHeader={({ column, Th, key }) => (
                     <Th sort={sortParams(column)}
                         className="design-list-header"

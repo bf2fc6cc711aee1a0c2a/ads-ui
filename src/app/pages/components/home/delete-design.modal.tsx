@@ -50,7 +50,7 @@ export const DeleteDesignModal: FunctionComponent<DeleteDesignModalProps> = ({de
                 <FormGroup label="Name" fieldId="delete-design-name">
                     <TextContent>{design?.name}</TextContent>
                 </FormGroup>
-                <FormGroup label="Summary" fieldId="delete-design-summary">
+                <FormGroup label="Description" fieldId="delete-design-description">
                     <TextContent>{design?.summary}</TextContent>
                 </FormGroup>
                 <FormGroup fieldId="delete-design-warning">

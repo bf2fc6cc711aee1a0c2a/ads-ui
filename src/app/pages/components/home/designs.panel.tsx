@@ -26,13 +26,14 @@ function convertToValidFilename(value: string): string {
 }
 
 export type DesignsPanelProps = {
+    selectedDesign: Design | undefined;
     onDesignSelected: (design: Design | undefined) => void;
     onCreate: () => void;
     onImport: (from: ImportFrom) => void;
 }
 
 
-export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onDesignSelected, onCreate, onImport}: DesignsPanelProps) => {
+export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesign, onDesignSelected, onCreate, onImport}: DesignsPanelProps) => {
     const [ isLoading, setLoading ] = useState(false);
     const [ refresh, setRefresh ] = useState(1);
     const [ isFiltered, setFiltered ] = useState(false);
@@ -204,6 +205,7 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({onDesignSele
                             </p>
                         </Alert>
                         <DesignList designs={designs as DesignsSearchResults}
+                                    selectedDesign={selectedDesign}
                                     sort={sort}
                                     onSelect={onDesignSelected}
                                     onSort={onSortDesigns}

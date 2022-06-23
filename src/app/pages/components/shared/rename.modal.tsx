@@ -75,12 +75,12 @@ export const RenameModal: FunctionComponent<RenameModalProps> = (
                         onChange={(value) => setName(value)}
                     />
                 </FormGroup>
-                <FormGroup label="Summary" fieldId="edit-summary">
+                <FormGroup label="Description" fieldId="edit-description">
                     <TextArea
                         type="text"
-                        id="edit-summary"
-                        name="edit-summary"
-                        aria-describedby="edit-summary-helper"
+                        id="edit-description"
+                        name="edit-description"
+                        aria-describedby="edit-description-helper"
                         value={summary}
                         onChange={(value) => {setSummary(value)}}
                     />

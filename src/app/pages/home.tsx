@@ -28,7 +28,7 @@ import {
     ImportFrom,
     ImportFromRhosrModal
 } from "@app/pages/components";
-import {CreateDesign, CreateDesignContent, Design, DesignEvent, Template} from "@app/models";
+import {CreateDesign, CreateDesignContent, Design, Template} from "@app/models";
 import {cloneObject, propertyReplace} from "@app/utils";
 import {DesignsService, useDesignsService} from "@app/services";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
@@ -52,6 +52,7 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
     const nav: Navigation = useNavigation();
 
     const onDrawerExpand = (): void => {
+        console.info("=====> EXPAND");
         drawerRef.current && drawerRef.current.focus();
     };
 
@@ -123,7 +124,7 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
                     </Title>
                 </TextContent>
                 <DrawerActions>
-                    <DrawerCloseButton onClick={() => setDrawerExpanded(false)} />
+                    <DrawerCloseButton onClick={() => onDesignSelected(undefined)} />
                 </DrawerActions>
             </DrawerHead>
             <DrawerPanelBody>
@@ -162,6 +163,7 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
                         <PageSection variant={PageSectionVariants.default} isFilled={true}>
                             <DesignsPanel onCreate={() => {setCreateModalOpen(true)}}
                                           onDesignSelected={onDesignSelected}
+                                          selectedDesign={selectedDesign}
                                           onImport={onImport} />
                         </PageSection>
                     </DrawerContentBody>

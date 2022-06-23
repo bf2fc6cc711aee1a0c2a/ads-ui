@@ -77,6 +77,8 @@ async function searchDesigns(criteria: DesignsSearchCriteria, paging: Paging, so
             matches = true;
         } else if (design.summary && design.summary.toLowerCase().indexOf(criteria.filterValue.toLowerCase()) >= 0) {
             matches = true;
+        } else if (design.type.toLowerCase().indexOf(criteria.filterValue.toLowerCase()) >= 0) {
+            matches = true;
         }
         return matches;
     };

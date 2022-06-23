@@ -184,12 +184,12 @@ export const CreateDesignModal: FunctionComponent<CreateDesignModalProps> = ({is
                         onChange={(value) => {setName(value)}}
                     />
                 </FormGroup>
-                <FormGroup label="Summary" fieldId="create-design-summary">
+                <FormGroup label="Description" fieldId="create-design-description">
                     <TextArea
                         type="text"
-                        id="create-design-summary"
-                        name="create-design-summary"
-                        aria-describedby="create-design-summary-helper"
+                        id="create-design-description"
+                        name="create-design-description"
+                        aria-describedby="create-design-description-helper"
                         value={summary}
                         onChange={(value) => {setSummary(value)}}
                     />

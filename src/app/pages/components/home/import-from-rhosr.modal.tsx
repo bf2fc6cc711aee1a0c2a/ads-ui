@@ -1,5 +1,5 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
-import {Button, Modal, ModalVariant} from "@patternfly/react-core";
+import {Alert, Button, Modal, ModalVariant} from "@patternfly/react-core";
 import {CreateDesign, CreateDesignContent, SearchedArtifact, SearchedVersion} from "@app/models";
 import {Registry} from "@rhoas/registry-management-sdk";
 import {RhosrService, useRhosrService} from "@app/services";
@@ -94,6 +94,13 @@ export const ImportFromRhosrModal: FunctionComponent<ImportFromRhosrModalProps> 
             ]}
         >
             <IsLoading condition={isLoading}>
+                <Alert isInline variant="warning" title="Warning" style={{marginBottom: "15px"}}>
+                    <p>
+                        All new designs are stored locally in your browser. Clearing your browser cache or
+                        switching to a new browser <em>might</em> result in loss of data. Make sure you save your
+                        work locally or in a Red Hat OpenShift Service Registry instance!
+                    </p>
+                </Alert>
                 <ArtifactSelector registries={registries} onSelected={onArtifactSelected} />
             </IsLoading>
         </Modal>
