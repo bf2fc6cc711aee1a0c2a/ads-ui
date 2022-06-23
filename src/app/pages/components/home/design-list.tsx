@@ -2,7 +2,7 @@ import React, {FunctionComponent, useEffect, useState} from "react";
 import "./design-list.css";
 import {Design, DesignsSearchResults, DesignsSort} from "@app/models";
 import {ResponsiveTable} from "@rhoas/app-services-ui-components";
-import {ArtifactTypeIcon, NavLink} from "@app/components";
+import {ArtifactTypeIcon, DesignDescription, NavLink} from "@app/components";
 import Moment from "react-moment";
 import {KebabToggle, Label} from "@patternfly/react-core";
 import {IAction} from "@patternfly/react-table";
@@ -43,7 +43,7 @@ export const DesignList: FunctionComponent<DesignListProps> = (
             return (
                 <div>
                     <NavLink className="design-title" location={`/designs/${column.id}/editor`}>{column.name}</NavLink>
-                    <div className="design-summary">{column.summary||"(A design without a description)"}</div>
+                    <DesignDescription className="design-summary" description={column.summary} />
                 </div>
             );
         }
@@ -74,8 +74,8 @@ export const DesignList: FunctionComponent<DesignListProps> = (
         return [
             { title: "View details", onClick: () => onSelect(design) },
             { isSeparator: true, },
-            { title: "Rename", onClick: () => onRename(design) },
-            { title: "Edit", onClick: () => onEdit(design) },
+            { title: "Edit details", onClick: () => onRename(design) },
+            { title: "Open in editor", onClick: () => onEdit(design) },
             { title: "Download", onClick: () => onDownload(design) },
             { title: "Register in Service Registry", onClick: () => onRegister(design) },
             { isSeparator: true, },

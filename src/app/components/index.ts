@@ -6,3 +6,4 @@ export * from "./if-not-empty";
 export * from "./list-with-toolbar";
 export * from "./object-select";
 export * from "./toggle-icon";
+export * from "./design-description";

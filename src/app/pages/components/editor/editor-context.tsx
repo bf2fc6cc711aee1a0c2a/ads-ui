@@ -13,7 +13,7 @@ import {
     Text,
     TextContent
 } from "@patternfly/react-core";
-import {If, NavLink, ToggleIcon} from "@app/components";
+import {DesignDescription, If, NavLink, ToggleIcon} from "@app/components";
 import Moment from "react-moment";
 import {DesignContext} from "@app/models/designs/design-context.model";
 import {ExportToRhosrData, ExportToRhosrModal, TestRegistryFormModal} from "@app/pages/components";
@@ -131,7 +131,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
 
 
     const menuItems: any[] = [
-        <DropdownItem key="action-rename" data-id="action-rename">Rename</DropdownItem>,
+        <DropdownItem key="action-rename" data-id="action-rename">Edit details</DropdownItem>,
         <DropdownItem key="action-compare" data-id="action-compare">Show changes</DropdownItem>,
         <DropdownSeparator key="action-separator-1" />,
         <DropdownItem key="action-export-to-rhosr" data-id="action-export-to-rhosr">Export to Service Registry</DropdownItem>,
@@ -192,7 +192,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
                 <div className="editor-context-details">
                     <TextContent>
                         <Text component="h1" className="title">{design?.name}</Text>
-                        <Text component="p" className="summary">{design?.summary || "(Design or schema with no summary)"}</Text>
+                        <DesignDescription className="summary" description={design?.summary} />
                     </TextContent>
                     <Gallery className="metadata" minWidths={{ default: "300px" }}>
                         <GalleryItem className="md-property">

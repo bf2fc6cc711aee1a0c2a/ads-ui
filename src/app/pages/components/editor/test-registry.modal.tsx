@@ -3,6 +3,7 @@ import { Button, Dropdown, DropdownItem, DropdownToggle, Form, FormGroup, Modal,
 import { Registry } from "@rhoas/registry-management-sdk";
 import React, { useEffect, useState } from "react";
 import {Design} from "@app/models";
+import {ObjectSelect} from "@app/components";
 
 export interface TestRegistryArgs {
 	registry: Registry
@@ -34,18 +35,16 @@ const initialFormState = {
 }
 
 export const TestRegistryFormModal: React.FunctionComponent<TestRegistryFormModalProps> = ({design, isOpen, onCancel, onSubmit}) => {
-	const [registryList, setRegistryList] = useState<Registry[]>([]);
-	const [registryValue, setRegistryValue] = useState<Registry>();
+	const [registries, setRegistries] = useState<Registry[]>([]);
+	const [registry, setRegistry] = useState<Registry>();
 	const [formState, setFormState] = useState(initialFormState);
-
-	const [isRegistryInstanceDropdownOpen, setIsRegistryInstanceDropdownOpen] = useState(false);
 
 	const rhosrService = useRhosrService();
 
 	useEffect(() => {
 		rhosrService.getRegistries().then((results) => {
-			setRegistryList(results);
-			setRegistryValue(results[0]);
+			setRegistries(results);
+			setRegistry(results[0]);
 		}).catch((error) => {
 			console.error("[TestRegistryForm] Error fetching available registries: ", error);
 		});
@@ -66,19 +65,6 @@ export const TestRegistryFormModal: React.FunctionComponent<TestRegistryFormModa
 			})
 		}
 	}, [design]);
-
-	const onToggleRegistryInstanceDropdown = (isOpen: boolean) => {
-		setIsRegistryInstanceDropdownOpen(isOpen);
-	};
-
-	const onSelectRegistryInstance: (event?: React.SyntheticEvent<HTMLDivElement>) => void = (event) => {
-		// @ts-ignore
-		const registryId: string = event?.target.attributes["data-id"].value;
-		rhosrService.getRegistry(registryId).then(setRegistryValue).catch(error => {
-			console.log(`[TestRegistryForm] Error fetching registry with ID ${registryId} registries:`, error);
-		});
-		setIsRegistryInstanceDropdownOpen(false);
-	}
 
 	const registryDropdownItems = (registries: Registry[]) => registries.map((registry => <DropdownItem key={`registry-${registry.id}`} data-id={registry.id}>{registry.name}</DropdownItem>));
 
@@ -116,7 +102,7 @@ export const TestRegistryFormModal: React.FunctionComponent<TestRegistryFormModa
 			onClose={onCancel}
 			actions={[
 				<Button key="confirm" variant="primary" onClick={() => onSubmit(
-					registryValue as Registry,
+					registry as Registry,
 					formState.groupValue.value,
 					formState.artifactIdValue.value
 				)}>
@@ -132,17 +118,7 @@ export const TestRegistryFormModal: React.FunctionComponent<TestRegistryFormModa
 					label="Registry instance"
 					fieldId="modal-with-form-form-registry-instance"
 				>
-					<Dropdown
-						onSelect={onSelectRegistryInstance}
-						menuAppendTo="parent"
-						toggle={
-							<DropdownToggle id="toggle-basic" onToggle={onToggleRegistryInstanceDropdown}>
-								{registryValue ? registryValue.name : "Select a Registry instance"}
-							</DropdownToggle>
-						}
-						isOpen={isRegistryInstanceDropdownOpen}
-						dropdownItems={registryDropdownItems(registryList)}
-					/>
+					<ObjectSelect value={registry} items={registries} onSelect={setRegistry} itemToString={item => item.name} />
 				</FormGroup>
 				<FormGroup
 					label="Group"

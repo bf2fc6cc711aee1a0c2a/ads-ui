@@ -21,19 +21,19 @@ export const DesignEvents: FunctionComponent<DesignEventsProps> = ({design}: Des
     const designsService: DesignsService = useDesignsService();
 
     const originGroupId = (): string => {
-        return design?.origin.rhosr?.groupId || "default";
+        return design?.origin?.rhosr?.groupId || "default";
     };
     const originArtifactId = (): string => {
-        return design?.origin.rhosr?.artifactId || "Unknown";
+        return design?.origin?.rhosr?.artifactId || "Unknown";
     };
     const originVersion = (): string => {
-        return design?.origin.rhosr?.version || "latest";
+        return design?.origin?.rhosr?.version || "latest";
     };
     const originFilename = (): string => {
-        return design?.origin.file?.fileName || "";
+        return design?.origin?.file?.fileName || "";
     };
     const originUrl = (): string => {
-        return design?.origin.url?.url || "";
+        return design?.origin?.url?.url || "";
     };
 
     useEffect(() => {

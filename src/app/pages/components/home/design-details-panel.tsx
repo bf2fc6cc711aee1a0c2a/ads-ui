@@ -2,7 +2,7 @@ import React, {FunctionComponent, useState} from "react";
 import "./design-details-panel.css";
 import {Design} from "@app/models";
 import {Flex, FlexItem, Form, FormGroup, Tab, Tabs, TabTitleText} from "@patternfly/react-core";
-import {ArtifactTypeIcon} from "@app/components";
+import {ArtifactTypeIcon, DesignDescription} from "@app/components";
 import Moment from "react-moment";
 import {DesignEvents, DesignHistory, DesignOriginLabel} from "@app/pages/components";
 
@@ -30,7 +30,7 @@ export const DesignDetailsPanel: FunctionComponent<DesignDetailsPanelProps> = ({
                 <Tab eventKey="details" title={<TabTitleText>Details</TabTitleText>}>
                     <div className="design-details-grid">
                         <div className="design-details-label">Description</div>
-                        <div className="design-details-value">{design?.summary || "(A design without a description)"}</div>
+                        <DesignDescription className="design-details-value" description={design?.summary} />
 
                         <div className="design-details-label">Type</div>
                         <div className="design-details-value">
