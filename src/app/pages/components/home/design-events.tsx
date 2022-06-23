@@ -37,7 +37,7 @@ export const DesignEvents: FunctionComponent<DesignEventsProps> = ({design}: Des
     };
 
     useEffect(() => {
-        if (design) {            
+        if (design) {
             designsService.getEvents(design.id).then(events => {
                 setExports(events?.filter(event => event.type === "download" || event.type === "register"));
                 setLoading(false);
