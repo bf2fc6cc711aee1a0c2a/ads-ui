@@ -3,7 +3,7 @@ import "./design-events.css";
 import {Design, DesignEvent} from "@app/models";
 import {DesignsService, useDesignsService} from "@app/services";
 import Moment from "react-moment";
-import {If, IfNotEmpty, IsLoading} from "@app/components";
+import {If, IfNotEmpty, IsLoading, RegistryNavLink} from "@app/components";
 import {DesignEventType, DesignOriginLabel} from "@app/pages/components";
 import {hasOrigin} from "@app/utils";
 import {Divider} from "@patternfly/react-core";
@@ -66,6 +66,10 @@ export const DesignEvents: FunctionComponent<DesignEventsProps> = ({design}: Des
 
                     <div className="design-events-origin-label">Version</div>
                     <div className="design-events-origin-value">{originVersion()}</div>
+
+                    <div className="design-events-origin-colspan">
+                        <RegistryNavLink context={design?.origin}>View artifact overview</RegistryNavLink>
+                    </div>
                 </If>
 
                 <If condition={hasOrigin(design, "file")}>

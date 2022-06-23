@@ -266,6 +266,16 @@ export function httpDelete<T>(url: string, options?: AxiosRequestConfig, success
         });
 }
 
+export function stripTrailingSlash(baseHref: string | undefined): string {
+    if (!baseHref) {
+        return "";
+    }
+    if (baseHref.endsWith("/")) {
+        return baseHref.substring(0, baseHref.length - 1);
+    }
+    return baseHref;
+}
+
 export function createHref(baseHref: string, path: string): string {
     let url: string =  baseHref;
     if (url.endsWith("/")) {

@@ -14,6 +14,10 @@
     margin-bottom: 8px;
 }
 
+.design-events-origin .design-events-origin-colspan {
+    grid-column: 1 / span 2;
+}
+
 .design-events-divider {
     margin-top: 20px;
     margin-bottom: 20px;
