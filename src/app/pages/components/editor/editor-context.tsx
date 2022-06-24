@@ -167,7 +167,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
                 <div className="editor-context-breadcrumbs">
                     <Breadcrumb style={{ marginBottom: "10px" }}>
                         <BreadcrumbItem component="button">
-                            <NavLink location="/">Schema and API Designs</NavLink>
+                            <NavLink location="/">API and Schema Designs</NavLink>
                         </BreadcrumbItem>
                         <BreadcrumbItem isActive={true}>{design?.name}</BreadcrumbItem>
                     </Breadcrumb>
