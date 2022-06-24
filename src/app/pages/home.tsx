@@ -147,8 +147,8 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
                                     <FlexItem>
                                         <Popover
                                             aria-label="More information"
-                                            headerContent={<div>API Designer Help</div>}
-                                            bodyContent={<div>A tool to design your APIs (OpenAPI, AsyncAPI) and schemas (Apache Avro, Google Protobuf, JSON Schema). Manage your collection of API and schema designs below by creating, importing, and editing.</div>}
+                                            headerContent={<div>API and Schema Designs</div>}
+                                            bodyContent={<div>API Designer is a tool to design your APIs (OpenAPI, AsyncAPI) and schemas (Apache Avro, Google Protobuf, JSON Schema). Manage your collection of API and schema designs by creating, importing, and editing. Save your work by downloading your designs locally or by exporting them to OpenShift Service Registry.</div>}
                                         >
                                             <Button variant="plain"><QuestionCircleIcon /></Button>
                                         </Popover>
