@@ -132,7 +132,8 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
                 setDirty(false);
             }
             addAlert({
-                title: `Design '${design?.name}' successfully saved.`,
+                title: "Save successful",
+                description: `Design '${design?.name}' was successfully saved.`,
                 variant: AlertVariant.success,
                 dataTestId: "toast-design-saved"
             });
@@ -161,7 +162,8 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
             }
             setRenameModalOpen(false);
             addAlert({
-                title: `Design '${event.name}' successfully renamed.`,
+                title: "Details successfully changed",
+                description: `Details (name, summary) of design '${event.name}' were successfully changed.`,
                 variant: AlertVariant.success,
                 dataTestId: "toast-design-renamed"
             });

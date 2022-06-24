@@ -77,7 +77,7 @@ export const DesignList: FunctionComponent<DesignListProps> = (
             { title: "Edit details", onClick: () => onRename(design) },
             { title: "Open in editor", onClick: () => onEdit(design) },
             { title: "Download", onClick: () => onDownload(design) },
-            { title: "Register in Service Registry", onClick: () => onRegister(design) },
+            { title: "Export to Service Registry", onClick: () => onRegister(design) },
             { isSeparator: true, },
             { title: "Delete", onClick: () => onDelete(design) }
         ];

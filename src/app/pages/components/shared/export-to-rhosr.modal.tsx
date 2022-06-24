@@ -17,6 +17,7 @@ import {DesignContext} from "@app/models/designs/design-context.model";
 import {CreateOrUpdateArtifactData} from "@app/models/rhosr-instance/create-or-update-artifact-data.model";
 
 export type ExportToRhosrData = {
+    registry: Registry;
     design: Design;
     context: DesignContext;
 };
@@ -69,6 +70,7 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
                     }
                 };
                 const data: ExportToRhosrData = {
+                    registry: registry as Registry,
                     design,
                     context
                 };

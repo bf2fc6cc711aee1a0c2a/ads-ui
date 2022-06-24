@@ -13,7 +13,7 @@ import {
     Text,
     TextContent
 } from "@patternfly/react-core";
-import {DesignDescription, If, NavLink, ToggleIcon} from "@app/components";
+import {DesignDescription, If, NavLink, RegistryNavLink, ToggleIcon} from "@app/components";
 import Moment from "react-moment";
 import {DesignContext} from "@app/models/designs/design-context.model";
 import {ExportToRhosrData, ExportToRhosrModal, TestRegistryModal} from "@app/pages/components";
@@ -115,8 +115,15 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
 
     const onRegisterDesignConfirmed = (event: ExportToRhosrData): void => {
         setRegisterModalOpen(false);
+        const description: React.ReactNode = (
+            <React.Fragment>
+                <div>{`Design '${event.design.name}' was successfully exported to Service Registry.`}</div>
+                <RegistryNavLink registry={event.registry} context={event.context}>View artifact overview</RegistryNavLink>
+            </React.Fragment>
+        );
         addAlert({
-            title: `Design '${event.design.name}' successfully registered in Service Registry.`,
+            title: "Export successful",
+            description,
             variant: AlertVariant.success,
             dataTestId: "toast-design-registered"
         });

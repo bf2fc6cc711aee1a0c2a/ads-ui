@@ -3,7 +3,7 @@ import "./designs.panel.css";
 import {Alert, Card, CardBody} from "@patternfly/react-core";
 import {DesignsService, DownloadService, useDesignsService, useDownloadService} from "@app/services";
 import {Design, DesignsSearchCriteria, DesignsSearchResults, DesignsSort, Paging} from "@app/models";
-import {ListWithToolbar} from "@app/components";
+import {ListWithToolbar, RegistryNavLink} from "@app/components";
 import {
     DeleteDesignModal,
     DesignList,
@@ -83,7 +83,8 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesi
             }
             setRenameModalOpen(false);
             addAlert({
-                title: `Design '${event.name}' successfully renamed.`,
+                title: "Details successfully changed",
+                description: `Details (name, summary) of design '${event.name}' were successfully changed.`,
                 variant: AlertVariant.success,
                 dataTestId: "toast-design-renamed"
             });
@@ -101,14 +102,16 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesi
         designsSvc.deleteDesign(design.id).then(() => {
             doRefresh();
             addAlert({
-                title: `Design '${design.name}' successfully deleted.`,
+                title: "Delete successful",
+                description: `Design '${design.name}' was successfully deleted.`,
                 variant: AlertVariant.success,
                 dataTestId: "toast-design-deleted"
             });
         }).catch(error => {
             console.error(error);
             addAlert({
-                title: `Failed to delete design '${design.name}'.`,
+                title: "Delete failed",
+                description: `Failed to delete design '${design.name}'.  ${error}`,
                 variant: AlertVariant.danger,
                 dataTestId: "toast-design-delete-error"
             });
@@ -123,8 +126,15 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesi
 
     const onRegisterDesignConfirmed = (event: ExportToRhosrData): void => {
         setRegisterModalOpen(false);
+        const description: React.ReactNode = (
+            <React.Fragment>
+                <div>{`Design '${event.design.name}' was successfully exported to Service Registry.`}</div>
+                <RegistryNavLink registry={event.registry} context={event.context}>View artifact overview</RegistryNavLink>
+            </React.Fragment>
+        );
         addAlert({
-            title: `Design '${event.design.name}' successfully registered in Service Registry.`,
+            title: "Export successful",
+            description,
             variant: AlertVariant.success,
             dataTestId: "toast-design-registered"
         });
