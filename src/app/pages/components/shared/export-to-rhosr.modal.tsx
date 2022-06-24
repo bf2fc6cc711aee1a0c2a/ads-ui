@@ -99,6 +99,16 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
         setRegistry(registry);
     };
 
+    const defaultRegistry = (registries: Registry[]): Registry | undefined => {
+        if (design?.origin?.type === "rhosr" && design.origin.rhosr?.instanceId) {
+            const filtered: Registry[] = registries.filter(registry => registry.id === design.origin.rhosr?.instanceId);
+            if (filtered && filtered.length > 0) {
+                return filtered[0];
+            }
+        }
+        return registries.length > 0 ? registries[0] : undefined;
+    }
+
     useEffect(() => {
         if (isOpen) {
             setLoadingRegistries(true);
@@ -109,9 +119,7 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
                     const name2: string = b.name as string;
                     return name1.localeCompare(name2);
                 }));
-                if (registries && registries.length > 0) {
-                    setRegistry(registries[0]);
-                }
+                setRegistry(defaultRegistry(registries));
                 setLoadingRegistries(false);
             }).catch(error => {
                 // TODO handle this error case
@@ -184,19 +192,19 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
                             type="text"
                             id="export-group"
                             name="export-group"
-                            placeholder="Enter group ID (optional) or leave blank for default group"
+                            placeholder="Enter group (optional) or leave blank for default group"
                             aria-describedby="export-group-helper"
                             value={group}
                             onChange={(value) => setGroup(value)}
                         />
                     </FormGroup>
-                    <FormGroup label="Artifact Id" isRequired={false} fieldId="export-artifact-id">
+                    <FormGroup label="ID" isRequired={false} fieldId="export-artifact-id">
                         <TextInput
                             isRequired
                             type="text"
                             id="export-artifact-id"
                             name="export-artifact-id"
-                            placeholder="Enter artifact ID (optional) or leave blank for generated ID"
+                            placeholder="Enter ID (optional) or leave blank for generated ID"
                             aria-describedby="export-artifact-id-helper"
                             value={artifactId}
                             onChange={(value) => setArtifactId(value)}

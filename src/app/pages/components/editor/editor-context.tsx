@@ -16,7 +16,7 @@ import {
 import {DesignDescription, If, NavLink, ToggleIcon} from "@app/components";
 import Moment from "react-moment";
 import {DesignContext} from "@app/models/designs/design-context.model";
-import {ExportToRhosrData, ExportToRhosrModal, TestRegistryFormModal} from "@app/pages/components";
+import {ExportToRhosrData, ExportToRhosrModal, TestRegistryModal} from "@app/pages/components";
 import {LocalStorageService, useLocalStorageService} from "@app/services";
 import {Registry} from "@rhoas/registry-management-sdk";
 import {AlertVariant, useAlert} from "@rhoas/app-services-ui-shared";
@@ -149,13 +149,13 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
 
     return (
         <React.Fragment>
-            <TestRegistryFormModal isOpen={isTestRegistryModalOpen}
-                                   design={design}
-                                   onCancel={() => setIsTestRegistryModalOpen(false)}
-                                   onSubmit={(...params) => {
-                                        onRegistrationTestRegistry(...params);
-                                        setIsTestRegistryModalOpen(false);
-                                   }} />
+            <TestRegistryModal isOpen={isTestRegistryModalOpen}
+                               design={design}
+                               onCancel={() => setIsTestRegistryModalOpen(false)}
+                               onSubmit={(...params) => {
+                                    onRegistrationTestRegistry(...params);
+                                    setIsTestRegistryModalOpen(false);
+                               }} />
             <div className="editor-context">
                 <div className="editor-context-breadcrumbs">
                     <Breadcrumb style={{ marginBottom: "10px" }}>
@@ -201,11 +201,11 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
                         </GalleryItem>
                         <If condition={hasRhosrContext}>
                             <GalleryItem className="md-property">
-                                <span className="md-name">Group ID</span>
+                                <span className="md-name">Group</span>
                                 <span className="md-value">{designContext?.rhosr?.groupId || "default"}</span>
                             </GalleryItem>
                             <GalleryItem className="md-property">
-                                <span className="md-name">Artifact ID</span>
+                                <span className="md-name">ID</span>
                                 <span className="md-value">{designContext?.rhosr?.artifactId}</span>
                             </GalleryItem>
                             <GalleryItem className="md-property">

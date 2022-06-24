@@ -1,17 +1,13 @@
-import { useRhosrService } from "@app/services";
-import { Button, Dropdown, DropdownItem, DropdownToggle, Form, FormGroup, Modal, ModalVariant, Popover, TextInput } from "@patternfly/react-core";
-import { Registry } from "@rhoas/registry-management-sdk";
-import React, { useEffect, useState } from "react";
+import {useRhosrService} from "@app/services";
+import {Button, Form, FormGroup, Modal, ModalVariant, TextInput} from "@patternfly/react-core";
+import {Registry} from "@rhoas/registry-management-sdk";
+import React, {useEffect, useState} from "react";
 import {Design} from "@app/models";
 import {ObjectSelect} from "@app/components";
+import {cloneObject} from "@app/utils";
 
-export interface TestRegistryArgs {
-	registry: Registry
-	group?: string
-	artifactId: string
-}
 
-export interface TestRegistryFormModalProps {
+export interface TestRegistryModalProps {
 	design: Design;
 	isOpen?: boolean;
 	onCancel: () => void;
@@ -34,39 +30,51 @@ const initialFormState = {
 	}
 }
 
-export const TestRegistryFormModal: React.FunctionComponent<TestRegistryFormModalProps> = ({design, isOpen, onCancel, onSubmit}) => {
+export const TestRegistryModal: React.FunctionComponent<TestRegistryModalProps> = ({design, isOpen, onCancel, onSubmit}) => {
 	const [registries, setRegistries] = useState<Registry[]>([]);
 	const [registry, setRegistry] = useState<Registry>();
 	const [formState, setFormState] = useState(initialFormState);
+	const [isValid, setValid] = useState(false);
 
 	const rhosrService = useRhosrService();
 
+	const defaultRegistry = (registries: Registry[]): Registry | undefined => {
+		if (design?.origin?.type === "rhosr" && design.origin.rhosr?.instanceId) {
+			const filtered: Registry[] = registries.filter(registry => registry.id === design.origin.rhosr?.instanceId);
+			if (filtered && filtered.length > 0) {
+				return filtered[0];
+			}
+		}
+		return registries.length > 0 ? registries[0] : undefined;
+	}
+
 	useEffect(() => {
 		rhosrService.getRegistries().then((results) => {
-			setRegistries(results);
-			setRegistry(results[0]);
+			setRegistries(registries.sort((a, b) => {
+				const name1: string = a.name as string;
+				const name2: string = b.name as string;
+				return name1.localeCompare(name2);
+			}));
+			setRegistry(defaultRegistry(results));
 		}).catch((error) => {
-			console.error("[TestRegistryForm] Error fetching available registries: ", error);
+			console.error("[TestRegistry] Error fetching available registries: ", error);
 		});
 	}, []);
 
 	useEffect(() => {
-		if (design && design.origin && design.origin.type === "rhosr") {
-			setFormState({
-				...formState,
-				artifactIdValue: {
-					...formState.artifactIdValue,
-					value: design.origin.rhosr?.artifactId as string
-				},
-				groupValue: {
-					...formState.groupValue,
-					value: design.origin.rhosr?.groupId as string
-				}
-			})
+		if (isOpen && design && design.origin && design.origin.type === "rhosr") {
+			const state: any = cloneObject(initialFormState);
+			state.groupValue.value = design.origin.rhosr?.groupId as string
+			state.artifactIdValue.value = design.origin.rhosr?.artifactId as string;
+			setFormState(state);
+		} else {
+			setFormState(initialFormState);
 		}
-	}, [design]);
+	}, [isOpen]);
 
-	const registryDropdownItems = (registries: Registry[]) => registries.map((registry => <DropdownItem key={`registry-${registry.id}`} data-id={registry.id}>{registry.name}</DropdownItem>));
+	useEffect(() => {
+		setValid(formState.artifactIdValue.value !== undefined && formState.artifactIdValue.value.length > 0);
+	}, [formState]);
 
 	const setGroupValue = (val: string) => {
 		setFormState({
@@ -88,7 +96,7 @@ export const TestRegistryFormModal: React.FunctionComponent<TestRegistryFormModa
 			artifactIdValue: {
 				...formState.artifactIdValue,
 				validated: hasErrors ? "error" : "default",
-				errorMessage: "Artifact ID is a required field.",
+				errorMessage: "ID is a required field.",
 				value: val
 			}
 		});
@@ -101,7 +109,7 @@ export const TestRegistryFormModal: React.FunctionComponent<TestRegistryFormModa
 			isOpen={isOpen}
 			onClose={onCancel}
 			actions={[
-				<Button key="confirm" variant="primary" onClick={() => onSubmit(
+				<Button key="confirm" isDisabled={!isValid} variant="primary" onClick={() => onSubmit(
 					registry as Registry,
 					formState.groupValue.value,
 					formState.artifactIdValue.value
@@ -115,6 +123,7 @@ export const TestRegistryFormModal: React.FunctionComponent<TestRegistryFormModa
 		>
 			<Form>
 				<FormGroup
+					isRequired={true}
 					label="Registry instance"
 					fieldId="modal-with-form-form-registry-instance"
 				>
@@ -126,17 +135,21 @@ export const TestRegistryFormModal: React.FunctionComponent<TestRegistryFormModa
 					helperTextInvalid={formState.groupValue.errorMessage}
 					fieldId="modal-with-form-form-group"
 				>
-					<TextInput value={formState.groupValue.value} onChange={setGroupValue} />
+					<TextInput
+						value={formState.groupValue.value}
+						placeholder="Enter group (optional) or leave blank for default group"
+						onChange={setGroupValue} />
 				</FormGroup>
 				<FormGroup
-					label="Artifact ID"
+					label="ID"
 					validated={formState.artifactIdValue.validated}
 					helperTextInvalid={formState.artifactIdValue.errorMessage}
-					isRequired
+					isRequired={true}
 					fieldId="modal-with-form-form-artifactId"
 				>
 					<TextInput
 						id="modal-with-form-form-artifactId"
+						placeholder="Enter ID of artifact"
 						value={formState.artifactIdValue.value}
 						onChange={setArtifactIdValue} />
 				</FormGroup>

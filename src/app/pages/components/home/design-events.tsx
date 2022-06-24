@@ -58,10 +58,10 @@ export const DesignEvents: FunctionComponent<DesignEventsProps> = ({design}: Des
                 <div className="design-events-origin-value"><Moment date={design?.createdOn} format="MMMM DD, YYYY h:mma" /></div>
 
                 <If condition={hasOrigin(design, "rhosr")}>
-                    <div className="design-events-origin-label">Group ID</div>
+                    <div className="design-events-origin-label">Group</div>
                     <div className="design-events-origin-value">{originGroupId()}</div>
 
-                    <div className="design-events-origin-label">Artifact ID</div>
+                    <div className="design-events-origin-label">ID</div>
                     <div className="design-events-origin-value">{originArtifactId()}</div>
 
                     <div className="design-events-origin-label">Version</div>

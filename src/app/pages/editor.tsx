@@ -60,7 +60,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
     const [currentContent, setCurrentContent] = useState<any>();
     const [isDirty, setDirty] = useState(false);
     const [testRegistryError, setTestRegistryError] = useState<TestRegistryErrorResponse>();
-    const [registryTestRegistryArgsCache, setTestRegistryArgsCache] = useState<TestRegistryRequestParams>();
+    const [testRegistryArgsCache, setTestRegistryArgsCache] = useState<TestRegistryRequestParams>();
     const [isTestRegistryIssuesLoading, setTestRegistryIssuesIsLoading] = useState(false);
     const [isTestRegistryIssuesDrawerOpen, setTestRegistryIssuesDrawerIsOpen] = useState(false);
     const [isRenameModalOpen, setRenameModalOpen] = useState(false);
@@ -239,9 +239,9 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
                     </h2>
                     <DrawerActions>
                         <Button variant="secondary" onClick={() => artifactRegistrationTestRegistry(
-                            registryTestRegistryArgsCache?.registry as Registry,
-                            registryTestRegistryArgsCache?.groupId,
-                            registryTestRegistryArgsCache?.artifactId as string
+                            testRegistryArgsCache?.registry as Registry,
+                            testRegistryArgsCache?.groupId,
+                            testRegistryArgsCache?.artifactId as string
                         )
                         }>Retry</Button>
                         <DrawerCloseButton onClick={closeTestRegistryIssuesPanel} />
