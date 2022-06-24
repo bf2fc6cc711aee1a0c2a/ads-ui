@@ -105,7 +105,7 @@ export const TestRegistryModal: React.FunctionComponent<TestRegistryModalProps> 
 	return (
 		<Modal
 			variant={ModalVariant.medium}
-			title="Test in Service Registry"
+			title="Test using Service Registry"
 			isOpen={isOpen}
 			onClose={onCancel}
 			actions={[

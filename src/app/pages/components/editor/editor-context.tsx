@@ -143,7 +143,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
         <DropdownItem key="action-compare" data-id="action-compare">Show changes</DropdownItem>,
         <DropdownSeparator key="action-separator-1" />,
         <DropdownItem key="action-export-to-rhosr" data-id="action-export-to-rhosr">Export to Service Registry</DropdownItem>,
-        <DropdownItem key="action-test-registry" data-id="action-test-registry" onClick={() => setIsTestRegistryModalOpen(true)}>Test in Service Registry</DropdownItem>,
+        <DropdownItem key="action-test-registry" data-id="action-test-registry" onClick={() => setIsTestRegistryModalOpen(true)}>Test using Service Registry</DropdownItem>,
     ];
 
     if ([ArtifactTypes.AVRO, ArtifactTypes.JSON].includes(design.type)) {

@@ -115,6 +115,7 @@ export const DesignList: FunctionComponent<DesignListProps> = (
                 columns={columns}
                 data={designs.designs}
                 expectedLength={designs.count}
+                minimumColumnWidth={350}
                 onRowClick={(row) => onSelect(row.row.id === selectedDesign?.id ? undefined : row.row)}
                 renderHeader={({ column, Th, key }) => (
                     <Th sort={sortParams(column)}
