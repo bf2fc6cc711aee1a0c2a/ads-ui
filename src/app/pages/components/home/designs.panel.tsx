@@ -1,9 +1,15 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
 import "./designs.panel.css";
-import {Alert, Card, CardBody} from "@patternfly/react-core";
-import {DesignsService, DownloadService, useDesignsService, useDownloadService} from "@app/services";
+import {Alert, AlertActionCloseButton, Card, CardBody} from "@patternfly/react-core";
+import {
+    DesignsService,
+    DownloadService, LocalStorageService,
+    useDesignsService,
+    useDownloadService,
+    useLocalStorageService
+} from "@app/services";
 import {Design, DesignsSearchCriteria, DesignsSearchResults, DesignsSort, Paging} from "@app/models";
-import {ListWithToolbar, RegistryNavLink} from "@app/components";
+import {If, ListWithToolbar, RegistryNavLink} from "@app/components";
 import {
     DeleteDesignModal,
     DesignList,
@@ -35,6 +41,7 @@ export type DesignsPanelProps = {
 
 export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesign, onDesignSelected, onCreate, onImport}: DesignsPanelProps) => {
     const [ isLoading, setLoading ] = useState(false);
+    const [ showDataWarning, setShowDataWarning ] = useState(true);
     const [ refresh, setRefresh ] = useState(1);
     const [ isFiltered, setFiltered ] = useState(false);
     const [ paging, setPaging ] = useState<Paging>({
@@ -61,6 +68,7 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesi
     const downloadSvc: DownloadService = useDownloadService();
     const nav: Navigation = useNavigation();
     const { addAlert } = useAlert() || {};
+    const local: LocalStorageService = useLocalStorageService();
 
     const doRefresh = (): void => {
         setRefresh(refresh + 1);
@@ -168,6 +176,10 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesi
         setPaging(paging);
         doRefresh();
     };
+    
+    useEffect(() => {
+        setShowDataWarning("true" === local.getConfigProperty("designs.panel.show-data-warning", "true"));
+    }, []);
 
     useEffect(() => {
         setLoading(true);
@@ -201,6 +213,11 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesi
                         onCriteriaChange={onCriteriaChange} onPagingChange={onPagingChange} />
     );
 
+    const onCloseDataWarning = (): void => {
+        setShowDataWarning(false);
+        local.setConfigProperty("designs.panel.show-data-warning", "false");
+    };
+
     return (
         <React.Fragment>
             <Card isSelectable={false}>
@@ -211,14 +228,21 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesi
                                      isLoading={isLoading}
                                      isFiltered={isFiltered}
                                      isEmpty={!designs || designs.count === 0}>
-                        <Alert className="panel-alert" isInline variant="info" title="About your data" style={{ marginBottom: "15px"}}>
-                            <p>
-                                All designs are stored locally in your browser.  Clearing your browser cache or
-                                switching to a new browser <em>might</em> result in loss of data.  Make sure you save your
-                                work locally or in a Red Hat OpenShift Service Registry instance!  In the future your
-                                designs will be saved to a persistent server, stay tuned!
-                            </p>
-                        </Alert>
+                        <If condition={showDataWarning}>
+                            <Alert className="panel-alert"
+                                   isInline={true}
+                                   variant="info"
+                                   title="About your data"
+                                   actionClose={<AlertActionCloseButton onClose={onCloseDataWarning} />}
+                                   style={{ marginBottom: "15px"}}>
+                                <p>
+                                    All designs are stored locally in your browser.  Clearing your browser cache or
+                                    switching to a new browser <em>might</em> result in loss of data.  Make sure you save your
+                                    work locally or in a Red Hat OpenShift Service Registry instance!  In the future your
+                                    designs will be saved to a persistent server, stay tuned!
+                                </p>
+                            </Alert>
+                        </If>
                         <DesignList designs={designs as DesignsSearchResults}
                                     selectedDesign={selectedDesign}
                                     sort={sort}

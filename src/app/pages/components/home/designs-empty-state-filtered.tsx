@@ -27,9 +27,9 @@ export const DesignsEmptyStateFiltered: FunctionComponent<DesignsEmptyStateFilte
             <EmptyState variant={EmptyStateVariant.small}>
                 <EmptyStateIcon icon={SearchIcon} />
                 <Title headingLevel="h2" size="lg">
-                    No results found
+                    No matching designs
                 </Title>
-                <EmptyStateBody>Clear all filters and try again.</EmptyStateBody>
+                <EmptyStateBody>Adjust your filters and try again.</EmptyStateBody>
                 <Button variant="link" onClick={onClear}>Clear all filters</Button>
             </EmptyState>
         </Bullseye>

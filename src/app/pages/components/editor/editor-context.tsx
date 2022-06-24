@@ -6,10 +6,11 @@ import {
     BreadcrumbItem,
     Button,
     Dropdown,
-    DropdownItem, DropdownSeparator,
+    DropdownItem,
+    DropdownSeparator,
+    DropdownToggle,
     Gallery,
     GalleryItem,
-    MenuToggle,
     Text,
     TextContent
 } from "@patternfly/react-core";
@@ -52,8 +53,8 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
 
     const { addAlert } = useAlert() || {};
 
-    const onActionMenuToggle = (): void => {
-        setActionMenuToggled(!isActionMenuToggled);
+    const onActionMenuToggle = (value: boolean): void => {
+        setActionMenuToggled(value);
     };
 
     const onToggleExpand = (): void => {
@@ -63,7 +64,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
     };
 
     const actionMenuToggle: React.ReactNode = (
-        <MenuToggle variant="secondary" onClick={onActionMenuToggle} isExpanded={isActionMenuToggled}>Actions</MenuToggle>
+        <DropdownToggle id="action-toggle" toggleVariant="secondary" onToggle={onActionMenuToggle}>Actions</DropdownToggle>
     );
 
     const onActionMenuSelect = (event?: React.SyntheticEvent<HTMLDivElement>): void => {

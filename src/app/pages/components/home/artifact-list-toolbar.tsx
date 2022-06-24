@@ -2,9 +2,6 @@ import React, {FunctionComponent, useEffect, useState} from "react";
 import "./artifact-list-toolbar.css";
 import {
     Button,
-    Dropdown,
-    DropdownItem,
-    DropdownToggle,
     OnPerPageSelect,
     OnSetPage,
     Pagination,
