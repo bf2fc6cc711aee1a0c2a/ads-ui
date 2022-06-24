@@ -187,7 +187,12 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesi
     );
 
     const emptyStateFiltered: React.ReactNode = (
-        <DesignsEmptyStateFiltered />
+        <DesignsEmptyStateFiltered onClear={() => {
+            onCriteriaChange({
+                filterValue: "",
+                filterOn: ""
+            });
+        }} />
     );
 
     const toolbar: React.ReactNode = (
