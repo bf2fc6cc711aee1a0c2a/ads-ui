@@ -26,7 +26,20 @@ export const DesignOriginLabel: FunctionComponent<DesignOriginLabelProps> = ({de
         return "n/a";
     };
 
+    const color = (): "blue" | "cyan" | "green" | "orange" | "purple" | "red" | "grey" => {
+        if (design) {
+            if (hasOrigin(design, "file")) {
+                return "purple";
+            } else if (hasOrigin(design, "rhosr")) {
+                return "blue";
+            } else if (hasOrigin(design, "url")) {
+                return "green";
+            }
+        }
+        return "grey";
+    };
+
     return (
-        <Label color="blue">{label()}</Label>
+        <Label color={color()}>{label()}</Label>
     );
 };

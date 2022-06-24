@@ -53,8 +53,8 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesi
         filterOn: "name"
     });
     const [ sort, setSort ] = useState<DesignsSort>({
-        by: "name",
-        direction: "asc"
+        by: "modified-on",
+        direction: "desc"
     });
     const [ designs, setDesigns ] = useState<DesignsSearchResults>();
     const [ designToDelete, setDesignToDelete ] = useState<Design>();
@@ -176,7 +176,7 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesi
         setPaging(paging);
         doRefresh();
     };
-    
+
     useEffect(() => {
         setShowDataWarning("true" === local.getConfigProperty("designs.panel.show-data-warning", "true"));
     }, []);

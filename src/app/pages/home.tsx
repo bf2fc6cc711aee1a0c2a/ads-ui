@@ -52,7 +52,6 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
     const nav: Navigation = useNavigation();
 
     const onDrawerExpand = (): void => {
-        console.info("=====> EXPAND");
         drawerRef.current && drawerRef.current.focus();
     };
 

@@ -91,7 +91,7 @@ async function searchDesigns(criteria: DesignsSearchCriteria, paging: Paging, so
             let rval: number = sort.by === "name" ? (
                 design1.name.localeCompare(design2.name)
             ) : (
-                design2.modifiedOn.getTime() - design1.modifiedOn.getTime()
+                design1.modifiedOn.getTime() - design2.modifiedOn.getTime()
             );
             if (sort.direction !== "asc") {
                 rval *= -1;
