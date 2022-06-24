@@ -218,7 +218,7 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
                             type="text"
                             id="export-version"
                             name="export-version"
-                            placeholder="Enter version (optional) or leave blank for generated version #"
+                            placeholder="Enter version (optional) or leave blank for generated version number"
                             aria-describedby="export-version-helper"
                             value={version}
                             onChange={(value) => setVersion(value)}
