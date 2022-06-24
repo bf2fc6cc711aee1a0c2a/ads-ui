@@ -139,7 +139,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
 
 
     const menuItems: any[] = [
-        <DropdownItem key="action-rename" data-id="action-rename">Edit details</DropdownItem>,
+        <DropdownItem key="action-rename" data-id="action-rename">Rename</DropdownItem>,
         <DropdownItem key="action-compare" data-id="action-compare">Show changes</DropdownItem>,
         <DropdownSeparator key="action-separator-1" />,
         <DropdownItem key="action-export-to-rhosr" data-id="action-export-to-rhosr">Export to Service Registry</DropdownItem>,

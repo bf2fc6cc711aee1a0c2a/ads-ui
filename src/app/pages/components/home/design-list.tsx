@@ -8,7 +8,6 @@ import {KebabToggle, Label} from "@patternfly/react-core";
 import {IAction} from "@patternfly/react-table";
 import {ThProps} from "@patternfly/react-table/src/components/TableComposable/Th";
 import {CustomActionsToggleProps} from "@patternfly/react-table/src/components/Table/ActionsColumn";
-import {hasOrigin} from "@app/utils";
 import {DesignOriginLabel} from "@app/pages/components";
 
 
@@ -78,10 +77,10 @@ export const DesignList: FunctionComponent<DesignListProps> = (
         return [
             { title: "View details", onClick: () => onSelect(design) },
             { isSeparator: true, },
-            { title: "Edit details", onClick: () => onRename(design) },
-            { title: "Open in editor", onClick: () => onEdit(design) },
-            { title: "Download", onClick: () => onDownload(design) },
+            { title: "Edit", onClick: () => onEdit(design) },
+            { title: "Rename", onClick: () => onRename(design) },
             { title: "Export to Service Registry", onClick: () => onRegister(design) },
+            { title: "Download", onClick: () => onDownload(design) },
             { isSeparator: true, },
             { title: "Delete", onClick: () => onDelete(design) }
         ];
