@@ -33,7 +33,7 @@ export const DesignList: FunctionComponent<DesignListProps> = (
     const columns: any[] = [
         { index: 0, id: "name", label: "Name", width: 40, sortable: true },
         { index: 1, id: "type", label: "Type", width: 15, sortable: false },
-        { index: 2, id: "modified-on", label: "Modified on", width: 15, sortable: true },
+        { index: 2, id: "modified-on", label: "Time updated", width: 15, sortable: true },
         { index: 3, id: "context", label: "Origin", width: 25, sortable: false },
     ];
 
