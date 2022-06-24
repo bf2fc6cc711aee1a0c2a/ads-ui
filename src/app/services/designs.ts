@@ -11,7 +11,7 @@ import {
 } from "@app/models";
 import Dexie from "dexie";
 import {v4 as uuidv4} from "uuid";
-import {cloneObject} from "@app/utils";
+import {cloneObject, limit} from "@app/utils";
 
 
 const db = new Dexie("designsDB");
@@ -26,8 +26,8 @@ async function createDesign(cd: CreateDesign, cdc: CreateDesignContent): Promise
     const id: string = uuidv4();
     const newDesign: Design = {
         id,
-        name: cd.name,
-        summary: cd.summary,
+        name: limit(cd.name, 64) as string,
+        summary: limit(cd.summary, 256),
         type: cd.type,
         createdOn: new Date(),
         modifiedOn: new Date(),
@@ -133,8 +133,8 @@ async function deleteDesign(id: string): Promise<void> {
 async function renameDesign(id: string, newName: string, newSummary?: string): Promise<void> {
     // @ts-ignore
     return db.designs.update(id, {
-        name: newName,
-        summary: newSummary
+        name: limit(newName, 64) as string,
+        summary: limit(newSummary, 256),
     });
 }
 

@@ -42,8 +42,12 @@ export const DesignList: FunctionComponent<DesignListProps> = (
         if (colIndex === 0) {
             return (
                 <div>
-                    <NavLink className="design-title" location={`/designs/${column.id}/editor`}>{column.name}</NavLink>
-                    <DesignDescription className="design-summary" description={column.summary} />
+                    <NavLink className="design-title"
+                             location={`/designs/${column.id}/editor`}
+                             title={column.name}>{column.name}</NavLink>
+                    <DesignDescription className="design-summary"
+                                       description={column.summary}
+                                       title={column.summary} />
                 </div>
             );
         }

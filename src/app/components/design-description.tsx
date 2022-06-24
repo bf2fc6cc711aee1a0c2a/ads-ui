@@ -6,11 +6,12 @@ import "./design-description.css";
  */
 export type DesignDescriptionProps = {
     description: string | undefined;
+    title?: string;
     className?: string;
 }
 
 
-export const DesignDescription: FunctionComponent<DesignDescriptionProps> = ({description, className}: DesignDescriptionProps) => {
+export const DesignDescription: FunctionComponent<DesignDescriptionProps> = ({description, title, className}: DesignDescriptionProps) => {
     let classes: string = "";
     if (className) {
         classes = className;
@@ -19,6 +20,6 @@ export const DesignDescription: FunctionComponent<DesignDescriptionProps> = ({de
         classes = classes + " no-description";
     }
     return (
-        <div className={classes}>{description || "No description."}</div>
+        <div className={classes} title={title}>{description || "No description."}</div>
     );
 }
