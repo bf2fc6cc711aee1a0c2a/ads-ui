@@ -305,6 +305,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
 
     const testArtifactRegistration = (registry: Registry, groupId: string | undefined, artifactId: string) => {
         setTestRegistryIssuesIsLoading(true);
+        openTestRegistryIssuesPanel();
         // cache registry used during registry test to allow for a retry from the sidepanel
         setTestRegistryArgsCache({ registry, groupId, artifactId });
         rhosrInstanceFactory.createFor(registry)

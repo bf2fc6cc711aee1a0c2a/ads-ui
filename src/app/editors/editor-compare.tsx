@@ -8,6 +8,7 @@ import {EditorCompare as DesignEditor, EditorCompareProps} from "@app/editors/ed
  */
 export const EditorCompare: DesignEditor = ({updatedContent, currentContent, contentOptions}: EditorCompareProps) => {
     let currentContentDefaultValue: string = "";
+    let updatedContentDefaultValue: string = "";
 
     if (typeof currentContent.data === "string") {
         currentContentDefaultValue = currentContent.data as string;
@@ -15,11 +16,17 @@ export const EditorCompare: DesignEditor = ({updatedContent, currentContent, con
         currentContentDefaultValue = JSON.stringify(currentContent.data as string, null, 4);
     }
 
+    if (typeof updatedContent === "string") {
+        updatedContentDefaultValue = updatedContent as string;
+    } else {
+        updatedContentDefaultValue = JSON.stringify(updatedContent as string, null, 4);
+    }
+
     return (
         <DiffEditor
             className="text-editor"
             original={currentContentDefaultValue}
-            modified={updatedContent}
+            modified={updatedContentDefaultValue}
             options={contentOptions}
         />
     );

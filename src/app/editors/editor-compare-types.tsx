@@ -4,7 +4,7 @@ import {editor} from "monaco-editor";
 import IDiffEditorConstructionOptions = editor.IDiffEditorConstructionOptions;
 
 export type EditorCompareProps = {
-    updatedContent: string;
+    updatedContent: any;
     currentContent: DesignContent;
     contentOptions: IDiffEditorConstructionOptions;
 };
