@@ -54,7 +54,7 @@ export const RenameModal: FunctionComponent<RenameModalProps> = (
             isOpen={isOpen}
             onClose={onCancel}
             actions={[
-                <Button key="edit" variant="primary" isDisabled={!isValid} onClick={doRename}>Rename</Button>,
+                <Button key="edit" variant="primary" isDisabled={!isValid} onClick={doRename}>Save</Button>,
                 <Button key="cancel" variant="link" onClick={onCancel}>Cancel</Button>
             ]}
         >

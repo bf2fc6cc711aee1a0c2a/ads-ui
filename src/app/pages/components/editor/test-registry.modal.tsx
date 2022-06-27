@@ -3,7 +3,7 @@ import {Button, Form, FormGroup, Modal, ModalVariant, TextInput} from "@patternf
 import {Registry} from "@rhoas/registry-management-sdk";
 import React, {useEffect, useState} from "react";
 import {Design} from "@app/models";
-import {ObjectSelect} from "@app/components";
+import {IsLoading, ObjectSelect} from "@app/components";
 import {cloneObject} from "@app/utils";
 
 
@@ -31,12 +31,13 @@ const initialFormState = {
 }
 
 export const TestRegistryModal: React.FunctionComponent<TestRegistryModalProps> = ({design, isOpen, onCancel, onSubmit}) => {
+	const [isLoadingRegistries, setLoadingRegistries] = useState(true);
 	const [registries, setRegistries] = useState<Registry[]>([]);
 	const [registry, setRegistry] = useState<Registry>();
 	const [formState, setFormState] = useState(initialFormState);
 	const [isValid, setValid] = useState(false);
 
-	const rhosrService = useRhosrService();
+	const rhosr = useRhosrService();
 
 	const defaultRegistry = (registries: Registry[]): Registry | undefined => {
 		if (design?.origin?.type === "rhosr" && design.origin.rhosr?.instanceId) {
@@ -48,18 +49,25 @@ export const TestRegistryModal: React.FunctionComponent<TestRegistryModalProps> 
 		return registries.length > 0 ? registries[0] : undefined;
 	}
 
+
 	useEffect(() => {
-		rhosrService.getRegistries().then((results) => {
-			setRegistries(registries.sort((a, b) => {
-				const name1: string = a.name as string;
-				const name2: string = b.name as string;
-				return name1.localeCompare(name2);
-			}));
-			setRegistry(defaultRegistry(results));
-		}).catch((error) => {
-			console.error("[TestRegistry] Error fetching available registries: ", error);
-		});
-	}, []);
+		if (isOpen) {
+			setLoadingRegistries(true);
+			// Get the list of registries.
+			rhosr.getRegistries().then(registries => {
+				setRegistries(registries.sort((a, b) => {
+					const name1: string = a.name as string;
+					const name2: string = b.name as string;
+					return name1.localeCompare(name2);
+				}));
+				setRegistry(defaultRegistry(registries));
+				setLoadingRegistries(false);
+			}).catch(error => {
+				// TODO handle this error case
+				console.error("[HomePage] Error getting registry list: ", error);
+			});
+		}
+	}, [isOpen]);
 
 	useEffect(() => {
 		if (isOpen && design && design.origin && design.origin.type === "rhosr") {
@@ -121,39 +129,42 @@ export const TestRegistryModal: React.FunctionComponent<TestRegistryModalProps> 
 				</Button>
 			]}
 		>
-			<Form>
-				<FormGroup
-					isRequired={true}
-					label="Registry instance"
-					fieldId="modal-with-form-form-registry-instance"
-				>
-					<ObjectSelect value={registry} items={registries} onSelect={setRegistry} itemToString={item => item.name} />
-				</FormGroup>
-				<FormGroup
-					label="Group"
-					validated={formState.groupValue.validated}
-					helperTextInvalid={formState.groupValue.errorMessage}
-					fieldId="modal-with-form-form-group"
-				>
-					<TextInput
-						value={formState.groupValue.value}
-						placeholder="Enter group (optional) or leave blank for default group"
-						onChange={setGroupValue} />
-				</FormGroup>
-				<FormGroup
-					label="ID"
-					validated={formState.artifactIdValue.validated}
-					helperTextInvalid={formState.artifactIdValue.errorMessage}
-					isRequired={true}
-					fieldId="modal-with-form-form-artifactId"
-				>
-					<TextInput
-						id="modal-with-form-form-artifactId"
-						placeholder="Enter ID of artifact"
-						value={formState.artifactIdValue.value}
-						onChange={setArtifactIdValue} />
-				</FormGroup>
-			</Form>
+			<IsLoading condition={isLoadingRegistries}>
+				<Form>
+					<FormGroup
+						isRequired={true}
+						label="Registry instance"
+						fieldId="test-in-registry-registry-instance"
+					>
+						<ObjectSelect value={registry} items={registries} onSelect={setRegistry} itemToString={item => item.name} />
+					</FormGroup>
+					<FormGroup
+						label="Group"
+						validated={formState.groupValue.validated}
+						helperTextInvalid={formState.groupValue.errorMessage}
+						fieldId="test-in-registry-group"
+					>
+						<TextInput
+							id="test-in-registry-group"
+							value={formState.groupValue.value}
+							placeholder="Enter group (optional) or leave blank for default group"
+							onChange={setGroupValue} />
+					</FormGroup>
+					<FormGroup
+						label="ID"
+						validated={formState.artifactIdValue.validated}
+						helperTextInvalid={formState.artifactIdValue.errorMessage}
+						isRequired={true}
+						fieldId="test-in-registry-artifactId"
+					>
+						<TextInput
+							id="test-in-registry-artifactId"
+							placeholder="Enter ID of artifact"
+							value={formState.artifactIdValue.value}
+							onChange={setArtifactIdValue} />
+					</FormGroup>
+				</Form>
+			</IsLoading>
 		</Modal>
 	);
 }

@@ -231,17 +231,18 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
         console.log(`${id} has new width of: ${newWidth}`);
     };
 
-    const artifactRegistrationTestRegistry = (registry: Registry, groupId: string | undefined, artifactId: string) => {
+    const testArtifactRegistration = (registry: Registry, groupId: string | undefined, artifactId: string) => {
         setTestRegistryIssuesIsLoading(true);
+        openTestRegistryIssuesPanel();
         // cache registry used during registry test to allow for a retry from the sidepanel
         setTestRegistryArgsCache({ registry, groupId, artifactId });
         rhosrInstanceFactory.createFor(registry)
             .testUpdateArtifactContent(groupId, artifactId, currentContent)
             .then(() => {
-                openTestRegistryIssuesPanel();
+                // Nothing to do here.
             }).catch((error: TestRegistryErrorResponse) => {
-            openTestRegistryIssuesPanel(error);
-        });
+                openTestRegistryIssuesPanel(error);
+            });
     }
 
     const openTestRegistryIssuesPanel = (error?: TestRegistryErrorResponse) => {
@@ -264,7 +265,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
                         Test Registration issues
                     </h2>
                     <DrawerActions>
-                        <Button variant="secondary" onClick={() => artifactRegistrationTestRegistry(
+                        <Button variant="secondary" onClick={() => testArtifactRegistration(
                             testRegistryArgsCache?.registry as Registry,
                             testRegistryArgsCache?.groupId,
                             testRegistryArgsCache?.artifactId as string
@@ -318,7 +319,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
                     onDownload={onDownload}
                     onRename={() => setRenameModalOpen(true)}
                     isPanelOpen={isTestRegistryIssuesDrawerOpen}
-                    onRegistrationTestRegistry={artifactRegistrationTestRegistry}
+                    onRegistrationTestRegistry={testArtifactRegistration}
                     onExpandTestRegistryCausesPanel={(error: TestRegistryErrorResponse) => openTestRegistryIssuesPanel(error)}
                     artifactContent={currentContent}
                 />

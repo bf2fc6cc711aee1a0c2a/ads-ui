@@ -119,7 +119,6 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
     const onActionMenuSelect = (event?: React.SyntheticEvent<HTMLDivElement>): void => {
         // @ts-ignore
         const action: string = event?.target.attributes["data-id"].value;
-        console.info("=======> action: ", action);
         setActionMenuToggled(false);
         switch (action) {
             case "action-compare":
@@ -138,6 +137,9 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
                 return;
             case "action-download":
                 onDownload();
+                return;
+            case "action-test-registry":
+                setIsTestRegistryModalOpen(true);
                 return;
         }
     };
