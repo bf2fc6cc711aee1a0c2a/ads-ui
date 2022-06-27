@@ -172,3 +172,11 @@ export function formatContent(value: string, contentType: string): string {
     }
     return value;
 }
+
+/**
+ * Converts a given string to something that's allowed in a filename.
+ * @param value
+ */
+export function convertToValidFilename(value: string): string {
+    return (value.replace(/[\/|\\:*?"<>]/g, ""));
+}

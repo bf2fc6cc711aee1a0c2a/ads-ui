@@ -14,13 +14,12 @@ import {
     Text,
     TextContent
 } from "@patternfly/react-core";
-import {DesignDescription, If, NavLink, RegistryNavLink, ToggleIcon} from "@app/components";
+import {DesignDescription, If, NavLink, ToggleIcon} from "@app/components";
 import Moment from "react-moment";
 import {DesignContext} from "@app/models/designs/design-context.model";
 import {ExportToRhosrData, ExportToRhosrModal, TestRegistryModal} from "@app/pages/components";
-import {LocalStorageService, useLocalStorageService} from "@app/services";
+import {AlertsService, LocalStorageService, useAlertsService, useLocalStorageService} from "@app/services";
 import {Registry} from "@rhoas/registry-management-sdk";
-import {AlertVariant, useAlert} from "@rhoas/app-services-ui-shared";
 
 /**
  * Properties
@@ -31,17 +30,67 @@ export type EditorContextProps = {
     artifactContent: string;
     onSave: () => void;
     onFormat: () => void;
+    onDelete: () => void;
+    onDownload: () => void;
     onRename: () => void;
     onExpandTestRegistryCausesPanel: (error: TestRegistryErrorResponse) => void;
     onRegistrationTestRegistry: (registry: Registry, group: string | undefined, artifactId: string) => void;
     isPanelOpen?: boolean;
 }
 
+type EditorContextMenuItem = {
+    label?: string;
+    key: string;
+    isSeparator?: boolean;
+    accept?: (design: Design) => boolean;
+};
+
+const menuActions: EditorContextMenuItem[] = [
+    {
+        label: "Rename design",
+        key: "action-rename",
+    },
+    {
+        label: "Format content",
+        key: "action-format",
+        accept: (design: Design) => { return [ArtifactTypes.AVRO, ArtifactTypes.JSON].includes(design.type); },
+    },
+    {
+        label: "Show changes",
+        key: "action-compare"
+    },
+    {
+        key: "action-separator-1",
+        isSeparator: true
+    },
+    {
+        label: "Export to Service Registry",
+        key: "action-export-to-rhosr",
+    },
+    {
+        label: "Test using Service Registry",
+        key: "action-test-registry"
+    },
+    {
+        label: "Download design",
+        key: "action-download"
+    },
+    {
+        key: "action-separator-2",
+        isSeparator: true
+    },
+    {
+        label: "Delete design",
+        key: "action-delete"
+    },
+];
+
+
 /**
  * The context of the design when editing a design on the editor page.
  */
 export const EditorContext: FunctionComponent<EditorContextProps> = (
-    { design, dirty, onSave, onRegistrationTestRegistry, onFormat, onRename, onExpandTestRegistryCausesPanel }: EditorContextProps) => {
+    { design, dirty, onSave, onRegistrationTestRegistry, onFormat, onRename, onDownload, onDelete }: EditorContextProps) => {
 
     const lss: LocalStorageService = useLocalStorageService();
 
@@ -51,7 +100,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
     const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
     const [isTestRegistryModalOpen, setIsTestRegistryModalOpen] = useState(false);
 
-    const { addAlert } = useAlert() || {};
+    const alerts: AlertsService = useAlertsService();
 
     const onActionMenuToggle = (value: boolean): void => {
         setActionMenuToggled(value);
@@ -70,6 +119,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
     const onActionMenuSelect = (event?: React.SyntheticEvent<HTMLDivElement>): void => {
         // @ts-ignore
         const action: string = event?.target.attributes["data-id"].value;
+        console.info("=======> action: ", action);
         setActionMenuToggled(false);
         switch (action) {
             case "action-compare":
@@ -82,6 +132,12 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
                 return;
             case "action-rename":
                 onRename();
+                return;
+            case "action-delete":
+                onDelete();
+                return;
+            case "action-download":
+                onDownload();
                 return;
         }
     };
@@ -116,18 +172,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
 
     const onRegisterDesignConfirmed = (event: ExportToRhosrData): void => {
         setRegisterModalOpen(false);
-        const description: React.ReactNode = (
-            <React.Fragment>
-                <div>{`Design '${event.design.name}' was successfully exported to Service Registry.`}</div>
-                <RegistryNavLink registry={event.registry} context={event.context}>View artifact overview</RegistryNavLink>
-            </React.Fragment>
-        );
-        addAlert({
-            title: "Export successful",
-            description,
-            variant: AlertVariant.success,
-            dataTestId: "toast-design-registered"
-        });
+        alerts.designExportedToRhosr(event);
     };
 
     useEffect(() => {
@@ -137,23 +182,13 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
         }
     }, [design]);
 
-
-    const menuItems: any[] = [
-        <DropdownItem key="action-rename" data-id="action-rename">Rename</DropdownItem>,
-        <DropdownItem key="action-compare" data-id="action-compare">Show changes</DropdownItem>,
-        <DropdownSeparator key="action-separator-1" />,
-        <DropdownItem key="action-export-to-rhosr" data-id="action-export-to-rhosr">Export to Service Registry</DropdownItem>,
-        <DropdownItem key="action-test-registry" data-id="action-test-registry" onClick={() => setIsTestRegistryModalOpen(true)}>Test using Service Registry</DropdownItem>,
-    ];
-
-    if ([ArtifactTypes.AVRO, ArtifactTypes.JSON].includes(design.type)) {
-        menuItems.push(
-            <DropdownSeparator key="action-separator-2" />
-        );
-        menuItems.push(
-            <DropdownItem key="action-format" data-id="action-format">Format content</DropdownItem>,
-        );
-    }
+    const menuItems: any[] = menuActions.filter(action => !action.accept ? true : action.accept(design)).map(action => (
+        action.isSeparator ? (
+            <DropdownSeparator key={action.key} />
+        ) : (
+            <DropdownItem key={action.key} data-id={action.key}>{action.label}</DropdownItem>
+        )
+    ));
 
     return (
         <React.Fragment>

@@ -4,7 +4,7 @@ import {Design, DesignsSearchResults, DesignsSort} from "@app/models";
 import {ResponsiveTable} from "@rhoas/app-services-ui-components";
 import {ArtifactTypeIcon, DesignDescription, NavLink} from "@app/components";
 import Moment from "react-moment";
-import {KebabToggle, Label} from "@patternfly/react-core";
+import {KebabToggle} from "@patternfly/react-core";
 import {IAction} from "@patternfly/react-table";
 import {ThProps} from "@patternfly/react-table/src/components/TableComposable/Th";
 import {CustomActionsToggleProps} from "@patternfly/react-table/src/components/Table/ActionsColumn";
@@ -77,12 +77,12 @@ export const DesignList: FunctionComponent<DesignListProps> = (
         return [
             { title: "View details", onClick: () => onSelect(design) },
             { isSeparator: true, },
-            { title: "Edit", onClick: () => onEdit(design) },
-            { title: "Rename", onClick: () => onRename(design) },
+            { title: "Edit design", onClick: () => onEdit(design) },
+            { title: "Rename design", onClick: () => onRename(design) },
             { title: "Export to Service Registry", onClick: () => onRegister(design) },
-            { title: "Download", onClick: () => onDownload(design) },
+            { title: "Download design", onClick: () => onDownload(design) },
             { isSeparator: true, },
-            { title: "Delete", onClick: () => onDelete(design) }
+            { title: "Delete design", onClick: () => onDelete(design) }
         ];
     }
 

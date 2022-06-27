@@ -2,8 +2,9 @@ import React, {FunctionComponent, useEffect, useState} from "react";
 import "./designs.panel.css";
 import {Alert, AlertActionCloseButton, Card, CardBody} from "@patternfly/react-core";
 import {
+    AlertsService,
     DesignsService,
-    DownloadService, LocalStorageService,
+    DownloadService, LocalStorageService, useAlertsService,
     useDesignsService,
     useDownloadService,
     useLocalStorageService
@@ -23,13 +24,9 @@ import {
     RenameModal
 } from "@app/pages/components";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
-import {contentTypeForDesign, fileExtensionForDesign} from "@app/utils";
+import {contentTypeForDesign, convertToValidFilename, fileExtensionForDesign} from "@app/utils";
 import {AlertVariant, useAlert} from "@rhoas/app-services-ui-shared";
 
-
-function convertToValidFilename(value: string): string {
-    return (value.replace(/[\/|\\:*?"<>]/g, ""));
-}
 
 export type DesignsPanelProps = {
     selectedDesign: Design | undefined;
@@ -67,7 +64,7 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesi
     const designsSvc: DesignsService = useDesignsService();
     const downloadSvc: DownloadService = useDownloadService();
     const nav: Navigation = useNavigation();
-    const { addAlert } = useAlert() || {};
+    const alerts: AlertsService = useAlertsService();
     const local: LocalStorageService = useLocalStorageService();
 
     const doRefresh = (): void => {
@@ -90,12 +87,7 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesi
                 designToRename.summary = event.summary;
             }
             setRenameModalOpen(false);
-            addAlert({
-                title: "Details successfully changed",
-                description: `Details (name, summary) of design '${event.name}' were successfully changed.`,
-                variant: AlertVariant.success,
-                dataTestId: "toast-design-renamed"
-            });
+            alerts.designRenamed(event);
         }).catch(e => {
             // TODO error handling
         })
@@ -109,20 +101,10 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesi
     const onDeleteDesignConfirmed = (design: Design): void => {
         designsSvc.deleteDesign(design.id).then(() => {
             doRefresh();
-            addAlert({
-                title: "Delete successful",
-                description: `Design '${design.name}' was successfully deleted.`,
-                variant: AlertVariant.success,
-                dataTestId: "toast-design-deleted"
-            });
+            alerts.designDeleted(design);
         }).catch(error => {
-            console.error(error);
-            addAlert({
-                title: "Delete failed",
-                description: `Failed to delete design '${design.name}'.  ${error}`,
-                variant: AlertVariant.danger,
-                dataTestId: "toast-design-delete-error"
-            });
+            console.error("[DesignsPanel] Error deleting design: ", error);
+            alerts.designDeleteFailed(design, error);
         });
         setDeleteModalOpen(false);
     };
@@ -134,18 +116,7 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesi
 
     const onRegisterDesignConfirmed = (event: ExportToRhosrData): void => {
         setRegisterModalOpen(false);
-        const description: React.ReactNode = (
-            <React.Fragment>
-                <div>{`Design '${event.design.name}' was successfully exported to Service Registry.`}</div>
-                <RegistryNavLink registry={event.registry} context={event.context}>View artifact overview</RegistryNavLink>
-            </React.Fragment>
-        );
-        addAlert({
-            title: "Export successful",
-            description,
-            variant: AlertVariant.success,
-            dataTestId: "toast-design-registered"
-        });
+        alerts.designExportedToRhosr(event);
     };
 
     const onDownloadDesign = (design: Design): void => {

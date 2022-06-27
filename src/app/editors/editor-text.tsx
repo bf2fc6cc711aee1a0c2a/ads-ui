@@ -1,7 +1,9 @@
-import React, {useEffect, useState} from "react";
+import React, {MutableRefObject, useEffect, useRef, useState} from "react";
 import {Editor as DesignEditor, EditorProps} from "@app/editors/editor-types";
 import Editor from "@monaco-editor/react";
 import {ContentTypes, DesignContent} from "@app/models";
+import {editor} from "monaco-editor";
+import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
 
 
 export const contentToString = (content: DesignContent): string => {
@@ -40,9 +42,18 @@ export const TextEditor: DesignEditor = ({content, onChange}: EditorProps) => {
     const [value, setValue] = useState<string>(defaultValue);
     const [language, setLanguage] = useState<string>(defaultLanguage);
 
+    const editorRef: MutableRefObject<IStandaloneCodeEditor|undefined> = useRef<IStandaloneCodeEditor>();
+
     useEffect(() => {
-        setValue(contentToString(content));
-        setLanguage(contentToLanguage(content));
+        const contentString: string = contentToString(content);
+        const lang: string = contentToLanguage(content);
+
+        setValue(contentString);
+        setLanguage(lang);
+
+        if (editorRef.current) {
+            editorRef.current?.setValue(contentString);
+        }
     }, [content]);
 
     return (
@@ -54,6 +65,9 @@ export const TextEditor: DesignEditor = ({content, onChange}: EditorProps) => {
             options={{
                 automaticLayout: true,
                 wordWrap: 'on'
+            }}
+            onMount={(editor, monaco) => {
+                editorRef.current = editor;
             }}
         />
     );

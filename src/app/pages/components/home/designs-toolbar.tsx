@@ -86,7 +86,7 @@ export const DesignsToolbar: FunctionComponent<DesignsToolbarProps> = (
                     <SearchInput aria-label="Filter designs" value={filterValue} onChange={onFilterChange} onSearch={onSearch} onClear={onClear} />
                 </ToolbarItem>
                 <ToolbarItem>
-                    <Button variant="primary" onClick={onCreate}>Create a schema or API design</Button>
+                    <Button variant="primary" onClick={onCreate}>Create design</Button>
                 </ToolbarItem>
                 <ToolbarItem>
                     <ImportDropdown variant="long" onImport={onImport} />

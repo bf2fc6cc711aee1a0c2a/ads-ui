@@ -20,16 +20,23 @@ import {
     PageSectionVariants,
     Spinner
 } from "@patternfly/react-core";
-import {DesignsService, useDesignsService, useRhosrInstanceServiceFactory} from "@app/services";
+import {
+    AlertsService,
+    DesignsService,
+    DownloadService, useAlertsService,
+    useDesignsService,
+    useDownloadService,
+    useRhosrInstanceServiceFactory
+} from "@app/services";
 import {ArtifactTypes, ContentTypes, Design, DesignContent, TestRegistryErrorResponse} from "@app/models";
 import {IsLoading} from "@app/components";
-import {EditorContext, RenameData, RenameModal} from "@app/pages/components";
+import {DeleteDesignModal, EditorContext, RenameData, RenameModal} from "@app/pages/components";
 import {OpenApiEditor, ProtoEditor, TextEditor} from "@app/editors";
 import {AsyncApiEditor} from "@app/editors/editor-asyncapi";
 import {Registry} from "@rhoas/registry-management-sdk";
-import {formatContent} from "@app/utils";
-import {AlertVariant, useAlert} from "@rhoas/app-services-ui-shared";
+import {contentTypeForDesign, convertToValidFilename, fileExtensionForDesign, formatContent} from "@app/utils";
 import {Prompt} from "react-router-dom";
+import {Navigation, useNavigation} from "@app/contexts/navigation";
 
 export type EditorPageProps = {
     params: any;
@@ -64,12 +71,15 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
     const [isTestRegistryIssuesLoading, setTestRegistryIssuesIsLoading] = useState(false);
     const [isTestRegistryIssuesDrawerOpen, setTestRegistryIssuesDrawerIsOpen] = useState(false);
     const [isRenameModalOpen, setRenameModalOpen] = useState(false);
+    const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
     const drawerRef = useRef<HTMLDivElement>();
 
     const designsService: DesignsService = useDesignsService();
     const rhosrInstanceFactory = useRhosrInstanceServiceFactory();
-    const { addAlert } = useAlert() || {};
+    const downloadSvc: DownloadService = useDownloadService();
+    const navigation: Navigation = useNavigation();
+    const alerts: AlertsService = useAlertsService();
 
     useEffect(() => {
         // Cleanup any possible event listener we might still have registered
@@ -131,12 +141,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
                 setDesign(design);
                 setDirty(false);
             }
-            addAlert({
-                title: "Save successful",
-                description: `Design '${design?.name}' was successfully saved.`,
-                variant: AlertVariant.success,
-                dataTestId: "toast-design-saved"
-            });
+            alerts.designSaved(design as Design);
         }).catch(error => {
             // TODO handle error
             console.error("[EditorPage] Failed to save design content: ", error);
@@ -152,7 +157,31 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
             data: formattedContent
         });
         setCurrentContent(formattedContent);
-    }
+    };
+
+    const onDelete = (): void => {
+        setDeleteModalOpen(true);
+    };
+
+    const onDeleteDesignConfirmed = (design: Design): void => {
+        designsService.deleteDesign(design.id).then(() => {
+            alerts.designDeleted(design as Design);
+            navigation.navigateTo("/");
+        }).catch(error => {
+            console.error("[Editor] Design delete failed: ", error);
+            alerts.designDeleteFailed(design as Design, error);
+        });
+        setDeleteModalOpen(false);
+    };
+
+    const onDownload = (): void => {
+        if (design && designContent) {
+            const filename: string = `${convertToValidFilename(design.name)}.${fileExtensionForDesign(design, designContent)}`;
+            const contentType: string = contentTypeForDesign(design, designContent);
+            const theContent: string = typeof currentContent === "object" ? JSON.stringify(currentContent, null, 4) : currentContent as string;
+            downloadSvc.downloadToFS(design, theContent, contentType, filename);
+        }
+    };
 
     const doRenameDesign = (event: RenameData): void => {
         designsService.renameDesign(design?.id as string, event.name, event.summary).then(() => {
@@ -161,12 +190,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
                 design.summary = event.summary;
             }
             setRenameModalOpen(false);
-            addAlert({
-                title: "Details successfully changed",
-                description: `Details (name, summary) of design '${event.name}' were successfully changed.`,
-                variant: AlertVariant.success,
-                dataTestId: "toast-design-renamed"
-            });
+            alerts.designRenamed(event);
         }).catch(e => {
             // TODO error handling
         });
@@ -216,8 +240,8 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
             .then(() => {
                 openTestRegistryIssuesPanel();
             }).catch((error: TestRegistryErrorResponse) => {
-                openTestRegistryIssuesPanel(error);
-            });
+            openTestRegistryIssuesPanel(error);
+        });
     }
 
     const openTestRegistryIssuesPanel = (error?: TestRegistryErrorResponse) => {
@@ -290,6 +314,8 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
                     dirty={isDirty}
                     onSave={onSave}
                     onFormat={onFormat}
+                    onDelete={onDelete}
+                    onDownload={onDownload}
                     onRename={() => setRenameModalOpen(true)}
                     isPanelOpen={isTestRegistryIssuesDrawerOpen}
                     onRegistrationTestRegistry={artifactRegistrationTestRegistry}
@@ -310,6 +336,11 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
                          isOpen={isRenameModalOpen}
                          onRename={doRenameDesign}
                          onCancel={() => setRenameModalOpen(false)} />
+            <DeleteDesignModal design={design}
+                               isOpen={isDeleteModalOpen}
+                               onDelete={onDeleteDesignConfirmed}
+                               onDownload={onDownload}
+                               onCancel={() => setDeleteModalOpen(false)} />
             <Prompt when={isDirty} message={`You have unsaved changes.  Do you really want to leave?`} />
         </IsLoading>
     );
