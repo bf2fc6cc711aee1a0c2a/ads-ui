@@ -6,7 +6,7 @@ import {EditorCompare as DesignEditor, EditorCompareProps} from "@app/editors/ed
  * Compare text editor.  This is a compare editor for any text based content
  * we might want to edit.
  */
-export const EditorCompare: DesignEditor = ({updatedContent, currentContent}: EditorCompareProps) => {
+export const EditorCompare: DesignEditor = ({updatedContent, currentContent, contentOptions}: EditorCompareProps) => {
     let currentContentDefaultValue: string = "";
 
     if (typeof currentContent.data === "string") {
@@ -20,10 +20,7 @@ export const EditorCompare: DesignEditor = ({updatedContent, currentContent}: Ed
             className="text-editor"
             original={currentContentDefaultValue}
             modified={updatedContent}
-            options={{
-                automaticLayout: true,
-                wordWrap: 'on'
-            }}
+            options={contentOptions}
         />
     );
 };

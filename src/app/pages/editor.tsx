@@ -18,7 +18,7 @@ import {
     DrawerPanelContent,
     PageSection,
     PageSectionVariants,
-    Spinner
+    Spinner, ToggleGroup, ToggleGroupItem
 } from "@patternfly/react-core";
 import {
     AlertsService,
@@ -40,6 +40,8 @@ import {contentTypeForDesign, convertToValidFilename, fileExtensionForDesign, fo
 import {Prompt} from "react-router-dom";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
 import {EditorCompare} from "@app/editors/editor-compare";
+import {editor} from "monaco-editor";
+import IDiffEditorConstructionOptions = editor.IDiffEditorConstructionOptions;
 
 
 export type EditorPageProps = {
@@ -77,6 +79,15 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
     const [isRenameModalOpen, setRenameModalOpen] = useState(false);
     const [isCompareContentEditor, setIsCompareContentEditor] = useState(false);
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [diffEditorContentOptions, setDiffEditorContentOptions] = useState({
+        renderSideBySide: true,
+        automaticLayout: true,
+        wordWrap: 'on',
+        readOnly: true
+    } as IDiffEditorConstructionOptions)
+
+    const [isDiffInline, setIsDiffInline] = useState(false);
+    const [isDiffWrapped, setIsDiffWrapped] = useState(false);
 
     const local: LocalStorageService = useLocalStorageService();
     const dirtyContentCacheKey: string = `editor.dirty-content.${params["designId"]}`;
@@ -211,7 +222,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
     }
 
     const compareEditor = (updatedContent, currentContent) : React.ReactElement =>  {
-        return <EditorCompare currentContent={currentContent} updatedContent={updatedContent}/>
+        return <EditorCompare currentContent={currentContent} updatedContent={updatedContent} contentOptions={diffEditorContentOptions}/>
     }
 
     const textEditor: React.ReactElement = (
@@ -278,6 +289,18 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
             setDirty(true);
             local.clearConfigProperty(dirtyContentCacheKey);
         }
+    }
+
+    const switchInlineCompare = () => {
+        setDiffEditorContentOptions( {...diffEditorContentOptions as IDiffEditorConstructionOptions,
+            renderSideBySide: !diffEditorContentOptions.renderSideBySide });
+        setIsDiffInline(!!diffEditorContentOptions.renderSideBySide);
+    }
+
+    const switchWordWrap = () => {
+        setDiffEditorContentOptions( {...diffEditorContentOptions as IDiffEditorConstructionOptions,
+            wordWrap: diffEditorContentOptions.wordWrap == "off" ? "on" : "off" });
+        setIsDiffWrapped(diffEditorContentOptions.wordWrap != "on");
     }
 
     const testArtifactRegistration = (registry: Registry, groupId: string | undefined, artifactId: string) => {
@@ -385,9 +408,13 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
             {isCompareContentEditor ? <PageSection variant={PageSectionVariants.light} id="section-editor">
                 <Drawer>
                     <DrawerContent panelContent={renderPanelContent(testRegistryError)}>
-                        <DrawerActions>
-                            <Button variant={"primary"} onClick={closeCompareEditor}>Cancel</Button>
-                        </DrawerActions>
+                        <div style={{alignItems: "flex-end", margin: "5px"}}>
+                            <ToggleGroup style={{float: "right"}} aria-label="Default with multiple selectable">
+                                <ToggleGroupItem text="Inline diff" key={1} buttonId="second" isSelected={isDiffInline} onChange={switchInlineCompare} />
+                                <ToggleGroupItem text="Wrap Text" key={0} buttonId="first" isSelected={isDiffWrapped} onChange={switchWordWrap} />
+                                <Button style={{marginLeft: "10px"}} variant={"primary"} onClick={closeCompareEditor}>Cancel</Button>
+                            </ToggleGroup>
+                        </div>
                         <div className="editor-parent">
                             {editor()}
                         </div>
