@@ -17,6 +17,10 @@ function getConfigProperty(propertyName: string, defaultValue: string | object |
     return value as string;
 }
 
+function clearConfigProperty(propertyName: string): void {
+    console.info(`[LocalStorageService] Clearing config property ${propertyName}`);
+    localStorage.removeItem(propertyName)
+}
 
 /**
  * The Local Storage Service interface.
@@ -24,6 +28,7 @@ function getConfigProperty(propertyName: string, defaultValue: string | object |
 export interface LocalStorageService {
     setConfigProperty(propertyName: string, propertyValue: string | object): void;
     getConfigProperty(propertyName: string, defaultValue: string | object | undefined): string | object | undefined;
+    clearConfigProperty(propertyName: string);
 }
 
 
@@ -33,6 +38,7 @@ export interface LocalStorageService {
 export const useLocalStorageService: () => LocalStorageService = (): LocalStorageService => {
     return {
         setConfigProperty,
-        getConfigProperty
+        getConfigProperty,
+        clearConfigProperty
     };
 };

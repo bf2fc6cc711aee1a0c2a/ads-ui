@@ -26,7 +26,9 @@ import {
     DownloadService, useAlertsService,
     useDesignsService,
     useDownloadService,
-    useRhosrInstanceServiceFactory
+    useRhosrInstanceServiceFactory,
+    useLocalStorageService,
+    LocalStorageService
 } from "@app/services";
 import {ArtifactTypes, ContentTypes, Design, DesignContent, TestRegistryErrorResponse} from "@app/models";
 import {IsLoading} from "@app/components";
@@ -75,6 +77,9 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
     const [isRenameModalOpen, setRenameModalOpen] = useState(false);
     const [isCompareContentEditor, setIsCompareContentEditor] = useState(false);
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+
+    const local: LocalStorageService = useLocalStorageService();
+    const dirtyContentCacheKey: string = `editor.dirty-content.${params["designId"]}`;
 
     const drawerRef = useRef<HTMLDivElement>();
 
@@ -143,6 +148,12 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
                 design.modifiedOn = new Date();
                 setDesign(design);
                 setDirty(false);
+                setDesignContent({
+                    ...designContent as DesignContent,
+                    data: currentContent,
+                    id: design.id,
+                    contentType: design.type
+                })
             }
             alerts.designSaved(design as Design);
         }).catch(error => {
@@ -204,19 +215,31 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
     }
 
     const textEditor: React.ReactElement = (
-        <TextEditor content={designContent as DesignContent} onChange={onEditorChange} />
+        <TextEditor content={{
+            ...designContent as DesignContent,
+            data: currentContent
+        } as DesignContent} onChange={onEditorChange}/>
     );
 
     const protoEditor: React.ReactElement = (
-        <ProtoEditor content={designContent as DesignContent} onChange={onEditorChange} />
+        <ProtoEditor content={{
+            ...designContent as DesignContent,
+            data: currentContent
+        } as DesignContent} onChange={onEditorChange} />
     );
 
     const openapiEditor: React.ReactElement = (
-        <OpenApiEditor content={designContent as DesignContent} onChange={onEditorChange} />
+        <OpenApiEditor content={{
+            ...designContent as DesignContent,
+            data: currentContent
+        } as DesignContent} onChange={onEditorChange} />
     );
 
     const asyncapiEditor: React.ReactElement = (
-        <AsyncApiEditor content={designContent as DesignContent} onChange={onEditorChange} />
+        <AsyncApiEditor content={{
+            ...designContent as DesignContent,
+            data: currentContent
+        } as DesignContent} onChange={onEditorChange} />
     );
 
     const editor = (): React.ReactElement => {
@@ -243,11 +266,18 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
     };
 
     const onCompareContent = () => {
+        local.setConfigProperty(dirtyContentCacheKey, currentContent);
         setIsCompareContentEditor(true);
     }
 
     const closeCompareEditor = () => {
         setIsCompareContentEditor(false);
+        const cachedDirtyContent = local.getConfigProperty(dirtyContentCacheKey, undefined) as string| undefined;
+        if (cachedDirtyContent) {
+            setCurrentContent(cachedDirtyContent);
+            setDirty(true);
+            local.clearConfigProperty(dirtyContentCacheKey);
+        }
     }
 
     const testArtifactRegistration = (registry: Registry, groupId: string | undefined, artifactId: string) => {
