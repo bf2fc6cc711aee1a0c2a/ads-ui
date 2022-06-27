@@ -39,12 +39,3 @@
     margin-top: 15px;
     font-size: 14px;
 }
-.editor-context-details .metadata .md-property {
-}
-.editor-context-details .metadata .md-property .md-name {
-    font-weight: bold;
-    margin-right: 5px;
-}
-.editor-context-details .metadata .md-property .md-value {
-    padding-right: 20px;
-}

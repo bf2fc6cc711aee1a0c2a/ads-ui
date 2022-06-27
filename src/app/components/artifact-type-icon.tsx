@@ -127,6 +127,9 @@ export const ArtifactTypeIcon: FunctionComponent<ArtifactTypeIconProps> = ({type
                     break;
             }
         }
+        if (isShowIcon && !isShowLabel) {
+            classes += " icon-only";
+        }
         return classes;
     }
 

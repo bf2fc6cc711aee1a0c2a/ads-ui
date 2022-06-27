@@ -5,16 +5,19 @@ import {
     Breadcrumb,
     BreadcrumbItem,
     Button,
+    DescriptionList,
+    DescriptionListDescription,
+    DescriptionListGroup,
+    DescriptionListTerm,
     Dropdown,
     DropdownItem,
     DropdownSeparator,
     DropdownToggle,
-    Gallery,
     GalleryItem,
     Text,
     TextContent
 } from "@patternfly/react-core";
-import {DesignDescription, If, NavLink, ToggleIcon} from "@app/components";
+import {ArtifactTypeIcon, DesignDescription, If, NavLink, RegistryNavLink, ToggleIcon} from "@app/components";
 import Moment from "react-moment";
 import {DesignContext} from "@app/models/designs/design-context.model";
 import {ExportToRhosrData, ExportToRhosrModal, TestRegistryModal} from "@app/pages/components";
@@ -239,38 +242,48 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
                         <Text component="h1" className="title">{design?.name}</Text>
                         <DesignDescription className="summary" description={design?.summary} />
                     </TextContent>
-                    <Gallery className="metadata" minWidths={{ default: "300px" }}>
-                        <GalleryItem className="md-property">
-                            <span className="md-name">Type</span>
-                            <span className="md-value">{typeForDisplay()}</span>
-                        </GalleryItem>
-                        <If condition={hasRhosrContext}>
-                            <GalleryItem className="md-property">
-                                <span className="md-name">Group</span>
-                                <span className="md-value">{designContext?.rhosr?.groupId || "default"}</span>
-                            </GalleryItem>
-                            <GalleryItem className="md-property">
-                                <span className="md-name">ID</span>
-                                <span className="md-value">{designContext?.rhosr?.artifactId}</span>
-                            </GalleryItem>
-                            <GalleryItem className="md-property">
-                                <span className="md-name">Version</span>
-                                <span className="md-value">{designContext?.rhosr?.version || "latest"}</span>
-                            </GalleryItem>
-                        </If>
-                        <If condition={hasFileContext}>
-                            <GalleryItem className="md-property">
-                                <span className="md-name">File name</span>
-                                <span className="md-value">{designContext?.file?.fileName}</span>
-                            </GalleryItem>
-                        </If>
-                        <If condition={hasUrlContext}>
-                            <GalleryItem className="md-property">
-                                <span className="md-name">URL</span>
-                                <span className="md-value">{designContext?.url?.url}</span>
-                            </GalleryItem>
-                        </If>
-                    </Gallery>
+                    <div className="metadata">
+                        <DescriptionList isHorizontal={true} isCompact={true}>
+                            <DescriptionListGroup>
+                                <DescriptionListTerm>Type</DescriptionListTerm>
+                                <DescriptionListDescription>
+                                    <ArtifactTypeIcon type={design.type} isShowLabel={true} isShowIcon={true} />
+                                </DescriptionListDescription>
+                            </DescriptionListGroup>
+                            <If condition={hasRhosrContext}>
+                                <DescriptionListGroup>
+                                    <DescriptionListTerm>Artifact</DescriptionListTerm>
+                                    <DescriptionListDescription>
+                                        <span className="group">{designContext?.rhosr?.groupId || "default"}</span>
+                                        <span> / </span>
+                                        <RegistryNavLink context={designContext}>
+                                            <span className="group">{designContext?.rhosr?.artifactId}</span>
+                                            <span> </span>
+                                            <span>(</span>
+                                            <span className="group">{designContext?.rhosr?.version || "latest"}</span>
+                                            <span>)</span>
+                                        </RegistryNavLink>
+                                    </DescriptionListDescription>
+                                </DescriptionListGroup>
+                            </If>
+                            <If condition={hasFileContext}>
+                                <DescriptionListGroup>
+                                    <DescriptionListTerm>File name</DescriptionListTerm>
+                                    <DescriptionListDescription>
+                                        <span>{designContext?.file?.fileName}</span>
+                                    </DescriptionListDescription>
+                                </DescriptionListGroup>
+                            </If>
+                            <If condition={hasUrlContext}>
+                                <DescriptionListGroup>
+                                    <DescriptionListTerm>URL</DescriptionListTerm>
+                                    <DescriptionListDescription>
+                                        <a href={designContext?.url?.url}>{designContext?.url?.url}</a>
+                                    </DescriptionListDescription>
+                                </DescriptionListGroup>
+                            </If>
+                        </DescriptionList>
+                    </div>
                 </div>
             </If>
             <ExportToRhosrModal design={design as Design}
