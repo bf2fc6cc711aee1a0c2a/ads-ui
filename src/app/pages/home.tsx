@@ -137,22 +137,15 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
             <Drawer isStatic={false} position="right" isInline={false} isExpanded={isDrawerExpanded} onExpand={onDrawerExpand}>
                 <DrawerContent panelContent={panelContent}>
                     <DrawerContentBody>
-                        <PageSection variant={PageSectionVariants.light} className="summary">
-                            <TextContent className="summary-title-and-description">
-                                <Flex>
-                                    <FlexItem>
-                                        <Text component="h1" className="title">API and Schema Designs</Text>
-                                    </FlexItem>
-                                    <FlexItem>
-                                        <Popover
-                                            aria-label="More information"
-                                            headerContent={<div>API and Schema Designs</div>}
-                                            bodyContent={<div>API Designer is a tool to design your APIs (OpenAPI, AsyncAPI) and schemas (Apache Avro, Google Protobuf, JSON Schema). Manage your collection of API and schema designs by creating, importing, and editing. Save your work by downloading your designs locally or by exporting them to OpenShift Service Registry.</div>}
-                                        >
-                                            <Button variant="plain"><QuestionCircleIcon /></Button>
-                                        </Popover>
-                                    </FlexItem>
-                                </Flex>
+                        <PageSection variant={PageSectionVariants.light} className="summary pf-m-padding-on-xl">
+                            <TextContent>
+                                <Text component="h1" className="title">API and Schema Designs</Text>
+                                <Text component="p" className="description">
+                                    API Designer is a tool to design your APIs (OpenAPI, AsyncAPI) and schemas
+                                    (Apache Avro, Google Protobuf, JSON Schema). Manage your collection of API and
+                                    schema designs by creating, importing, and editing. Save your work by downloading
+                                    your designs locally or by exporting them to OpenShift Service Registry.
+                                </Text>
                             </TextContent>
                             <CreateDesignModal isOpen={isCreateModalOpen} onCreate={createDesign} onCancel={() => {setCreateModalOpen(false)}} />
                             <ImportDesignModal isOpen={isImportModalOpen} onImport={importDesign} onCancel={() => {setImportModalOpen(false)}}

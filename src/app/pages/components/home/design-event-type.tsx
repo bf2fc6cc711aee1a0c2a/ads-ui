@@ -20,7 +20,7 @@ export const DesignEventType: FunctionComponent<DesignEventTypeProps> = ({event,
             case "import":
                 return importTypeLabel();
             case "register":
-                return variant === "short" ? <span>Service Registry</span> : <span>Registered in Service Registry</span>;
+                return variant === "short" ? <span>Service Registry</span> : <span>Exported to Service Registry</span>;
             case "update":
                 return variant === "short" ? <span>Edited</span> : <span>Modified using the editor</span>;
         }

@@ -1,11 +1,6 @@
-.summary .summary-title-and-description .description {
+.summary .description {
     font-size: 15px;
     color: #333;
-}
-
-.summary .summary-actions {
-    float: right;
-    margin-top: 15px;
 }
 
 .design-details-header {

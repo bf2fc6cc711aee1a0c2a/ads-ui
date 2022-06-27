@@ -61,7 +61,7 @@ export const useAlertsService: () => AlertsService = (): AlertsService => {
             const description: React.ReactNode = (
                 <React.Fragment>
                     <div>{`Design '${event.design.name}' was successfully exported to Service Registry.`}</div>
-                    <RegistryNavLink registry={event.registry} context={event.context}>View artifact overview</RegistryNavLink>
+                    <RegistryNavLink registry={event.registry} context={event.context}>View artifact in Service Registry</RegistryNavLink>
                 </React.Fragment>
             );
 

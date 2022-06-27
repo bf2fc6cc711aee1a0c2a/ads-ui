@@ -68,7 +68,7 @@ export const DesignEvents: FunctionComponent<DesignEventsProps> = ({design}: Des
                     <div className="design-events-origin-value">{originVersion()}</div>
 
                     <div className="design-events-origin-colspan">
-                        <RegistryNavLink context={design?.origin}>View artifact overview</RegistryNavLink>
+                        <RegistryNavLink context={design?.origin}>View artifact in Service Registry</RegistryNavLink>
                     </div>
                 </If>
 
