@@ -153,7 +153,7 @@ export const CreateDesignModal: FunctionComponent<CreateDesignModalProps> = ({is
     return (
         <Modal
             variant={ModalVariant.medium}
-            title="Create a new design"
+            title="Create a design"
             isOpen={isOpen}
             onClose={onCancel}
             actions={[
