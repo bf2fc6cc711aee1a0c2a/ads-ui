@@ -27,11 +27,10 @@ export const DesignsEmptyState: FunctionComponent<DesignsEmptyStateProps> = ({on
         <EmptyState>
             <EmptyStateIcon icon={AddCircleOIcon} />
             <Title headingLevel="h4" size="lg">
-                Welcome to API Designer
+                No designs
             </Title>
             <EmptyStateBody>
-                Create and edit designs, such as APIs (OpenAPI, AsyncAPI) and schemas (Apache Avro,
-                Google Protobuf, JSON Schema), with API Designer. To get started, create or import a design.
+                To get started, create or import a design.
             </EmptyStateBody>
             <Button variant="primary" onClick={onCreate}>Create design</Button>
             <EmptyStateSecondaryActions>

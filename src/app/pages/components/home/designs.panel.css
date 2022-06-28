@@ -1,11 +1,15 @@
-.panel-header {
+.designs-panel {
+    min-height: 100%;
+}
+
+.designs-panel .panel-header {
     border-bottom: 1px solid #ccc;
 }
 
-.panel-body {
+.designs-panel .panel-body {
     padding: 0px;
 }
 
-.panel-body:first-child {
+.designs-panel .panel-body:first-child {
     padding: 0px;
 }

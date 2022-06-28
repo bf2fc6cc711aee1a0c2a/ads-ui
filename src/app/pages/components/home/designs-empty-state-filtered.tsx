@@ -23,7 +23,7 @@ export type DesignsEmptyStateFilteredProps = {
  */
 export const DesignsEmptyStateFiltered: FunctionComponent<DesignsEmptyStateFilteredProps> = ({onClear}: DesignsEmptyStateFilteredProps) => {
     return (
-        <Bullseye>
+        <Bullseye style={{backgroundColor: "white"}}>
             <EmptyState variant={EmptyStateVariant.small}>
                 <EmptyStateIcon icon={SearchIcon} />
                 <Title headingLevel="h2" size="lg">

@@ -190,15 +190,15 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesi
     };
 
     return (
-        <React.Fragment>
-            <Card isSelectable={false}>
-                <CardBody className="panel-body">
-                    <ListWithToolbar toolbar={toolbar}
-                                     emptyState={emptyState}
-                                     filteredEmptyState={emptyStateFiltered}
-                                     isLoading={isLoading}
-                                     isFiltered={isFiltered}
-                                     isEmpty={!designs || designs.count === 0}>
+        <div className="designs-panel">
+            <ListWithToolbar toolbar={toolbar}
+                             emptyState={emptyState}
+                             filteredEmptyState={emptyStateFiltered}
+                             isLoading={isLoading}
+                             isFiltered={isFiltered}
+                             isEmpty={!designs || designs.count === 0}>
+                <Card isSelectable={false}>
+                    <CardBody className="panel-body">
                         <If condition={showDataWarning}>
                             <Alert className="panel-alert"
                                    isInline={true}
@@ -224,9 +224,9 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesi
                                     onDownload={onDownloadDesign}
                                     onRegister={onRegisterDesign}
                                     onDelete={onDeleteDesign} />
-                    </ListWithToolbar>
-                </CardBody>
-            </Card>
+                    </CardBody>
+                </Card>
+            </ListWithToolbar>
             <DeleteDesignModal design={designToDelete}
                               isOpen={isDeleteModalOpen}
                               onDelete={onDeleteDesignConfirmed}
@@ -240,6 +240,6 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesi
                          isOpen={isRenameModalOpen}
                          onRename={doRenameDesign}
                          onCancel={() => setRenameModalOpen(false)} />
-        </React.Fragment>
+        </div>
     );
 };
