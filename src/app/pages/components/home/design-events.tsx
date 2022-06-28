@@ -79,7 +79,9 @@ export const DesignEvents: FunctionComponent<DesignEventsProps> = ({design}: Des
 
                 <If condition={hasOrigin(design, "url")}>
                     <div className="design-events-origin-label">URL</div>
-                    <div className="design-events-origin-value">{originUrl()}</div>
+                    <div className="design-events-origin-value">
+                        <a href={originUrl()}>{originUrl()}</a>
+                    </div>
                 </If>
             </div>
             <Divider className="design-events-divider" />

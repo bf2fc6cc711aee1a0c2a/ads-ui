@@ -14,7 +14,7 @@ export const DesignEventType: FunctionComponent<DesignEventTypeProps> = ({event,
     const typeLabel = (): React.ReactNode => {
         switch (event.type) {
             case "download":
-                return variant === "short" ? <span>Local file</span> : <span>Downloaded to local file system</span>;
+                return variant === "short" ? <span>File</span> : <span>Downloaded to file system</span>;
             case "create":
                 return variant === "short" ? <span>New</span> : <span>Created new design</span>;
             case "import":
@@ -30,7 +30,7 @@ export const DesignEventType: FunctionComponent<DesignEventTypeProps> = ({event,
         const context: DesignContext = event.data.context;
         switch (context.type) {
             case "file":
-                return variant === "short" ? <span>Local file</span> : <span>{`Imported from local file ${context.file?.fileName}`}</span>;
+                return variant === "short" ? <span>File</span> : <span>{`Imported from file ${context.file?.fileName}`}</span>;
             case "rhosr":
                 return variant === "short" ? <span>Service Registry</span> : (
                     <React.Fragment>

@@ -14,7 +14,7 @@ export const DesignOriginLabel: FunctionComponent<DesignOriginLabelProps> = ({de
     const label = (): string => {
         if (design) {
             if (hasOrigin(design, "file")) {
-                return "Local file";
+                return "File";
             } else if (hasOrigin(design, "rhosr")) {
                 return "Service Registry";
             } else if (hasOrigin(design, "url")) {
