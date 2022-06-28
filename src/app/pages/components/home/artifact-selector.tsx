@@ -98,6 +98,13 @@ export const ArtifactSelector: FunctionComponent<ArtifactSelectorProps> = ({regi
             }).catch(error => {
                 // TODO handle error
                 console.error("[RegistryPage] Error searching for artifacts: ", error);
+                setArtifacts({
+                    artifacts: [],
+                    count: 0,
+                    page: 1,
+                    pageSize: 20
+                });
+                setQuerying(false);
             });
         }
         onSelected(undefined, undefined, undefined);

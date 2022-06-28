@@ -23,7 +23,7 @@ const RHOSR_MOCK_DATA: Registry[] = [
         updated_at: "2022-01-01T12:00:00Z",
         instance_type: "standard"
     }
-]
+];
 
 const RHOSR_MOCK_DATA_OF: Registry[] = [
     {
@@ -46,7 +46,7 @@ const RHOSR_MOCK_DATA_OF: Registry[] = [
         updated_at: "2022-01-01T12:00:00Z",
         instance_type: "standard"
     }
-]
+];
 
 
 /**
@@ -118,15 +118,24 @@ export interface RhosrService {
 function createMockService(mockData: Registry[]): RhosrService {
     return {
         getRegistries(): Promise<Registry[]> {
-            return Promise.resolve(mockData);
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve(mockData);
+                }, 150);
+            });
+            //return Promise.resolve(mockData);
         },
         getRegistry(id: string): Promise<Registry> {
-            const matching: Registry[] = mockData.filter(registry => registry.id === id);
-            if (matching && matching.length > 0) {
-                return Promise.resolve(matching[0]);
-            } else {
-                return Promise.resolve({} as Registry);
-            }
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    const matching: Registry[] = mockData.filter(registry => registry.id === id);
+                    if (matching && matching.length > 0) {
+                        return resolve(matching[0]);
+                    } else {
+                        return resolve({} as Registry);
+                    }
+                }, 150);
+            });
         }
     };
 }

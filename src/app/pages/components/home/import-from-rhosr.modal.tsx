@@ -3,7 +3,7 @@ import {Button, Modal, ModalVariant} from "@patternfly/react-core";
 import {CreateDesign, CreateDesignContent, SearchedArtifact, SearchedVersion} from "@app/models";
 import {Registry} from "@rhoas/registry-management-sdk";
 import {RhosrService, useRhosrService} from "@app/services";
-import {IsLoading, ServicePreviewWarning} from "@app/components";
+import {If, IsLoading, RhosrEmptyState, ServicePreviewWarning} from "@app/components";
 import {ArtifactSelector} from "@app/pages/components";
 
 
@@ -65,7 +65,9 @@ export const ImportFromRhosrModal: FunctionComponent<ImportFromRhosrModalProps> 
                 setLoading(false);
             }).catch(error => {
                 // TODO handle this error case
-                console.error("[HomePage] Error getting registry list: ", error);
+                console.error("[ImportFromRhosrModal] Error getting registry list: ", error);
+                setRegistries([]);
+                setLoading(false);
             });
         }
     }, [isOpen]);
@@ -78,24 +80,31 @@ export const ImportFromRhosrModal: FunctionComponent<ImportFromRhosrModalProps> 
         setValid(valid);
     }, [design, designContent]);
 
+    let actions: any[] = registries.length === 0 ? [] : [
+        <Button key="create" variant="primary" isDisabled={!isValid} onClick={doImport}>
+            Import
+        </Button>,
+        <Button key="cancel" variant="link" onClick={onCancel}>
+            Cancel
+        </Button>
+    ];
+
     return (
         <Modal
             variant={ModalVariant.large}
             title="Import from Service Registry"
             isOpen={isOpen}
             onClose={onCancel}
-            actions={[
-                <Button key="create" variant="primary" isDisabled={!isValid} onClick={doImport}>
-                    Import
-                </Button>,
-                <Button key="cancel" variant="link" onClick={onCancel}>
-                    Cancel
-                </Button>
-            ]}
+            actions={actions}
         >
             <IsLoading condition={isLoading}>
-                <ServicePreviewWarning />
-                <ArtifactSelector registries={registries} onSelected={onArtifactSelected} />
+                <If condition={registries.length === 0}>
+                    <RhosrEmptyState />
+                </If>
+                <If condition={registries.length > 0}>
+                    <ServicePreviewWarning />
+                    <ArtifactSelector registries={registries} onSelected={onArtifactSelected} />
+                </If>
             </IsLoading>
         </Modal>
     )

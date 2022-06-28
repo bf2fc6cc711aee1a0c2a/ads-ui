@@ -125,7 +125,9 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
                 setLoadingRegistries(false);
             }).catch(error => {
                 // TODO handle this error case
-                console.error("[HomePage] Error getting registry list: ", error);
+                console.error("[ExportToRhosrModal] Error getting registry list: ", error);
+                setRegistries([]);
+                setLoadingRegistries(false);
             });
         }
     }, [isOpen]);
@@ -160,23 +162,25 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
         }
     }, [registry]);
 
+    let actions: any[] = registries.length === 0 ? [] : [
+        <Button key="export" variant="primary" isDisabled={!isValid || isExporting} onClick={doExport}>
+            <If condition={isExporting}>
+                <Spinner size="md" className="export-spinner" />
+            </If>
+            Export
+        </Button>,
+        <Button key="cancel" variant="link" onClick={onCancel}>
+            Cancel
+        </Button>
+    ];
+
     return (
         <Modal
             variant={ModalVariant.medium}
             title="Export to Service Registry"
             isOpen={isOpen}
             onClose={onCancel}
-            actions={[
-                <Button key="export" variant="primary" isDisabled={!isValid || isExporting} onClick={doExport}>
-                    <If condition={isExporting}>
-                        <Spinner size="md" className="export-spinner" />
-                    </If>
-                    Export
-                </Button>,
-                <Button key="cancel" variant="link" onClick={onCancel}>
-                    Cancel
-                </Button>
-            ]}
+            actions={actions}
         >
             <IsLoading condition={isLoadingRegistries}>
                 <Form>
