@@ -1,9 +1,10 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
 import {
-    Alert,
     Button,
     Form,
-    FormGroup, Gallery, GalleryItem,
+    FormGroup,
+    Gallery,
+    GalleryItem,
     Modal,
     ModalVariant,
     Select,
@@ -15,7 +16,7 @@ import {
 } from "@patternfly/react-core";
 import {ArtifactTypes, CreateDesign, Template} from "@app/models";
 import {TemplatesService, useTemplatesService} from "@app/services";
-import {If} from "@app/components";
+import {If, ServicePreviewWarning} from "@app/components";
 import {TemplateItem} from "@app/pages/components";
 
 export type CreateDesignModalProps = {
@@ -164,13 +165,7 @@ export const CreateDesignModal: FunctionComponent<CreateDesignModalProps> = ({is
                 </Button>
             ]}
         >
-            <Alert isInline variant="warning" title="Warning" style={{ marginBottom: "15px"}}>
-                <p>
-                    All new designs are stored locally in your browser.  Clearing your browser cache or
-                    switching to a new browser <em>might</em> result in loss of data.  Make sure you save your
-                    work locally or in a Red Hat OpenShift Service Registry instance!
-                </p>
-            </Alert>
+            <ServicePreviewWarning />
 
             <Form>
                 <FormGroup label="Name" isRequired={true} fieldId="create-design-name">

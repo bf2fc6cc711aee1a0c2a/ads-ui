@@ -8,3 +8,4 @@ export * from "./object-select";
 export * from "./toggle-icon";
 export * from "./design-description";
 export * from "./registry-navlink";
+export * from "./service-preview-warning";

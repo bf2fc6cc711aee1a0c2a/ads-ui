@@ -1,17 +1,20 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
 import {
-    Alert,
-    Button, FileUpload, Form,
+    Button,
+    FileUpload,
+    Form,
     FormGroup,
     Modal,
     ModalVariant,
-    Select, SelectOption, SelectOptionObject,
+    Select,
+    SelectOption,
+    SelectOptionObject,
     SelectVariant,
     TextArea,
     TextInput
 } from "@patternfly/react-core";
 import {ArtifactTypes, ContentTypes, CreateDesign, CreateDesignContent} from "@app/models";
-import {If} from "@app/components";
+import {If, ServicePreviewWarning} from "@app/components";
 import {ImportFrom, UrlUpload} from "@app/pages/components";
 import {isJson, isProto, isWsdl, isXml, isXsd, isYaml, parseJson, parseYaml} from "@app/utils";
 import {DesignContext} from "@app/models/designs/design-context.model";
@@ -326,13 +329,7 @@ export const ImportDesignModal: FunctionComponent<ImportDesignModalProps> = ({im
                 </Button>
             ]}
         >
-            <Alert isInline variant="warning" title="Warning" style={{marginBottom: "15px"}}>
-                <p>
-                    All new designs are stored locally in your browser. Clearing your browser cache or
-                    switching to a new browser <em>might</em> result in loss of data. Make sure you save your
-                    work locally or in a Red Hat OpenShift Service Registry instance!
-                </p>
-            </Alert>
+            <ServicePreviewWarning />
 
             <Form>
                 <If condition={importType === ImportFrom.FILE}>
