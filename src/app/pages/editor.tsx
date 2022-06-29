@@ -15,10 +15,10 @@ import {
     DrawerContent,
     DrawerHead,
     DrawerPanelBody,
-    DrawerPanelContent,
+    DrawerPanelContent, Modal, ModalContent, ModalVariant,
     PageSection,
     PageSectionVariants,
-    Spinner
+    Spinner, ToggleGroup, ToggleGroupItem
 } from "@patternfly/react-core";
 import {
     AlertsService,
@@ -26,7 +26,9 @@ import {
     DownloadService, useAlertsService,
     useDesignsService,
     useDownloadService,
-    useRhosrInstanceServiceFactory
+    useRhosrInstanceServiceFactory,
+    useLocalStorageService,
+    LocalStorageService
 } from "@app/services";
 import {ArtifactTypes, ContentTypes, Design, DesignContent, TestRegistryErrorResponse} from "@app/models";
 import {IsLoading} from "@app/components";
@@ -34,9 +36,18 @@ import {DeleteDesignModal, EditorContext, RenameData, RenameModal} from "@app/pa
 import {OpenApiEditor, ProtoEditor, TextEditor} from "@app/editors";
 import {AsyncApiEditor} from "@app/editors/editor-asyncapi";
 import {Registry} from "@rhoas/registry-management-sdk";
-import {contentTypeForDesign, convertToValidFilename, fileExtensionForDesign, formatContent} from "@app/utils";
+import {
+    contentTypeForDesign,
+    convertToValidFilename,
+    fileExtensionForDesign,
+    formatContent
+} from "@app/utils";
 import {Prompt} from "react-router-dom";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
+import {EditorCompare} from "@app/editors/editor-compare";
+import {editor} from "monaco-editor";
+import IDiffEditorConstructionOptions = editor.IDiffEditorConstructionOptions;
+
 
 export type EditorPageProps = {
     params: any;
@@ -60,7 +71,7 @@ const onBeforeUnload = (e): void => {
 }
 
 
-export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: EditorPageProps) => {
+export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorPageProps) => {
     const [isLoading, setLoading] = useState(true);
     const [design, setDesign] = useState<Design>();
     const [designContent, setDesignContent] = useState<DesignContent>();
@@ -71,7 +82,18 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
     const [isTestRegistryIssuesLoading, setTestRegistryIssuesIsLoading] = useState(false);
     const [isTestRegistryIssuesDrawerOpen, setTestRegistryIssuesDrawerIsOpen] = useState(false);
     const [isRenameModalOpen, setRenameModalOpen] = useState(false);
+    const [isCompareContentEditor, setIsCompareContentEditor] = useState(false);
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [diffEditorContentOptions, setDiffEditorContentOptions] = useState({
+        renderSideBySide: true,
+        automaticLayout: true,
+        wordWrap: 'on',
+        readOnly: true,
+        inDiffEditor: true
+    } as IDiffEditorConstructionOptions)
+
+    const [isDiffInline, setIsDiffInline] = useState(false);
+    const [isDiffWrapped, setIsDiffWrapped] = useState(false);
 
     const drawerRef = useRef<HTMLDivElement>();
 
@@ -196,20 +218,25 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
         });
     }
 
+    const compareEditor = (updatedContent, currentContent): React.ReactElement => {
+        return <EditorCompare currentContent={currentContent} updatedContent={updatedContent}
+                              contentOptions={diffEditorContentOptions}/>
+    }
+
     const textEditor: React.ReactElement = (
-        <TextEditor content={designContent as DesignContent} onChange={onEditorChange} />
+        <TextEditor content={designContent as DesignContent} onChange={onEditorChange}/>
     );
 
     const protoEditor: React.ReactElement = (
-        <ProtoEditor content={designContent as DesignContent} onChange={onEditorChange} />
+        <ProtoEditor content={designContent as DesignContent} onChange={onEditorChange}/>
     );
 
     const openapiEditor: React.ReactElement = (
-        <OpenApiEditor content={designContent as DesignContent} onChange={onEditorChange} />
+        <OpenApiEditor content={designContent as DesignContent} onChange={onEditorChange}/>
     );
 
     const asyncapiEditor: React.ReactElement = (
-        <AsyncApiEditor content={designContent as DesignContent} onChange={onEditorChange} />
+        <AsyncApiEditor content={designContent as DesignContent} onChange={onEditorChange}/>
     );
 
     const editor = (): React.ReactElement => {
@@ -231,18 +258,42 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
         console.log(`${id} has new width of: ${newWidth}`);
     };
 
+    const onCompareContent = () => {
+        setIsCompareContentEditor(true);
+    }
+
+    const closeCompareEditor = () => {
+        setIsCompareContentEditor(false);
+    }
+
+    const switchInlineCompare = () => {
+        setDiffEditorContentOptions({
+            ...diffEditorContentOptions as IDiffEditorConstructionOptions,
+            renderSideBySide: !diffEditorContentOptions.renderSideBySide
+        });
+        setIsDiffInline(!!diffEditorContentOptions.renderSideBySide);
+    }
+
+    const switchWordWrap = () => {
+        setDiffEditorContentOptions({
+            ...diffEditorContentOptions as IDiffEditorConstructionOptions,
+            wordWrap: diffEditorContentOptions.wordWrap == "off" ? "on" : "off"
+        });
+        setIsDiffWrapped(diffEditorContentOptions.wordWrap != "on");
+    }
+
     const testArtifactRegistration = (registry: Registry, groupId: string | undefined, artifactId: string) => {
         setTestRegistryIssuesIsLoading(true);
         openTestRegistryIssuesPanel();
         // cache registry used during registry test to allow for a retry from the sidepanel
-        setTestRegistryArgsCache({ registry, groupId, artifactId });
+        setTestRegistryArgsCache({registry, groupId, artifactId});
         rhosrInstanceFactory.createFor(registry)
             .testUpdateArtifactContent(groupId, artifactId, currentContent)
             .then(() => {
                 // Nothing to do here.
             }).catch((error: TestRegistryErrorResponse) => {
-                openTestRegistryIssuesPanel(error);
-            });
+            openTestRegistryIssuesPanel(error);
+        });
     }
 
     const openTestRegistryIssuesPanel = (error?: TestRegistryErrorResponse) => {
@@ -259,9 +310,11 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
 
     const renderPanelContent = (error?: TestRegistryErrorResponse) => {
         return (
-            <DrawerPanelContent isResizable onResize={onResizeTestRegistrySidepanel} minSize="35%" id="test-registry-issues-panel">
+            <DrawerPanelContent isResizable onResize={onResizeTestRegistrySidepanel} minSize="35%"
+                                id="test-registry-issues-panel">
                 <DrawerHead>
-                    <h2 className="pf-c-title pf-m-2xl" tabIndex={isTestRegistryIssuesDrawerOpen ? 0 : -1} ref={drawerRef as any}>
+                    <h2 className="pf-c-title pf-m-2xl" tabIndex={isTestRegistryIssuesDrawerOpen ? 0 : -1}
+                        ref={drawerRef as any}>
                         Test Registration issues
                     </h2>
                     <DrawerActions>
@@ -271,10 +324,10 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
                             testRegistryArgsCache?.artifactId as string
                         )
                         }>Retry</Button>
-                        <DrawerCloseButton onClick={closeTestRegistryIssuesPanel} />
+                        <DrawerCloseButton onClick={closeTestRegistryIssuesPanel}/>
                     </DrawerActions>
                 </DrawerHead>
-                <Divider />
+                <Divider/>
                 <DrawerPanelBody>
                     {renderPanelBody(error)}
                 </DrawerPanelBody>
@@ -284,7 +337,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
 
     const renderPanelBody = (error?: TestRegistryErrorResponse) => {
         if (isTestRegistryIssuesLoading) {
-            return <Spinner className="spinner" />
+            return <Spinner className="spinner"/>
         } else if (error) {
             return <DescriptionList isHorizontal>
                 {error.name === "RuleViolationException" && error.causes?.length > 0 ?
@@ -294,9 +347,11 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
                                 <DescriptionListTerm>Code</DescriptionListTerm>
                                 <DescriptionListDescription>{cause.description}</DescriptionListDescription>
                                 <DescriptionListTerm>Context</DescriptionListTerm>
-                                <DescriptionListDescription><pre>{cause.context}</pre></DescriptionListDescription>
+                                <DescriptionListDescription>
+                                    <pre>{cause.context}</pre>
+                                </DescriptionListDescription>
                             </DescriptionListGroup>
-                            <Divider />
+                            <Divider/>
                         </React.Fragment>
                     ) : <CodeBlock>
                         <CodeBlockCode id="code-content">{error.detail}</CodeBlockCode>
@@ -320,6 +375,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
                     onRename={() => setRenameModalOpen(true)}
                     isPanelOpen={isTestRegistryIssuesDrawerOpen}
                     onRegistrationTestRegistry={testArtifactRegistration}
+                    onCompareContent={onCompareContent}
                     onExpandTestRegistryCausesPanel={(error: TestRegistryErrorResponse) => openTestRegistryIssuesPanel(error)}
                     artifactContent={currentContent}
                 />
@@ -333,16 +389,38 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: Edito
                     </DrawerContent>
                 </Drawer>
             </PageSection>
+            <Modal id={"compare-modal"}
+                   isOpen={isCompareContentEditor}
+                   onClose={closeCompareEditor}
+                   actions={[
+                       <Button key="cancel" variant="link" onClick={closeCompareEditor}>
+                           Cancel
+                       </Button>
+                   ]}>
+                <div id={"compare-view"}>
+                    <ToggleGroup style={{float: "right", padding: "5px"}}
+                                 aria-label="Default with multiple selectable">
+                        <ToggleGroupItem text="Inline diff" key={1} buttonId="second"
+                                         isSelected={isDiffInline}
+                                         onChange={switchInlineCompare}/>
+                        <ToggleGroupItem text="Wrap Text" key={0} buttonId="first"
+                                         isSelected={isDiffWrapped}
+                                         onChange={switchWordWrap}/>
+
+                    </ToggleGroup>
+                    <div id={"compare-editor"}>{compareEditor(currentContent, designContent)}</div>
+                </div>
+            </Modal>
             <RenameModal design={design}
                          isOpen={isRenameModalOpen}
                          onRename={doRenameDesign}
-                         onCancel={() => setRenameModalOpen(false)} />
+                         onCancel={() => setRenameModalOpen(false)}/>
             <DeleteDesignModal design={design}
                                isOpen={isDeleteModalOpen}
                                onDelete={onDeleteDesignConfirmed}
                                onDownload={onDownload}
-                               onCancel={() => setDeleteModalOpen(false)} />
-            <Prompt when={isDirty} message={`You have unsaved changes.  Do you really want to leave?`} />
+                               onCancel={() => setDeleteModalOpen(false)}/>
+            <Prompt when={isDirty} message={`You have unsaved changes.  Do you really want to leave?`}/>
         </IsLoading>
     );
 }
