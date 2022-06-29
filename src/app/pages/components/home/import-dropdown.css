@@ -1,0 +1,7 @@
+#import-toggle > span {
+    color: var(--pf-c-dropdown__toggle--Color);
+}
+
+#import-toggle {
+    padding-right: 5px;
+}

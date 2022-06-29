@@ -136,7 +136,7 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
         <React.Fragment>
             <Drawer isStatic={false} position="right" isInline={false} isExpanded={isDrawerExpanded} onExpand={onDrawerExpand}>
                 <DrawerContent panelContent={panelContent}>
-                    <DrawerContentBody>
+                    <DrawerContentBody className="home-panel-body">
                         <PageSection variant={PageSectionVariants.light} className="summary pf-m-padding-on-xl">
                             <TextContent>
                                 <Text component="h1" className="title">API and Schema Designs</Text>

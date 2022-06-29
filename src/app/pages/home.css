@@ -1,3 +1,7 @@
+.home-panel-body {
+    background-color: var(--pf-c-page__main-section--BackgroundColor);
+}
+
 .summary .description {
     font-size: 15px;
     color: #333;

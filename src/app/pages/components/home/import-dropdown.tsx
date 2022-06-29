@@ -1,4 +1,5 @@
 import React, {FunctionComponent, useState} from "react";
+import "./import-dropdown.css";
 import {Dropdown, DropdownItem, DropdownToggle} from "@patternfly/react-core";
 
 export enum ImportFrom {

@@ -39,3 +39,11 @@
     margin-top: 15px;
     font-size: 14px;
 }
+
+#action-toggle > span {
+    color: var(--pf-c-dropdown__toggle--Color);
+}
+
+#action-toggle {
+    padding-right: 5px;
+}
