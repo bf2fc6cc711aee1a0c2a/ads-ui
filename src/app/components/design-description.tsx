@@ -1,17 +1,18 @@
 import React, {FunctionComponent} from "react";
 import "./design-description.css";
+import {Truncate} from "@patternfly/react-core";
 
 /**
  * Properties
  */
 export type DesignDescriptionProps = {
     description: string | undefined;
-    title?: string;
+    truncate?: boolean;
     className?: string;
 }
 
 
-export const DesignDescription: FunctionComponent<DesignDescriptionProps> = ({description, title, className}: DesignDescriptionProps) => {
+export const DesignDescription: FunctionComponent<DesignDescriptionProps> = ({description, truncate, className}: DesignDescriptionProps) => {
     let classes: string = "";
     if (className) {
         classes = className;
@@ -19,7 +20,11 @@ export const DesignDescription: FunctionComponent<DesignDescriptionProps> = ({de
     if (!description) {
         classes = classes + " no-description";
     }
-    return (
-        <div className={classes} title={title}>{description || "No description."}</div>
+    return truncate ? (
+        <div>
+            <Truncate className={classes} content={description || "No description."} tooltipPosition="auto" />
+        </div>
+    ) : (
+        <div className={classes}>{description || "No description."}</div>
     );
 }

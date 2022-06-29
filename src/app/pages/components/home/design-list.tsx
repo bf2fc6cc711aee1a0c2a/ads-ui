@@ -4,7 +4,7 @@ import {Design, DesignsSearchResults, DesignsSort} from "@app/models";
 import {ResponsiveTable} from "@rhoas/app-services-ui-components";
 import {ArtifactTypeIcon, DesignDescription, NavLink} from "@app/components";
 import Moment from "react-moment";
-import {KebabToggle} from "@patternfly/react-core";
+import {KebabToggle, Truncate} from "@patternfly/react-core";
 import {IAction} from "@patternfly/react-table";
 import {ThProps} from "@patternfly/react-table/src/components/TableComposable/Th";
 import {CustomActionsToggleProps} from "@patternfly/react-table/src/components/Table/ActionsColumn";
@@ -42,11 +42,12 @@ export const DesignList: FunctionComponent<DesignListProps> = (
             return (
                 <div>
                     <NavLink className="design-title"
-                             location={`/designs/${column.id}/editor`}
-                             title={column.name}>{column.name}</NavLink>
+                             location={`/designs/${column.id}/editor`}>
+                        <Truncate content={column.name} tooltipPosition="auto"></Truncate>
+                    </NavLink>
                     <DesignDescription className="design-summary"
                                        description={column.summary}
-                                       title={column.summary} />
+                                       truncate={true} />
                 </div>
             );
         }
