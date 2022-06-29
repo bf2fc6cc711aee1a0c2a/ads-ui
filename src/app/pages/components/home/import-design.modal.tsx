@@ -38,7 +38,7 @@ const PLACEHOLDER_TYPE_OPTION: SelectOptionObject = {
     compareTo(selectOption: any): boolean {
         return selectOption === this;
     }
-}
+};
 const TYPE_OPTIONS: SelectOptionObject[] = [
     {
         value: ArtifactTypes.OPENAPI,
@@ -159,9 +159,9 @@ export const ImportDesignModal: FunctionComponent<ImportDesignModalProps> = ({im
 
     const title = (): string => {
         if (importType === ImportFrom.FILE) {
-            return "Import from file";
+            return "Import design from file";
         } else {
-            return "Import from URL";
+            return "Import design from URL";
         }
     };
 
@@ -245,7 +245,6 @@ export const ImportDesignModal: FunctionComponent<ImportDesignModalProps> = ({im
         return {
         };
 
-        // TODO handle parsing of protobuf
         // TODO handle parsing of GraphQL
     };
 

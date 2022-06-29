@@ -180,3 +180,15 @@ export function formatContent(value: string, contentType: string): string {
 export function convertToValidFilename(value: string): string {
     return (value.replace(/[\/|\\:*?"<>]/g, ""));
 }
+
+/**
+ * Converts content (which might be a JS object) to a string.
+ * @param content
+ */
+export function contentToString(content: any): string {
+    if (typeof content === "string") {
+        return content as string;
+    } else {
+        return JSON.stringify(content as string, null, 4);
+    }
+}

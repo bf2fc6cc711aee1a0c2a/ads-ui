@@ -92,7 +92,7 @@ export const ImportFromRhosrModal: FunctionComponent<ImportFromRhosrModalProps> 
     return (
         <Modal
             variant={ModalVariant.large}
-            title="Import from Service Registry"
+            title="Import design from Service Registry"
             isOpen={isOpen}
             onClose={onCancel}
             actions={actions}

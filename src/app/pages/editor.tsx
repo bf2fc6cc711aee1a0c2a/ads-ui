@@ -15,38 +15,29 @@ import {
     DrawerContent,
     DrawerHead,
     DrawerPanelBody,
-    DrawerPanelContent, Modal, ModalContent, ModalVariant,
+    DrawerPanelContent,
     PageSection,
     PageSectionVariants,
-    Spinner, ToggleGroup, ToggleGroupItem
+    Spinner
 } from "@patternfly/react-core";
 import {
     AlertsService,
     DesignsService,
-    DownloadService, useAlertsService,
+    DownloadService,
+    useAlertsService,
     useDesignsService,
     useDownloadService,
-    useRhosrInstanceServiceFactory,
-    useLocalStorageService,
-    LocalStorageService
+    useRhosrInstanceServiceFactory
 } from "@app/services";
 import {ArtifactTypes, ContentTypes, Design, DesignContent, TestRegistryErrorResponse} from "@app/models";
 import {IsLoading} from "@app/components";
-import {DeleteDesignModal, EditorContext, RenameData, RenameModal} from "@app/pages/components";
+import {CompareModal, DeleteDesignModal, EditorContext, RenameData, RenameModal} from "@app/pages/components";
 import {OpenApiEditor, ProtoEditor, TextEditor} from "@app/editors";
 import {AsyncApiEditor} from "@app/editors/editor-asyncapi";
 import {Registry} from "@rhoas/registry-management-sdk";
-import {
-    contentTypeForDesign,
-    convertToValidFilename,
-    fileExtensionForDesign,
-    formatContent
-} from "@app/utils";
+import {contentTypeForDesign, convertToValidFilename, fileExtensionForDesign, formatContent} from "@app/utils";
 import {Prompt} from "react-router-dom";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
-import {EditorCompare} from "@app/editors/editor-compare";
-import {editor} from "monaco-editor";
-import IDiffEditorConstructionOptions = editor.IDiffEditorConstructionOptions;
 
 
 export type EditorPageProps = {
@@ -82,18 +73,8 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorP
     const [isTestRegistryIssuesLoading, setTestRegistryIssuesIsLoading] = useState(false);
     const [isTestRegistryIssuesDrawerOpen, setTestRegistryIssuesDrawerIsOpen] = useState(false);
     const [isRenameModalOpen, setRenameModalOpen] = useState(false);
-    const [isCompareContentEditor, setIsCompareContentEditor] = useState(false);
+    const [isCompareModalOpen, setCompareModalOpen] = useState(false);
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [diffEditorContentOptions, setDiffEditorContentOptions] = useState({
-        renderSideBySide: true,
-        automaticLayout: true,
-        wordWrap: 'on',
-        readOnly: true,
-        inDiffEditor: true
-    } as IDiffEditorConstructionOptions)
-
-    const [isDiffInline, setIsDiffInline] = useState(false);
-    const [isDiffWrapped, setIsDiffWrapped] = useState(false);
 
     const drawerRef = useRef<HTMLDivElement>();
 
@@ -218,11 +199,6 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorP
         });
     }
 
-    const compareEditor = (updatedContent, currentContent): React.ReactElement => {
-        return <EditorCompare currentContent={currentContent} updatedContent={updatedContent}
-                              contentOptions={diffEditorContentOptions}/>
-    }
-
     const textEditor: React.ReactElement = (
         <TextEditor content={designContent as DesignContent} onChange={onEditorChange}/>
     );
@@ -259,27 +235,11 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorP
     };
 
     const onCompareContent = () => {
-        setIsCompareContentEditor(true);
+        setCompareModalOpen(true);
     }
 
     const closeCompareEditor = () => {
-        setIsCompareContentEditor(false);
-    }
-
-    const switchInlineCompare = () => {
-        setDiffEditorContentOptions({
-            ...diffEditorContentOptions as IDiffEditorConstructionOptions,
-            renderSideBySide: !diffEditorContentOptions.renderSideBySide
-        });
-        setIsDiffInline(!!diffEditorContentOptions.renderSideBySide);
-    }
-
-    const switchWordWrap = () => {
-        setDiffEditorContentOptions({
-            ...diffEditorContentOptions as IDiffEditorConstructionOptions,
-            wordWrap: diffEditorContentOptions.wordWrap == "off" ? "on" : "off"
-        });
-        setIsDiffWrapped(diffEditorContentOptions.wordWrap != "on");
+        setCompareModalOpen(false);
     }
 
     const testArtifactRegistration = (registry: Registry, groupId: string | undefined, artifactId: string) => {
@@ -389,28 +349,10 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorP
                     </DrawerContent>
                 </Drawer>
             </PageSection>
-            <Modal id={"compare-modal"}
-                   isOpen={isCompareContentEditor}
-                   onClose={closeCompareEditor}
-                   actions={[
-                       <Button key="cancel" variant="link" onClick={closeCompareEditor}>
-                           Cancel
-                       </Button>
-                   ]}>
-                <div id={"compare-view"}>
-                    <ToggleGroup style={{float: "right", padding: "5px"}}
-                                 aria-label="Default with multiple selectable">
-                        <ToggleGroupItem text="Inline diff" key={1} buttonId="second"
-                                         isSelected={isDiffInline}
-                                         onChange={switchInlineCompare}/>
-                        <ToggleGroupItem text="Wrap Text" key={0} buttonId="first"
-                                         isSelected={isDiffWrapped}
-                                         onChange={switchWordWrap}/>
-
-                    </ToggleGroup>
-                    <div id={"compare-editor"}>{compareEditor(currentContent, designContent)}</div>
-                </div>
-            </Modal>
+            <CompareModal isOpen={isCompareModalOpen}
+                          onClose={closeCompareEditor}
+                          before={designContent?.data}
+                          after={currentContent} />
             <RenameModal design={design}
                          isOpen={isRenameModalOpen}
                          onRename={doRenameDesign}
