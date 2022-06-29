@@ -1,9 +1,8 @@
 import React, {FunctionComponent, useState} from "react";
 import "./design-details-panel.css";
 import {Design} from "@app/models";
-import {Flex, FlexItem, Form, FormGroup, Tab, Tabs, TabTitleText} from "@patternfly/react-core";
-import {ArtifactTypeIcon, DesignDescription} from "@app/components";
-import Moment from "react-moment";
+import {Tab, Tabs, TabTitleText} from "@patternfly/react-core";
+import {ArtifactTypeIcon, DateTime, DesignDescription} from "@app/components";
 import {DesignEvents, DesignHistory, DesignOriginLabel} from "@app/pages/components";
 
 /**
@@ -38,10 +37,10 @@ export const DesignDetailsPanel: FunctionComponent<DesignDetailsPanelProps> = ({
                         </div>
 
                         <div className="design-details-label">Time created</div>
-                        <div className="design-details-value"><Moment date={design?.createdOn} format="MMMM DD, YYYY h:mma" /></div>
+                        <div className="design-details-value"><DateTime date={design?.createdOn} /></div>
 
                         <div className="design-details-label">Time updated</div>
-                        <div className="design-details-value"><Moment date={design?.modifiedOn} format="MMMM DD, YYYY h:mma" /></div>
+                        <div className="design-details-value"><DateTime date={design?.modifiedOn} /></div>
 
                         <div className="design-details-label">Origin</div>
                         <div className="design-details-value">

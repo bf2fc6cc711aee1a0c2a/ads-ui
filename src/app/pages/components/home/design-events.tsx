@@ -2,8 +2,7 @@ import React, {FunctionComponent, useEffect, useState} from "react";
 import "./design-events.css";
 import {Design, DesignEvent} from "@app/models";
 import {DesignsService, useDesignsService} from "@app/services";
-import Moment from "react-moment";
-import {If, IfNotEmpty, IsLoading, RegistryNavLink} from "@app/components";
+import {DateTime, If, IfNotEmpty, IsLoading, RegistryNavLink} from "@app/components";
 import {DesignEventType, DesignOriginLabel} from "@app/pages/components";
 import {hasOrigin} from "@app/utils";
 import {Divider} from "@patternfly/react-core";
@@ -55,7 +54,7 @@ export const DesignEvents: FunctionComponent<DesignEventsProps> = ({design}: Des
                 </div>
 
                 <div className="design-events-origin-label">Time created</div>
-                <div className="design-events-origin-value"><Moment date={design?.createdOn} format="MMMM DD, YYYY h:mma" /></div>
+                <div className="design-events-origin-value"><DateTime date={design?.createdOn} /></div>
 
                 <If condition={hasOrigin(design, "rhosr")}>
                     <div className="design-events-origin-label">Group</div>
@@ -97,7 +96,7 @@ export const DesignEvents: FunctionComponent<DesignEventsProps> = ({design}: Des
                             exports?.map((event, idx) => (
                                 <React.Fragment key={idx}>
                                     <div key={`${idx}-type`} className="design-events-origin-exports-item"><DesignEventType event={event} variant="short" /></div>
-                                    <div key={`${idx}-time`} className="design-events-origin-exports-time"><Moment date={event.on} format="MMMM DD, YYYY h:mma" /></div>
+                                    <div key={`${idx}-time`} className="design-events-origin-exports-time"><DateTime date={event.on} /></div>
                                 </React.Fragment>
                             ))
                         }

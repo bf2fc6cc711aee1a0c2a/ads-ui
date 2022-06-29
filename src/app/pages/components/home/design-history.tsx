@@ -2,8 +2,7 @@ import React, {FunctionComponent, useEffect, useState} from "react";
 import "./design-history.css";
 import {Design, DesignEvent} from "@app/models";
 import {DesignsService, useDesignsService} from "@app/services";
-import Moment from "react-moment";
-import {IfNotEmpty, IsLoading} from "@app/components";
+import {DateTime, IfNotEmpty, IsLoading} from "@app/components";
 import {DesignEventType} from "@app/pages/components";
 
 /**
@@ -37,7 +36,7 @@ export const DesignHistory: FunctionComponent<DesignHistoryProps> = ({design}: D
                         events?.map((event, idx) => (
                             <React.Fragment key={idx}>
                                 <div key={`${idx}-type`} className="event-type"><DesignEventType event={event} /></div>
-                                <div key={`${idx}-time`} className="event-time"><Moment date={event.on} format="MMMM DD, YYYY h:mma" /></div>
+                                <div key={`${idx}-time`} className="event-time"><DateTime date={event.on} /></div>
                             </React.Fragment>
                         ))
                     }
