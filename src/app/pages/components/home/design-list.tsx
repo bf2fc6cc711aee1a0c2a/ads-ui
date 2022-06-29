@@ -43,7 +43,7 @@ export const DesignList: FunctionComponent<DesignListProps> = (
                 <div>
                     <NavLink className="design-title"
                              location={`/designs/${column.id}/editor`}>
-                        <Truncate content={column.name} tooltipPosition="auto"></Truncate>
+                        <Truncate content={column.name} tooltipPosition="top" />
                     </NavLink>
                     <DesignDescription className="design-summary"
                                        description={column.summary}

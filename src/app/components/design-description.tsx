@@ -22,7 +22,7 @@ export const DesignDescription: FunctionComponent<DesignDescriptionProps> = ({de
     }
     return truncate ? (
         <div>
-            <Truncate className={classes} content={description || "No description."} tooltipPosition="auto" />
+            <Truncate className={classes} content={description || "No description."} tooltipPosition="top" />
         </div>
     ) : (
         <div className={classes}>{description || "No description."}</div>
