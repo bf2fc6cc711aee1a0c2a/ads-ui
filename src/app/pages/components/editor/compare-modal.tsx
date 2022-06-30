@@ -1,9 +1,9 @@
 import React, {FunctionComponent, useState} from "react";
 import "./compare-modal.css";
 import {Button, Modal, ToggleGroup, ToggleGroupItem} from "@patternfly/react-core";
-import {EditorCompare} from "@app/editors";
 import {editor} from "monaco-editor";
 import IDiffEditorConstructionOptions = editor.IDiffEditorConstructionOptions;
+import {DiffEditor} from "@monaco-editor/react";
 
 /**
  * Properties
@@ -11,17 +11,21 @@ import IDiffEditorConstructionOptions = editor.IDiffEditorConstructionOptions;
 export type CompareModalProps = {
     isOpen: boolean|undefined;
     before: any;
+    beforeName: string;
     after: any;
+    afterName: string;
     onClose: () => void;
 };
 
-export const CompareModal: FunctionComponent<CompareModalProps> = ({isOpen, onClose, before, after}: CompareModalProps) => {
+export const CompareModal: FunctionComponent<CompareModalProps> = ({isOpen, onClose, before, beforeName, after, afterName}: CompareModalProps) => {
     const [diffEditorContentOptions, setDiffEditorContentOptions] = useState({
         renderSideBySide: true,
         automaticLayout: true,
-        wordWrap: 'on',
+        wordWrap: "off",
         readOnly: true,
-        inDiffEditor: true
+        inDiffEditor: true,
+        originalAriaLabel: "Original",
+        modifiedAriaLabel: "Modified"
     } as IDiffEditorConstructionOptions)
 
     const [isDiffInline, setIsDiffInline] = useState(false);
@@ -45,13 +49,9 @@ export const CompareModal: FunctionComponent<CompareModalProps> = ({isOpen, onCl
 
     return (
         <Modal id="compare-modal"
+               title="Unsaved changes"
                isOpen={isOpen}
-               onClose={onClose}
-               actions={[
-                   <Button key="cancel" variant="link" onClick={onClose}>
-                       Cancel
-                   </Button>
-               ]}>
+               onClose={onClose}>
             <div className="compare-view">
                 <ToggleGroup className="compare-toggle-group"
                              aria-label="Compare view toggle group">
@@ -61,12 +61,19 @@ export const CompareModal: FunctionComponent<CompareModalProps> = ({isOpen, onCl
                     <ToggleGroupItem text="Wrap Text" key={0} buttonId="first"
                                      isSelected={isDiffWrapped}
                                      onChange={switchWordWrap}/>
-
                 </ToggleGroup>
+                <div className="compare-label">
+                    <span className="before">Original: {beforeName}</span>
+                    <span className="divider"> &#8596; </span>
+                    <span className="after">Modified: {afterName}</span>
+                </div>
                 <div className="compare-editor">
-                    <EditorCompare before={before}
-                                   after={after}
-                                   contentOptions={diffEditorContentOptions} />
+                    <DiffEditor
+                        className="text-editor"
+                        original={before}
+                        modified={after}
+                        options={diffEditorContentOptions}
+                    />
                 </div>
             </div>
         </Modal>

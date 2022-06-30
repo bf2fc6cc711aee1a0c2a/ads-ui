@@ -3,4 +3,3 @@ export * from "./editor-text";
 export * from "./editor-openapi";
 export * from "./editor-asyncapi";
 export * from "./editor-proto";
-export * from "./editor-compare";

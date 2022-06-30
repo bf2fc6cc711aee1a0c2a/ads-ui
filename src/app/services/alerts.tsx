@@ -49,9 +49,18 @@ export const useAlertsService: () => AlertsService = (): AlertsService => {
         },
 
         designSaved(design: Design): void {
+            const description: React.ReactNode = (
+                <React.Fragment>
+                    <div>{`Design '${design?.name}' was successfully saved.`}</div>
+                    <div style={{marginTop: "5px"}}>
+                        <em style={{fontWeight: "bold"}}>Note:</em> your design was saved to your browser only.
+                    </div>
+                </React.Fragment>
+            );
+
             addAlert({
                 title: "Save successful",
-                description: `Design '${design?.name}' was successfully saved.`,
+                description,
                 variant: AlertVariant.success,
                 dataTestId: "toast-design-saved"
             });
