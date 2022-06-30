@@ -107,6 +107,7 @@ export const ArtifactListToolbar: FunctionComponent<ArtifactListToolbarProps> = 
                     <ObjectSelect value={registry} items={registries}
                                   variant={SelectVariant.single}
                                   onSelect={onRegistrySelectInternal}
+                                  toggleId="artifact-list-toolbar-registries"
                                   menuAppendTo={menuAppendTo || 'parent'}
                                   itemToString={item => item.name} />
                 </ToolbarItem>

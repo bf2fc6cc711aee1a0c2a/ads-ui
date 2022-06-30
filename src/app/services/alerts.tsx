@@ -51,9 +51,8 @@ export const useAlertsService: () => AlertsService = (): AlertsService => {
         designSaved(design: Design): void {
             const description: React.ReactNode = (
                 <React.Fragment>
-                    <div>{`Design '${design?.name}' was successfully saved.`}</div>
-                    <div style={{marginTop: "5px"}}>
-                        <em style={{fontWeight: "bold"}}>Note:</em> your design was saved to your browser only.
+                    <div>
+                        Design '{design?.name}' was <span style={{fontWeight: "bold"}}>successfully saved locally in your browser</span>.
                     </div>
                 </React.Fragment>
             );

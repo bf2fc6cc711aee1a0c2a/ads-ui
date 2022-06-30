@@ -15,6 +15,7 @@ import {
 import {If, IsLoading, ObjectSelect} from "@app/components";
 import {DesignContext} from "@app/models/designs/design-context.model";
 import {CreateOrUpdateArtifactData} from "@app/models/rhosr-instance/create-or-update-artifact-data.model";
+import {IfRhosr} from "@app/pages/components";
 
 export type ExportToRhosrData = {
     registry: Registry;
@@ -200,45 +201,48 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
                                       items={registries}
                                       onSelect={onRegistrySelect}
                                       variant={SelectVariant.single}
+                                      toggleId="export-registry"
                                       menuAppendTo="parent"
                                       itemToString={item => item.name} />
                     </FormGroup>
-                    <FormGroup label="Group" isRequired={false} fieldId="export-group">
-                        <TextInput
-                            isRequired
-                            type="text"
-                            id="export-group"
-                            name="export-group"
-                            placeholder="Enter group (optional) or leave blank for default group"
-                            aria-describedby="export-group-helper"
-                            value={group}
-                            onChange={(value) => setGroup(value)}
-                        />
-                    </FormGroup>
-                    <FormGroup label="ID" isRequired={false} fieldId="export-artifact-id">
-                        <TextInput
-                            isRequired
-                            type="text"
-                            id="export-artifact-id"
-                            name="export-artifact-id"
-                            placeholder="Enter ID (optional) or leave blank for generated ID"
-                            aria-describedby="export-artifact-id-helper"
-                            value={artifactId}
-                            onChange={(value) => setArtifactId(value)}
-                        />
-                    </FormGroup>
-                    <FormGroup label="Version" isRequired={false} fieldId="export-version">
-                        <TextInput
-                            isRequired
-                            type="text"
-                            id="export-version"
-                            name="export-version"
-                            placeholder="Enter version (optional) or leave blank for generated version number"
-                            aria-describedby="export-version-helper"
-                            value={version}
-                            onChange={(value) => setVersion(value)}
-                        />
-                    </FormGroup>
+                    <IfRhosr registry={registry as Registry} scope="write" noAccess={<div/>}>
+                        <FormGroup label="Group" isRequired={false} fieldId="export-group">
+                            <TextInput
+                                isRequired
+                                type="text"
+                                id="export-group"
+                                name="export-group"
+                                placeholder="Enter group (optional) or leave blank for default group"
+                                aria-describedby="export-group-helper"
+                                value={group}
+                                onChange={(value) => setGroup(value)}
+                            />
+                        </FormGroup>
+                        <FormGroup label="ID" isRequired={false} fieldId="export-artifact-id">
+                            <TextInput
+                                isRequired
+                                type="text"
+                                id="export-artifact-id"
+                                name="export-artifact-id"
+                                placeholder="Enter ID (optional) or leave blank for generated ID"
+                                aria-describedby="export-artifact-id-helper"
+                                value={artifactId}
+                                onChange={(value) => setArtifactId(value)}
+                            />
+                        </FormGroup>
+                        <FormGroup label="Version" isRequired={false} fieldId="export-version">
+                            <TextInput
+                                isRequired
+                                type="text"
+                                id="export-version"
+                                name="export-version"
+                                placeholder="Enter version (optional) or leave blank for generated version number"
+                                aria-describedby="export-version-helper"
+                                value={version}
+                                onChange={(value) => setVersion(value)}
+                            />
+                        </FormGroup>
+                    </IfRhosr>
                 </Form>
             </IsLoading>
         </Modal>

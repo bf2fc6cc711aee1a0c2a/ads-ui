@@ -193,7 +193,7 @@ export const CreateDesignModal: FunctionComponent<CreateDesignModalProps> = ({is
                     <Select
                         variant={SelectVariant.single}
                         aria-label="Select type"
-                        id="create-design-type"
+                        toggleId="create-design-type"
                         onToggle={() => {setTypeToggled(!isTypeToggled)}}
                         onSelect={(event, selection) => onTypeSelect(selection)}
                         isOpen={isTypeToggled}
@@ -210,7 +210,7 @@ export const CreateDesignModal: FunctionComponent<CreateDesignModalProps> = ({is
                         <Select
                             variant={SelectVariant.single}
                             aria-label="Select version"
-                            id="create-design-version"
+                            toggleId="create-design-version"
                             onToggle={() => {setVersionToggled(!isVersionToggled)}}
                             onSelect={(event, selection) => onVersionSelect(selection as string)}
                             isOpen={isVersionToggled}

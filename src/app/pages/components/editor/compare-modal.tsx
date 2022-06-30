@@ -1,9 +1,10 @@
 import React, {FunctionComponent, useState} from "react";
 import "./compare-modal.css";
-import {Button, Modal, ToggleGroup, ToggleGroupItem} from "@patternfly/react-core";
+import {Modal, ToggleGroup, ToggleGroupItem} from "@patternfly/react-core";
 import {editor} from "monaco-editor";
 import IDiffEditorConstructionOptions = editor.IDiffEditorConstructionOptions;
 import {DiffEditor} from "@monaco-editor/react";
+import {ArrowsAltHIcon} from "@patternfly/react-icons";
 
 /**
  * Properties
@@ -64,7 +65,9 @@ export const CompareModal: FunctionComponent<CompareModalProps> = ({isOpen, onCl
                 </ToggleGroup>
                 <div className="compare-label">
                     <span className="before">Original: {beforeName}</span>
-                    <span className="divider"> &#8596; </span>
+                    <span className="divider">
+                        <ArrowsAltHIcon />
+                    </span>
                     <span className="after">Modified: {afterName}</span>
                 </div>
                 <div className="compare-editor">

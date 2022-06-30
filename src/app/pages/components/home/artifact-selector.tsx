@@ -9,8 +9,8 @@ import {
     SearchedVersion
 } from "@app/models";
 import {RhosrInstanceService, RhosrInstanceServiceFactory, useRhosrInstanceServiceFactory} from "@app/services";
-import {ArtifactList, ArtifactListToolbar, ArtifactListToolbarCriteria} from "@app/pages/components";
-import {IfNotEmpty, IsLoading, ListWithToolbar} from "@app/components";
+import {ArtifactList, ArtifactListToolbar, ArtifactListToolbarCriteria, IfRhosr} from "@app/pages/components";
+import {ListWithToolbar} from "@app/components";
 import {EmptyState, EmptyStateBody, EmptyStateVariant, Spinner, Title} from "@patternfly/react-core";
 
 /**
@@ -147,9 +147,11 @@ export const ArtifactSelector: FunctionComponent<ArtifactSelectorProps> = ({regi
                 loadingComponent={loadingComponent}
                 isEmpty={!artifacts || artifacts.count === 0}
             >
-                <ArtifactList artifacts={artifacts?.artifacts} fetchArtifactContent={fetchArtifactContent}
-                    onArtifactSelected={onArtifactSelected}
-                    fetchArtifactVersions={fetchArtifactVersions} />
+                <IfRhosr registry={registry as Registry} scope="read" noAccess={<div/>}>
+                    <ArtifactList artifacts={artifacts?.artifacts} fetchArtifactContent={fetchArtifactContent}
+                        onArtifactSelected={onArtifactSelected}
+                        fetchArtifactVersions={fetchArtifactVersions} />
+                </IfRhosr>
             </ListWithToolbar>
         </div>
     );

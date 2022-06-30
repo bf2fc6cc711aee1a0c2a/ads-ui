@@ -15,6 +15,7 @@ export type ObjectSelectProps = {
     onSelect: (value: any) => void;
     itemToString: (value: any) => string;
     noSelectionLabel?: string;
+    toggleId?: string;
     menuAppendTo?: HTMLElement | (() => HTMLElement) | 'parent' | 'inline';
     variant?: 'single' | 'checkbox' | 'typeahead' | 'typeaheadmulti';
 };
@@ -23,7 +24,7 @@ export type ObjectSelectProps = {
  * A generic control that makes it easier to create a <Select> from an array of objects.
  */
 export const ObjectSelect: FunctionComponent<ObjectSelectProps> = (
-    {value, items, onSelect, itemToString, noSelectionLabel, menuAppendTo, variant}: ObjectSelectProps) => {
+    {value, items, onSelect, itemToString, noSelectionLabel, toggleId, menuAppendTo, variant}: ObjectSelectProps) => {
 
     const [isToggled, setToggled] = useState<boolean>(false);
     const [selectObjects, setSelectObjects] = useState<ObjectSelectOptionObject[]>();
@@ -65,7 +66,13 @@ export const ObjectSelect: FunctionComponent<ObjectSelectProps> = (
     }, [value]);
 
     return (
-        <Select menuAppendTo={menuAppendTo} variant={variant || SelectVariant.single} onToggle={setToggled} onSelect={onSelectInternal} isOpen={isToggled} selections={selections}>
+        <Select menuAppendTo={menuAppendTo}
+                variant={variant || SelectVariant.single}
+                onToggle={setToggled}
+                toggleId={toggleId}
+                onSelect={onSelectInternal}
+                isOpen={isToggled}
+                selections={selections}>
             {
                 selectObjects?.map((soo, index) => (
                     <SelectOption isPlaceholder={soo.item === undefined} key={index} value={soo} />
