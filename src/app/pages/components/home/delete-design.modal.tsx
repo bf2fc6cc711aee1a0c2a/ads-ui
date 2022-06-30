@@ -63,7 +63,7 @@ export const DeleteDesignModal: FunctionComponent<DeleteDesignModalProps> = ({de
                     </Alert>
                 </FormGroup>
                 <FormGroup fieldId="delete-design-confirm">
-                    <Checkbox id="valid-checkbox" name="" label="I have downloaded the design or do not need to!"
+                    <Checkbox id="valid-checkbox" name="" label="I understand that the design will be permanently deleted."
                               isChecked={isValid} onChange={(checked) => setValid(checked)} />
                 </FormGroup>
             </Form>
