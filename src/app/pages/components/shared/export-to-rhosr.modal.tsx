@@ -88,12 +88,14 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
                     onExported(data);
                 }).catch(error => {
                     // TODO error handling
+                    console.warn("[ExportToRhosrModal] Failed to create a history event (not fatal).");
                 });
             }).catch(error => {
                 // TODO error handling
+                console.error("[ExportToRhosrModal] Error registering artifact in RHOSR: ", error);
             });
         }).catch(error => {
-            // TODO error handling
+            // TODO error handling - low priority as this error is extremely unlikely to happen
         });
     };
 
@@ -109,11 +111,29 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
             }
         }
         return registries.length > 0 ? registries[0] : undefined;
-    }
+    };
+
+    const setFormDefaults = (): void => {
+        if (design && design.origin && design.origin.type === "rhosr") {
+            const context: DesignContext = design.origin;
+            setGroup(context.rhosr?.groupId);
+            setArtifactId(context.rhosr?.artifactId);
+            setVersion(context.rhosr?.version);
+        } else {
+            setGroup(undefined);
+            setArtifactId(undefined);
+            setVersion(undefined);
+        }
+    };
 
     useEffect(() => {
         if (isOpen) {
             setLoadingRegistries(true);
+            setExporting(false);
+            setValid(false);
+            setRegistries([]);
+            setFormDefaults();
+
             // Get the list of registries.
             rhosr.getRegistries().then(registries => {
                 setRegistries(registries.sort((a, b) => {
@@ -133,16 +153,7 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
     }, [isOpen]);
 
     useEffect(() => {
-        if (design && design.origin && design.origin.type === "rhosr") {
-            const context: DesignContext = design.origin;
-            setGroup(context.rhosr?.groupId);
-            setArtifactId(context.rhosr?.artifactId);
-            setVersion(context.rhosr?.version);
-        } else {
-            setGroup(undefined);
-            setArtifactId(undefined);
-            setVersion(undefined);
-        }
+        setFormDefaults();
     }, [design]);
 
     // Set the validity whenever one of the relevant state variables changes.

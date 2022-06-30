@@ -55,10 +55,10 @@ export const CompareModal: FunctionComponent<CompareModalProps> = ({isOpen, onCl
             <div className="compare-view">
                 <ToggleGroup className="compare-toggle-group"
                              aria-label="Compare view toggle group">
-                    <ToggleGroupItem text="Inline diff" key={1} buttonId="second"
+                    <ToggleGroupItem text="Inline" key={1} buttonId="second"
                                      isSelected={isDiffInline}
                                      onChange={switchInlineCompare}/>
-                    <ToggleGroupItem text="Wrap Text" key={0} buttonId="first"
+                    <ToggleGroupItem text="Wrap text" key={0} buttonId="first"
                                      isSelected={isDiffWrapped}
                                      onChange={switchWordWrap}/>
                 </ToggleGroup>
