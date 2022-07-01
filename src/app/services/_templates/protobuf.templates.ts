@@ -1,4 +1,4 @@
-import {ContentTypes, Template} from "@app/models";
+import { ContentTypes, Template } from "@app/models";
 import PROTOBUF_BLANK from "./protobuf/protobuf-blank.json";
 
 export const PROTOBUF_TEMPLATES: Template[] = [
@@ -10,4 +10,4 @@ export const PROTOBUF_TEMPLATES: Template[] = [
             data: PROTOBUF_BLANK.template
         }
     }
-]
+];

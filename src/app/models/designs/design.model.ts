@@ -1,4 +1,4 @@
-import {DesignContext} from "@app/models/designs/design-context.model";
+import { DesignContext } from "@app/models/designs/design-context.model";
 
 export interface Design {
 

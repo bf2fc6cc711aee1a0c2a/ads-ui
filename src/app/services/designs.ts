@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
     CreateDesign,
     CreateDesignContent,
@@ -10,8 +11,8 @@ import {
     Paging
 } from "@app/models";
 import Dexie from "dexie";
-import {v4 as uuidv4} from "uuid";
-import {cloneObject, limit} from "@app/utils";
+import { v4 as uuidv4 } from "uuid";
+import { cloneObject, limit } from "@app/utils";
 
 
 const db = new Dexie("designsDB");
@@ -70,7 +71,7 @@ async function getDesigns(): Promise<Design[]> {
 async function searchDesigns(criteria: DesignsSearchCriteria, paging: Paging, sort: DesignsSort): Promise<DesignsSearchResults> {
     console.debug("[DesignsService] Searching for designs: ", criteria, paging);
     const accept = (design: Design): boolean => {
-        let matches: boolean = false;
+        let matches = false;
         if (!criteria.filterValue || criteria.filterValue.trim().length === 0) {
             matches = true;
         } else if (design.name.toLowerCase().indexOf(criteria.filterValue.toLowerCase()) >= 0) {
@@ -109,7 +110,7 @@ async function searchDesigns(criteria: DesignsSearchCriteria, paging: Paging, so
             page: paging.page,
             pageSize: paging.pageSize,
             count: totalCount
-        }
+        };
     });
 }
 
@@ -127,7 +128,8 @@ async function deleteDesign(id: string): Promise<void> {
         db.content.where("id").equals(id).delete(),
         // @ts-ignore
         db.events.where("id").equals(id).delete(),
-    ]).then(r => {});
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    ]).then(() => {});
 }
 
 async function renameDesign(id: string, newName: string, newSummary?: string): Promise<void> {
@@ -161,6 +163,7 @@ async function updateDesignContent(content: DesignContent): Promise<void> {
             modifiedOn: new Date()
         }),
         createEvent(newEvent)
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     ]).then(() => {});
 }
 

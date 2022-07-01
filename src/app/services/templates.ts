@@ -1,4 +1,4 @@
-import {Template} from "@app/models/templates/template.model";
+import { Template } from "@app/models/templates/template.model";
 import {
     ASYNCAPI_2_TEMPLATES,
     AVRO_TEMPLATES,
@@ -7,7 +7,7 @@ import {
     OPENAPI_3_TEMPLATES,
     PROTOBUF_TEMPLATES
 } from "@app/services/_templates";
-import {ArtifactTypes} from "@app/models";
+import { ArtifactTypes } from "@app/models";
 
 
 async function getTemplatesFor(type: string, version?: string): Promise<Template[]> {
