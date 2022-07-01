@@ -74,7 +74,9 @@ export const IfRhosr: FunctionComponent<IfRhosrProps> = ({registry, scope, onHas
                 ) : (
                     <Alert variant="warning" isInline={true} title="Permission denied (no access)">
                         <p>
-                            You do not have sufficient access privileges to Service Registry instance '{registry.name}'.
+                            You do not have sufficient access privileges to Service Registry instance
+                            <span style={{fontWeight: "bold"}}> {registry.name}</span>.
+
                             Please contact your organization admin or the owner of the Service Registry instance to be
                             granted appropriate access.
                         </p>
