@@ -77,8 +77,7 @@ export const IfRhosr: FunctionComponent<IfRhosrProps> = ({registry, scope, onHas
                             You do not have sufficient access privileges to Service Registry instance
                             <span style={{fontWeight: "bold"}}> {registry.name}</span>.
 
-                            Please contact your organization admin or the owner of the Service Registry instance to be
-                            granted appropriate access.
+                            Contact your organization admin or the owner of the Service Registry instance to request the appropriate access.
                         </p>
                     </Alert>
                 )
