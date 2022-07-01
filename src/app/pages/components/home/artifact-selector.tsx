@@ -147,7 +147,7 @@ export const ArtifactSelector: FunctionComponent<ArtifactSelectorProps> = ({regi
                 loadingComponent={loadingComponent}
                 isEmpty={!artifacts || artifacts.count === 0}
             >
-                <IfRhosr registry={registry as Registry} scope="read" noAccess={<div/>}>
+                <IfRhosr registry={registry as Registry} scope="read">
                     <ArtifactList artifacts={artifacts?.artifacts} fetchArtifactContent={fetchArtifactContent}
                         onArtifactSelected={onArtifactSelected}
                         fetchArtifactVersions={fetchArtifactVersions} />

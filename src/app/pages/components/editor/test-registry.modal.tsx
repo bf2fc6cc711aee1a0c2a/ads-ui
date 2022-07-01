@@ -139,7 +139,7 @@ export const TestRegistryModal: React.FunctionComponent<TestRegistryModalProps> 
 					>
 						<ObjectSelect toggleId="test-in-registry-instance" value={registry} items={registries} onSelect={setRegistry} itemToString={item => item.name} />
 					</FormGroup>
-					<IfRhosr registry={registry as Registry} scope="write" noAccess={<div/>}>
+					<IfRhosr registry={registry as Registry} scope="write">
 						<FormGroup
 							label="Group"
 							validated={formState.groupValue.validated}

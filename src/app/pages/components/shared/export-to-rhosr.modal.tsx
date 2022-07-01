@@ -205,7 +205,7 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
                                       menuAppendTo="parent"
                                       itemToString={item => item.name} />
                     </FormGroup>
-                    <IfRhosr registry={registry as Registry} scope="write" noAccess={<div/>}>
+                    <IfRhosr registry={registry as Registry} scope="write">
                         <FormGroup label="Group" isRequired={false} fieldId="export-group">
                             <TextInput
                                 isRequired

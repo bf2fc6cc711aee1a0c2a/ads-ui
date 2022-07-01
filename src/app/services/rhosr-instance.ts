@@ -7,7 +7,7 @@ import {
     CreateVersionData,
     GetArtifactsCriteria,
     Paging,
-    SearchedVersion,
+    SearchedVersion, UserInfo,
     VersionMetaData
 } from "@app/models";
 import { createEndpoint, createHref, createOptions, httpGet, httpPut, httpPostWithReturn } from "@app/utils/rest.utils";
@@ -212,6 +212,18 @@ async function testUpdateArtifactContent(auth: Auth, basePath: string, groupId: 
     return httpPut<any>(endpoint, content, createOptions(headers));
 }
 
+async function getCurrentUser(auth: Auth, basePath: string): Promise<UserInfo> {
+    const token: string | undefined = auth?.apicurio_registry ? await auth?.apicurio_registry.getToken() : "";
+
+    console.info("[RhosrInstanceService] Getting information for the current user.");
+    const endpoint: string = createEndpoint(basePath, "/users/me");
+    const headers: any = {
+        "Authorization": `Bearer ${token}`
+    };
+    const options: any = createOptions(headers);
+    return httpGet<UserInfo>(endpoint, options);
+}
+
 
 /**
  * The RHOSR Instance service interface.
@@ -224,6 +236,7 @@ export interface RhosrInstanceService {
     getArtifactContent(groupId: string | undefined, artifactId: string, version: string): Promise<string>;
     getArtifactVersions(groupId: string | undefined, artifactId: string): Promise<SearchedVersion[]>;
     testUpdateArtifactContent(groupId: string | undefined, artifactId: string, content: string): Promise<void>;
+    getCurrentUser(): Promise<UserInfo>;
 }
 
 /**
@@ -250,8 +263,8 @@ export const useRhosrInstanceServiceFactory: () => RhosrInstanceServiceFactory =
                 getArtifacts: (criteria, paging) => getArtifacts(auth, instanceUrl, criteria, paging),
                 getArtifactContent: (groupId, artifactId, version) => getArtifactContent(auth, instanceUrl, groupId, artifactId, version),
                 getArtifactVersions: (groupId, artifactId) => getArtifactVersions(auth, instanceUrl, groupId, artifactId),
-                testUpdateArtifactContent: (groupId, artifactId, content) => testUpdateArtifactContent(auth, instanceUrl, groupId, artifactId, content)
-
+                testUpdateArtifactContent: (groupId, artifactId, content) => testUpdateArtifactContent(auth, instanceUrl, groupId, artifactId, content),
+                getCurrentUser: () => getCurrentUser(auth, instanceUrl)
             };
         }
     };

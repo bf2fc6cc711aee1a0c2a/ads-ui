@@ -76,11 +76,11 @@ export const DesignList: FunctionComponent<DesignListProps> = (
 
     const actionsFor = (design: any): IAction[] => {
         return [
-            { title: "View details", onClick: () => onSelect(design) },
+            { title: "View design details", onClick: () => onSelect(design) },
             { isSeparator: true, },
-            { title: "Edit design", onClick: () => onEdit(design) },
-            { title: "Rename design", onClick: () => onRename(design) },
-            { title: "Export to Service Registry", onClick: () => onRegister(design) },
+            { title: "Edit design content", onClick: () => onEdit(design) },
+            { title: "Edit design metadata", onClick: () => onRename(design) },
+            { title: "Export design to Service Registry", onClick: () => onRegister(design) },
             { title: "Download design", onClick: () => onDownload(design) },
             { isSeparator: true, },
             { title: "Delete design", onClick: () => onDelete(design) }

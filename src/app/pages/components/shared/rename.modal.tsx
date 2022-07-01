@@ -50,7 +50,7 @@ export const RenameModal: FunctionComponent<RenameModalProps> = (
     return (
         <Modal
             variant={ModalVariant.medium}
-            title="Rename design"
+            title="Edit design metadata"
             isOpen={isOpen}
             onClose={onCancel}
             actions={[
