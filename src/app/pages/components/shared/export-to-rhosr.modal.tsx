@@ -43,6 +43,7 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
     const [artifactId, setArtifactId] = useState<string>();
     const [version, setVersion] = useState<string>();
     const [rhosrInstance, setRhosrInstance] = useState<RhosrInstanceService>();
+    const [hasRhosrAccess, setHasRhosrAccess] = useState<boolean>(false);
 
     const designs: DesignsService = useDesignsService();
     const rhosr: RhosrService = useRhosrService();
@@ -101,6 +102,7 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
     };
 
     const onRegistrySelect = (registry: Registry): void => {
+        setHasRhosrAccess(false); // the IfRhosr component will change this to "true" if the user has access
         setRegistry(registry);
     };
 
@@ -163,8 +165,11 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
         if (!registry) {
             valid = false;
         }
+        if (!hasRhosrAccess) {
+            valid = false;
+        }
         setValid(valid);
-    }, [registry, group, artifactId, version]);
+    }, [registry, group, artifactId, version, hasRhosrAccess]);
 
     // Whenever the registry changes, create a rhosr instance service for it.
     useEffect(() => {
@@ -205,7 +210,7 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
                                       menuAppendTo="parent"
                                       itemToString={item => item.name} />
                     </FormGroup>
-                    <IfRhosr registry={registry as Registry} scope="write">
+                    <IfRhosr registry={registry as Registry} scope="write" onHasAccess={setHasRhosrAccess}>
                         <FormGroup label="Group" isRequired={false} fieldId="export-group">
                             <TextInput
                                 isRequired

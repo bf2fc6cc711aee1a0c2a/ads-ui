@@ -30,14 +30,14 @@ export const IfRhosr: FunctionComponent<IfRhosrProps> = ({registry, scope, onHas
 
     const rhosrFactory: RhosrInstanceServiceFactory = useRhosrInstanceServiceFactory();
 
-    const userHasAccess = (): boolean => {
+    const userHasAccess = (info: UserInfo|undefined): boolean => {
         switch (scope) {
             case "read":
-                return (userInfo?.viewer||false) || (userInfo?.developer||false) || (userInfo?.admin||false);
+                return (info?.viewer||false) || (info?.developer||false) || (info?.admin||false);
             case "write":
-                return (userInfo?.developer||false) || (userInfo?.admin||false);
+                return (info?.developer||false) || (info?.admin||false);
             case "admin":
-                return (userInfo?.admin||false);
+                return (info?.admin||false);
         }
         return false;
     };
@@ -47,7 +47,7 @@ export const IfRhosr: FunctionComponent<IfRhosrProps> = ({registry, scope, onHas
         rhosrFactory.createFor(registry).getCurrentUser().then(userInfo => {
             setUserInfo(userInfo);
             if (onHasAccess) {
-                onHasAccess(userHasAccess());
+                onHasAccess(userHasAccess(userInfo));
             }
             setLoading(false);
         }).catch(error => {
@@ -69,10 +69,10 @@ export const IfRhosr: FunctionComponent<IfRhosrProps> = ({registry, scope, onHas
     return (
         <IsLoading condition={isLoading}>
             {
-                userHasAccess() ? (
+                userHasAccess(userInfo) ? (
                     <React.Fragment children={children}/>
                 ) : (
-                    <Alert variant="warning" isInline={true} title="Permission denied (no access)">
+                    <Alert variant="danger" isInline={true} title="Permission denied (no access)">
                         <p>
                             You do not have sufficient access privileges to Service Registry instance
                             <span style={{fontWeight: "bold"}}> {registry.name}</span>.
