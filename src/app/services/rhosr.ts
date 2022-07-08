@@ -1,6 +1,6 @@
-import {Configuration, Registry, RegistriesApi, RegistryList} from '@rhoas/registry-management-sdk';
-import {Auth, useAuth, Config, useConfig} from "@rhoas/app-services-ui-shared";
-import {LocalStorageService, useLocalStorageService} from "@app/services/local-storage";
+import { Configuration, Registry, RegistriesApi, RegistryList } from "@rhoas/registry-management-sdk";
+import { Auth, useAuth, Config, useConfig } from "@rhoas/app-services-ui-shared";
+import { LocalStorageService, useLocalStorageService } from "@app/services/local-storage";
 
 const RHOSR_MOCK_DATA: Registry[] = [
     {
@@ -79,7 +79,7 @@ async function getRegistries(auth: Auth, basePath: string): Promise<Registry[]> 
  */
 async function getRegistry(auth: Auth, local: LocalStorageService, id: string, basePath: string): Promise<Registry> {
     console.debug("[RhosrService] Getting a single registry from: ", basePath);
-    const cacheKey: string = `services.rhosr.getRegistry.${id}`;
+    const cacheKey = `services.rhosr.getRegistry.${id}`;
     const cachedRegistry: Registry | undefined = local.getConfigProperty(cacheKey, undefined) as Registry | undefined;
 
     if (cachedRegistry) {
@@ -140,7 +140,7 @@ function createMockService(mockData: Registry[]): RhosrService {
     };
 }
 
-let mockWarningSent: boolean = false;
+let mockWarningSent = false;
 const mockWarning = (message: string): void => {
     if (!mockWarningSent) {
         console.info("[RhosrService] ----------------------------------");

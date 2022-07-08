@@ -1,4 +1,4 @@
-import {ContentTypes, Template} from "@app/models";
+import { ContentTypes, Template } from "@app/models";
 import OPENAPI_3_BLANK from "./openapi/openapi-3-blank.json";
 import OPENAPI_3_PETSTORE from "./openapi/openapi-3-petstore.json";
 import OPENAPI_3_USPTO from "./openapi/openapi-3-uspto.json";
@@ -31,7 +31,7 @@ export const OPENAPI_3_TEMPLATES: Template[] = [
             data: OPENAPI_3_USPTO
         }
     }
-]
+];
 
 export const OPENAPI_2_TEMPLATES: Template[] = [
     {
@@ -50,4 +50,4 @@ export const OPENAPI_2_TEMPLATES: Template[] = [
             data: OPENAPI_2_PETSTORE
         }
     }
-]
+];

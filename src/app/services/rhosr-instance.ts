@@ -23,14 +23,14 @@ import { CreateOrUpdateArtifactData } from "@app/models/rhosr-instance/create-or
  */
 function determineContentType(type: string, content: string): string {
     switch (type) {
-        case "PROTOBUF":
-            return ContentTypes.APPLICATION_PROTOBUF;
-        case "WSDL":
-        case "XSD":
-        case "XML":
-            return ContentTypes.APPLICATION_XML;
-        case "GRAPHQL":
-            return ContentTypes.APPLICATION_GRAPHQL;
+    case "PROTOBUF":
+        return ContentTypes.APPLICATION_PROTOBUF;
+    case "WSDL":
+    case "XSD":
+    case "XML":
+        return ContentTypes.APPLICATION_XML;
+    case "GRAPHQL":
+        return ContentTypes.APPLICATION_GRAPHQL;
     }
     if (isJson(content)) {
         return ContentTypes.APPLICATION_JSON;
@@ -89,7 +89,7 @@ async function createOrUpdateArtifact(auth: Auth, basePath: string, data: Create
     }
     headers["Content-Type"] = data.contentType;
     return httpPostWithReturn<any, ArtifactMetaData>(endpoint, data.content, createOptions(headers));
-};
+}
 
 
 async function createArtifactVersion(auth: Auth, basePath: string, groupId: string | undefined, artifactId: string, data: CreateVersionData): Promise<VersionMetaData> {

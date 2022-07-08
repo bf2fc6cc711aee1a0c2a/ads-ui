@@ -1,12 +1,12 @@
 
 export class ContentTypes {
 
-    public static APPLICATION_JSON: string = "application/json";
-    public static APPLICATION_YAML: string = "application/x-yaml";
-    public static APPLICATION_XML: string = "application/xml";
-    public static APPLICATION_PROTOBUF: string = "application/x-protobuf";
-    public static APPLICATION_GRAPHQL: string = "application/graphql";
+    public static APPLICATION_JSON = "application/json";
+    public static APPLICATION_YAML = "application/x-yaml";
+    public static APPLICATION_XML = "application/xml";
+    public static APPLICATION_PROTOBUF = "application/x-protobuf";
+    public static APPLICATION_GRAPHQL = "application/graphql";
 
-    public static TEXT_XML: string = "text/xml";
-    public static APPLICATION_WSDL: string = "application/wsdl+xml";
+    public static TEXT_XML = "text/xml";
+    public static APPLICATION_WSDL = "application/wsdl+xml";
 }

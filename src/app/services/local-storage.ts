@@ -19,7 +19,7 @@ function getConfigProperty(propertyName: string, defaultValue: string | object |
 
 function clearConfigProperty(propertyName: string): void {
     console.info(`[LocalStorageService] Clearing config property ${propertyName}`);
-    localStorage.removeItem(propertyName)
+    localStorage.removeItem(propertyName);
 }
 
 /**

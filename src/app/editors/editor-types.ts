@@ -1,5 +1,5 @@
 import React from "react";
-import {DesignContent} from "@app/models";
+import { DesignContent } from "@app/models";
 
 export type EditorProps = {
     content: DesignContent;

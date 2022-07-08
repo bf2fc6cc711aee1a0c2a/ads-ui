@@ -1,6 +1,6 @@
-import {createOptions, httpGet} from "@app/utils";
+import { createOptions, httpGet } from "@app/utils";
 
-const githubRegex: RegExp = /^https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/blob\/([^\/]+)\/(.+)$/;
+const githubRegex = /^https:\/\/github\.com\/([^/]+)\/([^/]+)\/blob\/([^/]+)\/(.+)$/;
 
 
 async function fetchUrlContent(url: string): Promise<string> {
@@ -16,7 +16,7 @@ async function fetchUrlContent(url: string): Promise<string> {
 
     console.info("[UrlService] Fetching content from a URL: ", url);
 
-    let endpoint: string = url;
+    const endpoint: string = url;
     const options: any = createOptions({
         "Accept": "*"
     });

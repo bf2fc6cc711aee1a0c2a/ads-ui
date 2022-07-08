@@ -1,6 +1,6 @@
 import YAML from "yaml";
-import {IParserResult, parse} from "protobufjs";
-import {ArtifactTypes, ContentTypes, Design, DesignContent} from "@app/models";
+import { IParserResult, parse } from "protobufjs";
+import { ArtifactTypes, ContentTypes, Design, DesignContent } from "@app/models";
 
 /**
  * Returns true if the given content is JSON formatted.
@@ -28,17 +28,22 @@ export function toJsonString(content: any): string {
  */
 export function isYaml(content: string): boolean {
     try {
-        const result: any = YAML.parse(content);
+        const result = YAML.parse(content);
         if (typeof result === "object") {
             return true;
         }
     } catch (e) {
+        // do nothing
     }
     return false;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function parseYaml(content: string): any {
     return YAML.parse(content);
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function toYamlString(content: any): string {
     return YAML.stringify(content, null, 4);
 }
@@ -178,7 +183,7 @@ export function formatContent(value: string, contentType: string): string {
  * @param value
  */
 export function convertToValidFilename(value: string): string {
-    return (value.replace(/[\/|\\:*?"<>]/g, ""));
+    return (value.replace(/[/|\\:*?"<>]/g, ""));
 }
 
 /**
