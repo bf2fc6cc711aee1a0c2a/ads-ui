@@ -141,7 +141,14 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorP
         }).then(() => {
             if (design) {
                 design.modifiedOn = new Date();
-                setDesign(design);
+                setDesign({
+                    ...design,
+                    modifiedOn: new Date(),
+                });
+                setDesignContent({
+                    ...(designContent as DesignContent),
+                    data: currentContent
+                });
                 setDirty(false);
             }
             alerts.designSaved(design as Design);

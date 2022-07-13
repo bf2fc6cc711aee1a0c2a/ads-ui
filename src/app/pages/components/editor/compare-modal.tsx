@@ -1,10 +1,11 @@
-import React, {FunctionComponent, useState} from "react";
+import React, {FunctionComponent, useEffect, useState} from "react";
 import "./compare-modal.css";
 import {Modal, ToggleGroup, ToggleGroupItem} from "@patternfly/react-core";
 import {editor} from "monaco-editor";
 import IDiffEditorConstructionOptions = editor.IDiffEditorConstructionOptions;
 import {DiffEditor} from "@monaco-editor/react";
 import {ArrowsAltHIcon} from "@patternfly/react-icons";
+import {contentToString} from "@app/utils";
 
 /**
  * Properties
@@ -29,6 +30,9 @@ export const CompareModal: FunctionComponent<CompareModalProps> = ({isOpen, onCl
         modifiedAriaLabel: "Modified"
     } as IDiffEditorConstructionOptions)
 
+    const [beforeAsString, setBeforeAsString] = useState<string>();
+    const [afterAsString, setAfterAsString] = useState<string>();
+
     const [isDiffInline, setIsDiffInline] = useState(false);
     const [isDiffWrapped, setIsDiffWrapped] = useState(false);
 
@@ -47,6 +51,14 @@ export const CompareModal: FunctionComponent<CompareModalProps> = ({isOpen, onCl
         });
         setIsDiffWrapped(diffEditorContentOptions.wordWrap != "on");
     }
+
+    useEffect(() => {
+        setBeforeAsString(contentToString(before));
+    }, [before])
+
+    useEffect(() => {
+        setAfterAsString(contentToString(after));
+    }, [after])
 
     return (
         <Modal id="compare-modal"
@@ -73,8 +85,8 @@ export const CompareModal: FunctionComponent<CompareModalProps> = ({isOpen, onCl
                 <div className="compare-editor">
                     <DiffEditor
                         className="text-editor"
-                        original={before}
-                        modified={after}
+                        original={beforeAsString}
+                        modified={afterAsString}
                         options={diffEditorContentOptions}
                     />
                 </div>

@@ -4,20 +4,15 @@ import Editor from "@monaco-editor/react";
 import {ContentTypes, DesignContent} from "@app/models";
 import {editor} from "monaco-editor";
 import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
+import {contentToString} from "@app/utils";
 
 
-export const contentToString = (content: DesignContent): string => {
-    let value: string = "";
-    if (typeof content.data === "string") {
-        value = content.data as string;
-    } else {
-        value = JSON.stringify(content.data as string, null, 4);
-    }
-    return value;
+export const designContentToString = (content: DesignContent): string => {
+    return contentToString(content.data);
 }
 
 
-export const contentToLanguage = (content: DesignContent): string => {
+export const designContentToLanguage = (content: DesignContent): string => {
     if (content.contentType === ContentTypes.APPLICATION_YAML) {
         return "yaml";
     } else if (content.contentType === ContentTypes.APPLICATION_XML) {
@@ -36,8 +31,8 @@ export const contentToLanguage = (content: DesignContent): string => {
  * we might want to edit.
  */
 export const TextEditor: DesignEditor = ({content, onChange}: EditorProps) => {
-    const defaultValue: string = contentToString(content);
-    const defaultLanguage: string = contentToLanguage(content);
+    const defaultValue: string = designContentToString(content);
+    const defaultLanguage: string = designContentToLanguage(content);
 
     const [value, setValue] = useState<string>(defaultValue);
     const [language, setLanguage] = useState<string>(defaultLanguage);
@@ -45,8 +40,8 @@ export const TextEditor: DesignEditor = ({content, onChange}: EditorProps) => {
     const editorRef: MutableRefObject<IStandaloneCodeEditor|undefined> = useRef<IStandaloneCodeEditor>();
 
     useEffect(() => {
-        const contentString: string = contentToString(content);
-        const lang: string = contentToLanguage(content);
+        const contentString: string = designContentToString(content);
+        const lang: string = designContentToLanguage(content);
 
         setValue(contentString);
         setLanguage(lang);

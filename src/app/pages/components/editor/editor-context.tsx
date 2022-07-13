@@ -51,7 +51,7 @@ type EditorContextMenuItem = {
 
 const menuActions: EditorContextMenuItem[] = [
     {
-        label: "Rename design",
+        label: "Edit metadata",
         key: "action-rename",
     },
     {

@@ -202,8 +202,8 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
             <IsLoading condition={isLoadingRegistries}>
                 <Form>
                     <FormGroup label="Registry Instance" isRequired={true} fieldId="export-registry-instance">
-                        <ObjectSelect value={registry}
-                                      items={registries}
+                        <ObjectSelect items={registries}
+                                      value={registry}
                                       onSelect={onRegistrySelect}
                                       variant={SelectVariant.single}
                                       toggleId="export-registry"

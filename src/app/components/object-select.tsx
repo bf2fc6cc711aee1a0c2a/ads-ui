@@ -35,6 +35,11 @@ export const ObjectSelect: FunctionComponent<ObjectSelectProps> = (
         onSelect((value as ObjectSelectOptionObject).item);
     };
 
+    const setSelectedFromValue = (): void => {
+        const filtered: ObjectSelectOptionObject[] | undefined = selectObjects?.filter(soo => soo.item === value);
+        setSelections(filtered);
+    };
+
     useEffect(() => {
         const theItems: any[] = items || [];
         const selectObjects: ObjectSelectOptionObject[] = theItems.map((item, index) => {
@@ -61,9 +66,10 @@ export const ObjectSelect: FunctionComponent<ObjectSelectProps> = (
     }, [items]);
 
     useEffect(() => {
-        const filtered: ObjectSelectOptionObject[]|undefined = selectObjects?.filter(soo => soo.item === value);
-        setSelections(filtered);
-    }, [value]);
+        if (selectObjects) {
+            setSelectedFromValue();
+        }
+    }, [value, selectObjects]);
 
     return (
         <Select menuAppendTo={menuAppendTo}

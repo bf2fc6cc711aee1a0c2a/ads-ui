@@ -1,7 +1,7 @@
 import React, {MutableRefObject, useEffect, useRef, useState} from "react";
 import {Editor as DesignEditor, EditorProps} from "@app/editors/editor-types";
 import Editor from "@monaco-editor/react";
-import {contentToString} from "@app/editors/editor-text";
+import {designContentToString} from "@app/editors/editor-text";
 import {editor} from "monaco-editor";
 import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
 
@@ -9,13 +9,13 @@ import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
  * Protobuf text editor with support for syntax hint and highlight.
  */
 export const ProtoEditor: DesignEditor = ({content, onChange}: EditorProps) => {
-    const defaultValue: string = contentToString(content);
+    const defaultValue: string = designContentToString(content);
     const [value, setValue] = useState<string>(defaultValue);
 
     const editorRef: MutableRefObject<IStandaloneCodeEditor|undefined> = useRef<IStandaloneCodeEditor>();
 
     useEffect(() => {
-        const contentString: string = contentToString(content);
+        const contentString: string = designContentToString(content);
         setValue(contentString);
 
         if (editorRef.current) {
