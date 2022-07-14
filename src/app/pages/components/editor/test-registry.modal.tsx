@@ -1,11 +1,12 @@
-import {useRhosrService} from "@app/services";
+import {DesignsService, useDesignsService, useRhosrService} from "@app/services";
 import {Button, Form, FormGroup, Modal, ModalVariant, TextInput} from "@patternfly/react-core";
 import {Registry} from "@rhoas/registry-management-sdk";
 import React, {useEffect, useState} from "react";
-import {Design} from "@app/models";
+import {Design, DesignEvent} from "@app/models";
 import {IsLoading, ObjectSelect} from "@app/components";
 import {cloneObject} from "@app/utils";
 import {IfRhosr} from "@app/pages/components";
+import {DesignContext} from "@app/models/designs/design-context.model";
 
 
 export interface TestRegistryModalProps {
@@ -32,58 +33,30 @@ const initialFormState = {
 }
 
 export const TestRegistryModal: React.FunctionComponent<TestRegistryModalProps> = ({design, isOpen, onCancel, onSubmit}) => {
+	const [isValid, setValid] = useState(false);
 	const [isLoadingRegistries, setLoadingRegistries] = useState(true);
 	const [registries, setRegistries] = useState<Registry[]>([]);
 	const [registry, setRegistry] = useState<Registry>();
 	const [formState, setFormState] = useState(initialFormState);
-	const [isValid, setValid] = useState(false);
 
+	const designs: DesignsService = useDesignsService();
 	const rhosr = useRhosrService();
 
-	const defaultRegistry = (registries: Registry[]): Registry | undefined => {
-		if (design?.origin?.type === "rhosr" && design.origin.rhosr?.instanceId) {
-			const filtered: Registry[] = registries.filter(registry => registry.id === design.origin.rhosr?.instanceId);
-			if (filtered && filtered.length > 0) {
-				return filtered[0];
+	const setGroupAndId = (group: string, id: string) => {
+		setFormState({
+			...formState,
+			groupValue: {
+				...formState.groupValue,
+				validated: "default",
+				value: group
+			},
+			artifactIdValue: {
+				...formState.artifactIdValue,
+				validated: "default",
+				value: id
 			}
-		}
-		return registries.length > 0 ? registries[0] : undefined;
-	}
-
-
-	useEffect(() => {
-		if (isOpen) {
-			setLoadingRegistries(true);
-			// Get the list of registries.
-			rhosr.getRegistries().then(registries => {
-				setRegistries(registries.sort((a, b) => {
-					const name1: string = a.name as string;
-					const name2: string = b.name as string;
-					return name1.localeCompare(name2);
-				}));
-				setRegistry(defaultRegistry(registries));
-				setLoadingRegistries(false);
-			}).catch(error => {
-				// TODO handle this error case
-				console.error("[HomePage] Error getting registry list: ", error);
-			});
-		}
-	}, [isOpen]);
-
-	useEffect(() => {
-		if (isOpen && design && design.origin && design.origin.type === "rhosr") {
-			const state: any = cloneObject(initialFormState);
-			state.groupValue.value = design.origin.rhosr?.groupId as string
-			state.artifactIdValue.value = design.origin.rhosr?.artifactId as string;
-			setFormState(state);
-		} else {
-			setFormState(initialFormState);
-		}
-	}, [isOpen]);
-
-	useEffect(() => {
-		setValid(formState.artifactIdValue.value !== undefined && formState.artifactIdValue.value.length > 0);
-	}, [formState]);
+		});
+	};
 
 	const setGroupValue = (val: string) => {
 		setFormState({
@@ -94,7 +67,7 @@ export const TestRegistryModal: React.FunctionComponent<TestRegistryModalProps> 
 				value: val
 			}
 		});
-	}
+	};
 
 	const setArtifactIdValue = (val: string) => {
 		const hasErrors = !val;
@@ -109,7 +82,82 @@ export const TestRegistryModal: React.FunctionComponent<TestRegistryModalProps> 
 				value: val
 			}
 		});
-	}
+	};
+
+	const detectRhosrContext = (events: DesignEvent[]): DesignContext|undefined => {
+		if (events) {
+			const filteredEvents: DesignEvent[] = events.filter(event => event.type === "register");
+			if (filteredEvents && filteredEvents.length > 0) {
+				const regEvent: DesignEvent = filteredEvents[0];
+				return {
+					type: "rhosr",
+					rhosr: regEvent.data
+				};
+			}
+		}
+		if (design?.origin?.type === "rhosr") {
+			return design.origin;
+		}
+
+		return undefined;
+	};
+
+	const defaultRegistry = (registries: Registry[], context: DesignContext|undefined): Registry | undefined => {
+		if (context) {
+			const filteredRegistries: Registry[] = registries.filter(registry => registry.id === design.origin.rhosr?.instanceId);
+			if (filteredRegistries?.length > 0) {
+				return filteredRegistries[0];
+			}
+		}
+
+		if (registries?.length > 0) {
+			return registries[0];
+		} else {
+			return undefined;
+		}
+	};
+
+	const setFormValues = (context: DesignContext | undefined): void => {
+		setGroupAndId(context?.rhosr?.groupId || "", context?.rhosr?.artifactId || "");
+	};
+
+	useEffect(() => {
+		if (isOpen) {
+			setFormState(initialFormState);
+			setLoadingRegistries(true);
+
+			// Load all events for this design.
+			designs.getEvents(design.id).then(events => {
+				// Get the list of registries.
+				rhosr.getRegistries().then(registries => {
+					setRegistries(registries.sort((a, b) => {
+						const name1: string = a.name as string;
+						const name2: string = b.name as string;
+						return name1.localeCompare(name2);
+					}));
+					const context: DesignContext | undefined = detectRhosrContext(events);
+					setFormValues(context);
+					setRegistry(defaultRegistry(registries, context));
+					setLoadingRegistries(false);
+				}).catch(error => {
+					// TODO handle this error case
+					console.error("[ExportToRhosrModal] Error getting registry list: ", error);
+					setRegistries([]);
+					setFormValues(undefined);
+					setLoadingRegistries(false);
+				});
+			}).catch(error => {
+				console.error("[ExportToRhosrModal] Error getting events for design: ", error);
+				setRegistries([]);
+				setFormValues(undefined);
+				setLoadingRegistries(false);
+			});
+		}
+	}, [isOpen]);
+
+	useEffect(() => {
+		setValid(formState.artifactIdValue.value !== undefined && formState.artifactIdValue.value.length > 0);
+	}, [formState]);
 
 	return (
 		<Modal

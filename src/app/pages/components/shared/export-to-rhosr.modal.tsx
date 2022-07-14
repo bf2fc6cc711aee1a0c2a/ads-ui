@@ -88,16 +88,16 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
                 designs.createEvent(event).then(() => {
                     setExporting(false);
                     onExported(data);
-                }).catch(error => {
-                    // TODO error handling
+                }).catch(() => {
                     console.warn("[ExportToRhosrModal] Failed to create a history event (not fatal).");
                 });
             }).catch(error => {
-                // TODO error handling
+                // TODO ERROR HANDLING
                 console.error("[ExportToRhosrModal] Error registering artifact in RHOSR: ", error);
             });
         }).catch(error => {
-            // TODO error handling - low priority as this error is extremely unlikely to happen
+            // TODO error handling - low priority as this error is extremely unlikely to happen...but what to do if it does??
+            console.error("[ExportToRhosrModal] Error fetching design content!", error);
         });
     };
 
@@ -106,27 +106,49 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
         setRegistry(registry);
     };
 
-    const defaultRegistry = (registries: Registry[]): Registry | undefined => {
-        if (design?.origin?.type === "rhosr" && design.origin.rhosr?.instanceId) {
-            const filtered: Registry[] = registries.filter(registry => registry.id === design.origin.rhosr?.instanceId);
-            if (filtered && filtered.length > 0) {
-                return filtered[0];
+    const detectRhosrContext = (events: DesignEvent[]): DesignContext|undefined => {
+        if (events) {
+            const filteredEvents: DesignEvent[] = events.filter(event => event.type === "register");
+            if (filteredEvents && filteredEvents.length > 0) {
+                const regEvent: DesignEvent = filteredEvents[0];
+                return {
+                    type: "rhosr",
+                    rhosr: regEvent.data
+                };
             }
         }
-        return registries.length > 0 ? registries[0] : undefined;
+        if (design?.origin?.type === "rhosr") {
+            return design.origin;
+        }
+
+        return undefined;
+    };
+
+    const defaultRegistry = (registries: Registry[], context: DesignContext|undefined): Registry | undefined => {
+        if (context) {
+            const filteredRegistries: Registry[] = registries.filter(registry => registry.id === design.origin.rhosr?.instanceId);
+            if (filteredRegistries?.length > 0) {
+                return filteredRegistries[0];
+            }
+        }
+
+        if (registries?.length > 0) {
+            return registries[0];
+        } else {
+            return undefined;
+        }
     };
 
     const setFormDefaults = (): void => {
-        if (design && design.origin && design.origin.type === "rhosr") {
-            const context: DesignContext = design.origin;
-            setGroup(context.rhosr?.groupId);
-            setArtifactId(context.rhosr?.artifactId);
-            setVersion(context.rhosr?.version);
-        } else {
-            setGroup(undefined);
-            setArtifactId(undefined);
-            setVersion(undefined);
-        }
+        setGroup(undefined);
+        setArtifactId(undefined);
+        setVersion(undefined);
+    };
+
+    const setFormValues = (context: DesignContext | undefined): void => {
+        setGroup(context?.rhosr?.groupId);
+        setArtifactId(context?.rhosr?.artifactId);
+        setVersion(context?.rhosr?.version);
     };
 
     useEffect(() => {
@@ -137,19 +159,30 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
             setRegistries([]);
             setFormDefaults();
 
-            // Get the list of registries.
-            rhosr.getRegistries().then(registries => {
-                setRegistries(registries.sort((a, b) => {
-                    const name1: string = a.name as string;
-                    const name2: string = b.name as string;
-                    return name1.localeCompare(name2);
-                }));
-                setRegistry(defaultRegistry(registries));
-                setLoadingRegistries(false);
+            // Load all events for this design.
+            designs.getEvents(design.id).then(events => {
+                // Get the list of registries.
+                rhosr.getRegistries().then(registries => {
+                    setRegistries(registries.sort((a, b) => {
+                        const name1: string = a.name as string;
+                        const name2: string = b.name as string;
+                        return name1.localeCompare(name2);
+                    }));
+                    const context: DesignContext | undefined = detectRhosrContext(events);
+                    setFormValues(context);
+                    setRegistry(defaultRegistry(registries, context));
+                    setLoadingRegistries(false);
+                }).catch(error => {
+                    // TODO handle this error case
+                    console.error("[ExportToRhosrModal] Error getting registry list: ", error);
+                    setRegistries([]);
+                    setFormValues(undefined);
+                    setLoadingRegistries(false);
+                });
             }).catch(error => {
-                // TODO handle this error case
-                console.error("[ExportToRhosrModal] Error getting registry list: ", error);
+                console.error("[ExportToRhosrModal] Error getting events for design: ", error);
                 setRegistries([]);
+                setFormValues(undefined);
                 setLoadingRegistries(false);
             });
         }

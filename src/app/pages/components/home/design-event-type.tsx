@@ -20,7 +20,23 @@ export const DesignEventType: FunctionComponent<DesignEventTypeProps> = ({event,
             case "import":
                 return importTypeLabel();
             case "register":
-                return variant === "short" ? <span>Service Registry</span> : <span>Exported to Service Registry</span>;
+                const context: DesignContext = {
+                    type: "rhosr",
+                    rhosr: event.data
+                };
+                return variant === "short" ? <span>Service Registry</span> : (
+                    <React.Fragment>
+                        <span>Exported to Service Registry </span>
+                        <RegistryNavLink context={context}>
+                            <span>(</span>
+                            <span>{context.rhosr?.groupId || "default"}</span>
+                            <span> / </span>
+                            <span>{context.rhosr?.artifactId}</span>
+                            <span> - </span>
+                            <span>{context.rhosr?.version || "latest"})</span>
+                        </RegistryNavLink>
+                    </React.Fragment>
+                );
             case "update":
                 return variant === "short" ? <span>Edited</span> : <span>Modified using the editor</span>;
         }
@@ -36,9 +52,12 @@ export const DesignEventType: FunctionComponent<DesignEventTypeProps> = ({event,
                     <React.Fragment>
                         <span>Imported from Service Registry </span>
                         <RegistryNavLink context={context}>
-                            <span>(Group: {context.rhosr?.groupId || "default"} </span>
-                            <span>ID: {context.rhosr?.artifactId} </span>
-                            <span>Version: {context.rhosr?.version || "latest"})</span>
+                            <span>(</span>
+                            <span>{context.rhosr?.groupId || "default"}</span>
+                            <span> / </span>
+                            <span>{context.rhosr?.artifactId}</span>
+                            <span> - </span>
+                            <span>{context.rhosr?.version || "latest"})</span>
                         </RegistryNavLink>
                     </React.Fragment>
                 );
