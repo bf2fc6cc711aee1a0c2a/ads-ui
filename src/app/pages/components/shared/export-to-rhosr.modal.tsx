@@ -15,7 +15,7 @@ import {
 import {If, IsLoading, ObjectSelect} from "@app/components";
 import {DesignContext} from "@app/models/designs/design-context.model";
 import {CreateOrUpdateArtifactData} from "@app/models/rhosr-instance/create-or-update-artifact-data.model";
-import {IfRhosr} from "@app/pages/components";
+import {IfRhosr, RegistrationError} from "@app/pages/components";
 
 export type ExportToRhosrData = {
     registry: Registry;
@@ -44,6 +44,7 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
     const [version, setVersion] = useState<string>();
     const [rhosrInstance, setRhosrInstance] = useState<RhosrInstanceService>();
     const [hasRhosrAccess, setHasRhosrAccess] = useState<boolean>(false);
+    const [registrationError, setRegistrationError] = useState<any>();
 
     const designs: DesignsService = useDesignsService();
     const rhosr: RhosrService = useRhosrService();
@@ -90,10 +91,13 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
                     onExported(data);
                 }).catch(() => {
                     console.warn("[ExportToRhosrModal] Failed to create a history event (not fatal).");
+                    setExporting(false);
+                    onExported(data);
                 });
             }).catch(error => {
-                // TODO ERROR HANDLING
                 console.error("[ExportToRhosrModal] Error registering artifact in RHOSR: ", error);
+                setRegistrationError(error);
+                setExporting(false);
             });
         }).catch(error => {
             // TODO error handling - low priority as this error is extremely unlikely to happen...but what to do if it does??
@@ -201,8 +205,11 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
         if (!hasRhosrAccess) {
             valid = false;
         }
+        if (registrationError !== undefined) {
+            valid = false;
+        }
         setValid(valid);
-    }, [registry, group, artifactId, version, hasRhosrAccess]);
+    }, [registry, group, artifactId, version, hasRhosrAccess, registrationError]);
 
     // Whenever the registry changes, create a rhosr instance service for it.
     useEffect(() => {
@@ -244,42 +251,49 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
                                       itemToString={item => item.name} />
                     </FormGroup>
                     <IfRhosr registry={registry as Registry} scope="write" onHasAccess={setHasRhosrAccess}>
-                        <FormGroup label="Group" isRequired={false} fieldId="export-group">
-                            <TextInput
-                                isRequired
-                                type="text"
-                                id="export-group"
-                                name="export-group"
-                                placeholder="Enter group (optional) or leave blank for default group"
-                                aria-describedby="export-group-helper"
-                                value={group}
-                                onChange={(value) => setGroup(value)}
-                            />
-                        </FormGroup>
-                        <FormGroup label="ID" isRequired={false} fieldId="export-artifact-id">
-                            <TextInput
-                                isRequired
-                                type="text"
-                                id="export-artifact-id"
-                                name="export-artifact-id"
-                                placeholder="Enter ID (optional) or leave blank for generated ID"
-                                aria-describedby="export-artifact-id-helper"
-                                value={artifactId}
-                                onChange={(value) => setArtifactId(value)}
-                            />
-                        </FormGroup>
-                        <FormGroup label="Version" isRequired={false} fieldId="export-version">
-                            <TextInput
-                                isRequired
-                                type="text"
-                                id="export-version"
-                                name="export-version"
-                                placeholder="Enter version (optional) or leave blank for generated version number"
-                                aria-describedby="export-version-helper"
-                                value={version}
-                                onChange={(value) => setVersion(value)}
-                            />
-                        </FormGroup>
+                        <If condition={registrationError !== undefined}>
+                            <RegistrationError design={design} error={registrationError}
+                                               onCancel={onCancel}
+                                               onTryAgain={() => setRegistrationError(undefined)} />
+                        </If>
+                        <If condition={registrationError === undefined}>
+                            <FormGroup label="Group" isRequired={false} fieldId="export-group">
+                                <TextInput
+                                    isRequired
+                                    type="text"
+                                    id="export-group"
+                                    name="export-group"
+                                    placeholder="Enter group (optional) or leave blank for default group"
+                                    aria-describedby="export-group-helper"
+                                    value={group}
+                                    onChange={(value) => setGroup(value)}
+                                />
+                            </FormGroup>
+                            <FormGroup label="ID" isRequired={false} fieldId="export-artifact-id">
+                                <TextInput
+                                    isRequired
+                                    type="text"
+                                    id="export-artifact-id"
+                                    name="export-artifact-id"
+                                    placeholder="Enter ID (optional) or leave blank for generated ID"
+                                    aria-describedby="export-artifact-id-helper"
+                                    value={artifactId}
+                                    onChange={(value) => setArtifactId(value)}
+                                />
+                            </FormGroup>
+                            <FormGroup label="Version" isRequired={false} fieldId="export-version">
+                                <TextInput
+                                    isRequired
+                                    type="text"
+                                    id="export-version"
+                                    name="export-version"
+                                    placeholder="Enter version (optional) or leave blank for generated version number"
+                                    aria-describedby="export-version-helper"
+                                    value={version}
+                                    onChange={(value) => setVersion(value)}
+                                />
+                            </FormGroup>
+                        </If>
                     </IfRhosr>
                 </Form>
             </IsLoading>
