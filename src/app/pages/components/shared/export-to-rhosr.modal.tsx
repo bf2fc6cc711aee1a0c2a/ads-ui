@@ -12,7 +12,7 @@ import {
     useRhosrInstanceServiceFactory,
     useRhosrService
 } from "@app/services";
-import {If, IsLoading, ObjectSelect} from "@app/components";
+import {If, IfNotEmpty, IsLoading, ObjectSelect, RhosrEmptyState} from "@app/components";
 import {DesignContext} from "@app/models/designs/design-context.model";
 import {CreateOrUpdateArtifactData} from "@app/models/rhosr-instance/create-or-update-artifact-data.model";
 import {IfRhosr, RegistrationError} from "@app/pages/components";
@@ -219,8 +219,8 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
         }
     }, [registry]);
 
-    let actions: any[] = registries.length === 0 ? [] : [
-        <Button key="export" variant="primary" isDisabled={!isValid || isExporting} onClick={doExport}>
+    const actions: any[] =  [
+        <Button key="export" variant="primary" isDisabled={!isValid || isExporting || registries?.length === 0} onClick={doExport}>
             <If condition={isExporting}>
                 <Spinner size="md" className="export-spinner" />
             </If>
@@ -240,62 +240,64 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
             actions={actions}
         >
             <IsLoading condition={isLoadingRegistries}>
-                <Form>
-                    <FormGroup label="Registry Instance" isRequired={true} fieldId="export-registry-instance">
-                        <ObjectSelect items={registries}
-                                      value={registry}
-                                      onSelect={onRegistrySelect}
-                                      variant={SelectVariant.single}
-                                      toggleId="export-registry"
-                                      menuAppendTo="parent"
-                                      itemToString={item => item.name} />
-                    </FormGroup>
-                    <IfRhosr registry={registry as Registry} scope="write" onHasAccess={setHasRhosrAccess}>
-                        <If condition={registrationError !== undefined}>
-                            <RegistrationError design={design} error={registrationError}
-                                               onCancel={onCancel}
-                                               onTryAgain={() => setRegistrationError(undefined)} />
-                        </If>
-                        <If condition={registrationError === undefined}>
-                            <FormGroup label="Group" isRequired={false} fieldId="export-group">
-                                <TextInput
-                                    isRequired
-                                    type="text"
-                                    id="export-group"
-                                    name="export-group"
-                                    placeholder="Enter group (optional) or leave blank for default group"
-                                    aria-describedby="export-group-helper"
-                                    value={group}
-                                    onChange={(value) => setGroup(value)}
-                                />
-                            </FormGroup>
-                            <FormGroup label="ID" isRequired={false} fieldId="export-artifact-id">
-                                <TextInput
-                                    isRequired
-                                    type="text"
-                                    id="export-artifact-id"
-                                    name="export-artifact-id"
-                                    placeholder="Enter ID (optional) or leave blank for generated ID"
-                                    aria-describedby="export-artifact-id-helper"
-                                    value={artifactId}
-                                    onChange={(value) => setArtifactId(value)}
-                                />
-                            </FormGroup>
-                            <FormGroup label="Version" isRequired={false} fieldId="export-version">
-                                <TextInput
-                                    isRequired
-                                    type="text"
-                                    id="export-version"
-                                    name="export-version"
-                                    placeholder="Enter version (optional) or leave blank for generated version number"
-                                    aria-describedby="export-version-helper"
-                                    value={version}
-                                    onChange={(value) => setVersion(value)}
-                                />
-                            </FormGroup>
-                        </If>
-                    </IfRhosr>
-                </Form>
+                <IfNotEmpty collection={registries} emptyState={<RhosrEmptyState />}>
+                    <Form>
+                        <FormGroup label="Registry Instance" isRequired={true} fieldId="export-registry-instance">
+                            <ObjectSelect items={registries}
+                                          value={registry}
+                                          onSelect={onRegistrySelect}
+                                          variant={SelectVariant.single}
+                                          toggleId="export-registry"
+                                          menuAppendTo="parent"
+                                          itemToString={item => item.name} />
+                        </FormGroup>
+                        <IfRhosr registry={registry} scope="write" onHasAccess={setHasRhosrAccess}>
+                            <If condition={registrationError !== undefined}>
+                                <RegistrationError design={design} error={registrationError}
+                                                   onCancel={onCancel}
+                                                   onTryAgain={() => setRegistrationError(undefined)} />
+                            </If>
+                            <If condition={registrationError === undefined}>
+                                <FormGroup label="Group" isRequired={false} fieldId="export-group">
+                                    <TextInput
+                                        isRequired
+                                        type="text"
+                                        id="export-group"
+                                        name="export-group"
+                                        placeholder="Enter group (optional) or leave blank for default group"
+                                        aria-describedby="export-group-helper"
+                                        value={group}
+                                        onChange={(value) => setGroup(value)}
+                                    />
+                                </FormGroup>
+                                <FormGroup label="ID" isRequired={false} fieldId="export-artifact-id">
+                                    <TextInput
+                                        isRequired
+                                        type="text"
+                                        id="export-artifact-id"
+                                        name="export-artifact-id"
+                                        placeholder="Enter ID (optional) or leave blank for generated ID"
+                                        aria-describedby="export-artifact-id-helper"
+                                        value={artifactId}
+                                        onChange={(value) => setArtifactId(value)}
+                                    />
+                                </FormGroup>
+                                <FormGroup label="Version" isRequired={false} fieldId="export-version">
+                                    <TextInput
+                                        isRequired
+                                        type="text"
+                                        id="export-version"
+                                        name="export-version"
+                                        placeholder="Enter version (optional) or leave blank for generated version number"
+                                        aria-describedby="export-version-helper"
+                                        value={version}
+                                        onChange={(value) => setVersion(value)}
+                                    />
+                                </FormGroup>
+                            </If>
+                        </IfRhosr>
+                    </Form>
+                </IfNotEmpty>
             </IsLoading>
         </Modal>
     )

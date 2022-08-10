@@ -213,6 +213,7 @@ async function testUpdateArtifactContent(auth: Auth, basePath: string, groupId: 
 }
 
 async function getCurrentUser(auth: Auth, basePath: string): Promise<UserInfo> {
+    // TODO cache this information for some period of time... perhaps 5 minutes or so?
     const token: string | undefined = auth?.apicurio_registry ? await auth?.apicurio_registry.getToken() : "";
 
     console.info("[RhosrInstanceService] Getting information for the current user.");

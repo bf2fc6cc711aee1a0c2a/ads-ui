@@ -3,6 +3,7 @@ import {Auth, useAuth, Config, useConfig} from "@rhoas/app-services-ui-shared";
 import {LocalStorageService, useLocalStorageService} from "@app/services/local-storage";
 
 const RHOSR_MOCK_DATA: Registry[] = [
+    // @ts-ignore
     {
         id: "1",
         name: "Local Registry 1 (localhost:8081)",
@@ -13,6 +14,7 @@ const RHOSR_MOCK_DATA: Registry[] = [
         updated_at: "2022-01-01T12:00:00Z",
         instance_type: "standard"
     },
+    // @ts-ignore
     {
         id: "2",
         name: "Local Registry 2 (localhost:8082)",
@@ -26,6 +28,7 @@ const RHOSR_MOCK_DATA: Registry[] = [
 ];
 
 const RHOSR_MOCK_DATA_OF: Registry[] = [
+    // @ts-ignore
     {
         id: "101",
         name: "Operate First Registry 1",
@@ -36,6 +39,7 @@ const RHOSR_MOCK_DATA_OF: Registry[] = [
         updated_at: "2022-01-01T12:00:00Z",
         instance_type: "standard"
     },
+    // @ts-ignore
     {
         id: "201",
         name: "Operate First Registry 2",

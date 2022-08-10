@@ -3,7 +3,7 @@ import {Button, Form, FormGroup, Modal, ModalVariant, TextInput} from "@patternf
 import {Registry} from "@rhoas/registry-management-sdk";
 import React, {useEffect, useState} from "react";
 import {Design, DesignEvent} from "@app/models";
-import {IsLoading, ObjectSelect} from "@app/components";
+import {IfNotEmpty, IsLoading, ObjectSelect, RhosrEmptyState} from "@app/components";
 import {cloneObject} from "@app/utils";
 import {IfRhosr} from "@app/pages/components";
 import {DesignContext} from "@app/models/designs/design-context.model";
@@ -166,7 +166,7 @@ export const TestRegistryModal: React.FunctionComponent<TestRegistryModalProps> 
 			isOpen={isOpen}
 			onClose={onCancel}
 			actions={[
-				<Button key="confirm" isDisabled={!isValid} variant="primary" onClick={() => onSubmit(
+				<Button key="confirm" isDisabled={!isValid || registries?.length === 0} variant="primary" onClick={() => onSubmit(
 					registry as Registry,
 					formState.groupValue.value,
 					formState.artifactIdValue.value
@@ -179,42 +179,44 @@ export const TestRegistryModal: React.FunctionComponent<TestRegistryModalProps> 
 			]}
 		>
 			<IsLoading condition={isLoadingRegistries}>
-				<Form>
-					<FormGroup
-						isRequired={true}
-						label="Registry instance"
-						fieldId="test-in-registry-registry-instance"
-					>
-						<ObjectSelect toggleId="test-in-registry-instance" value={registry} items={registries} onSelect={setRegistry} itemToString={item => item.name} />
-					</FormGroup>
-					<IfRhosr registry={registry as Registry} scope="write">
+				<IfNotEmpty collection={registries} emptyState={<RhosrEmptyState />}>
+					<Form>
 						<FormGroup
-							label="Group"
-							validated={formState.groupValue.validated}
-							helperTextInvalid={formState.groupValue.errorMessage}
-							fieldId="test-in-registry-group"
-						>
-							<TextInput
-								id="test-in-registry-group"
-								value={formState.groupValue.value}
-								placeholder="Enter group (optional) or leave blank for default group"
-								onChange={setGroupValue} />
-						</FormGroup>
-						<FormGroup
-							label="ID"
-							validated={formState.artifactIdValue.validated}
-							helperTextInvalid={formState.artifactIdValue.errorMessage}
 							isRequired={true}
-							fieldId="test-in-registry-artifactId"
+							label="Registry instance"
+							fieldId="test-in-registry-registry-instance"
 						>
-							<TextInput
-								id="test-in-registry-artifactId"
-								placeholder="Enter ID of artifact"
-								value={formState.artifactIdValue.value}
-								onChange={setArtifactIdValue} />
+							<ObjectSelect toggleId="test-in-registry-instance" value={registry} items={registries} onSelect={setRegistry} itemToString={item => item.name} />
 						</FormGroup>
-					</IfRhosr>
-				</Form>
+						<IfRhosr registry={registry} scope="write">
+							<FormGroup
+								label="Group"
+								validated={formState.groupValue.validated}
+								helperTextInvalid={formState.groupValue.errorMessage}
+								fieldId="test-in-registry-group"
+							>
+								<TextInput
+									id="test-in-registry-group"
+									value={formState.groupValue.value}
+									placeholder="Enter group (optional) or leave blank for default group"
+									onChange={setGroupValue} />
+							</FormGroup>
+							<FormGroup
+								label="ID"
+								validated={formState.artifactIdValue.validated}
+								helperTextInvalid={formState.artifactIdValue.errorMessage}
+								isRequired={true}
+								fieldId="test-in-registry-artifactId"
+							>
+								<TextInput
+									id="test-in-registry-artifactId"
+									placeholder="Enter ID of artifact"
+									value={formState.artifactIdValue.value}
+									onChange={setArtifactIdValue} />
+							</FormGroup>
+						</IfRhosr>
+					</Form>
+				</IfNotEmpty>
 			</IsLoading>
 		</Modal>
 	);

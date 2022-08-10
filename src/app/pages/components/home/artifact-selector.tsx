@@ -119,7 +119,7 @@ export const ArtifactSelector: FunctionComponent<ArtifactSelectorProps> = ({regi
     );
 
     const emptyState: React.ReactNode = (
-        <IfRhosr registry={registry as Registry} scope="read">
+        <IfRhosr registry={registry} scope="read">
             <EmptyState variant={EmptyStateVariant.xs}>
                 <Title headingLevel="h4" size="md">{"None found"}</Title>
                 <EmptyStateBody>{"No artifacts found in the registry instance."}</EmptyStateBody>
@@ -128,7 +128,7 @@ export const ArtifactSelector: FunctionComponent<ArtifactSelectorProps> = ({regi
     );
 
     const filteredEmptyState: React.ReactNode = (
-        <IfRhosr registry={registry as Registry} scope="read">
+        <IfRhosr registry={registry} scope="read">
             <EmptyState variant={EmptyStateVariant.xs}>
                 <Title headingLevel="h4" size="md">{"None found"}</Title>
                 <EmptyStateBody>{"No artifacts matched the filter criteria."}</EmptyStateBody>
@@ -151,7 +151,7 @@ export const ArtifactSelector: FunctionComponent<ArtifactSelectorProps> = ({regi
                 loadingComponent={loadingComponent}
                 isEmpty={!artifacts || artifacts.count === 0}
             >
-                <IfRhosr registry={registry as Registry} scope="read">
+                <IfRhosr registry={registry} scope="read">
                     <ArtifactList artifacts={artifacts?.artifacts} fetchArtifactContent={fetchArtifactContent}
                         onArtifactSelected={onArtifactSelected}
                         fetchArtifactVersions={fetchArtifactVersions} />

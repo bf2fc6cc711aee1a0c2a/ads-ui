@@ -12,7 +12,7 @@ export type RhosrScopeType = "read" | "write" | "admin";
  * Properties
  */
 export type IfRhosrProps = {
-    registry: Registry;
+    registry: Registry | undefined;
     scope: RhosrScopeType;
     onHasAccess?: (accessible: boolean) => void;
     children?: React.ReactNode;
@@ -44,26 +44,32 @@ export const IfRhosr: FunctionComponent<IfRhosrProps> = ({registry, scope, onHas
 
     useEffect(() => {
         setLoading(true);
-        rhosrFactory.createFor(registry).getCurrentUser().then(userInfo => {
-            setUserInfo(userInfo);
-            if (onHasAccess) {
-                onHasAccess(userHasAccess(userInfo));
-            }
-            setLoading(false);
-        }).catch(error => {
-            console.info("[IfRhosr] Error response getting user info for registry instance: ", error);
-            setUserInfo({
-                admin: false,
-                developer: false,
-                viewer: false,
-                displayName: "",
-                username: ""
+        if (registry !== undefined) {
+            rhosrFactory.createFor(registry).getCurrentUser().then(userInfo => {
+                setUserInfo(userInfo);
+                if (onHasAccess) {
+                    onHasAccess(userHasAccess(userInfo));
+                }
+                setLoading(false);
+            }).catch(error => {
+                console.info("[IfRhosr] Error response getting user info for registry instance: ", error);
+                setUserInfo({
+                    admin: false,
+                    developer: false,
+                    viewer: false,
+                    displayName: "",
+                    username: ""
+                });
+                if (onHasAccess) {
+                    onHasAccess(false);
+                }
+                setLoading(false);
             });
+        } else {
             if (onHasAccess) {
                 onHasAccess(false);
             }
-            setLoading(false);
-        });
+        }
     }, [registry]);
 
     return (
@@ -75,7 +81,7 @@ export const IfRhosr: FunctionComponent<IfRhosrProps> = ({registry, scope, onHas
                     <Alert variant="danger" isInline={true} title="Permission denied (no access)">
                         <p>
                             You do not have sufficient access privileges to Service Registry instance
-                            <span style={{fontWeight: "bold"}}> {registry.name}</span>.
+                            <span style={{fontWeight: "bold"}}> {registry?.name}</span>.
 
                             Contact your organization admin or the owner of the Service Registry instance to request the appropriate access.
                         </p>
