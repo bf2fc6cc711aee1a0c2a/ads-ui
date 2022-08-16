@@ -47,6 +47,7 @@ type EditorContextMenuItem = {
     key: string;
     isSeparator?: boolean;
     accept?: (design: Design) => boolean;
+    isDisabled?: (props: EditorContextProps) => boolean;
 };
 
 const menuActions: EditorContextMenuItem[] = [
@@ -62,6 +63,7 @@ const menuActions: EditorContextMenuItem[] = [
     {
         label: "Show design changes",
         key: "action-compare",
+        isDisabled: (props: EditorContextProps) => { return !props.dirty; },
     },
     {
         key: "action-separator-1",
@@ -93,8 +95,7 @@ const menuActions: EditorContextMenuItem[] = [
 /**
  * The context of the design when editing a design on the editor page.
  */
-export const EditorContext: FunctionComponent<EditorContextProps> = (
-    { design, dirty, onSave, onRegistrationTestRegistry, onFormat, onRename, onExpandTestRegistryCausesPanel, onDownload, onDelete, onCompareContent }: EditorContextProps) => {
+export const EditorContext: FunctionComponent<EditorContextProps> = (props: EditorContextProps) => {
 
     const lss: LocalStorageService = useLocalStorageService();
 
@@ -126,43 +127,27 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
         setActionMenuToggled(false);
         switch (action) {
             case "action-compare":
-                onCompareContent();
+                props.onCompareContent();
                 return;
             case "action-export-to-rhosr":
                 setRegisterModalOpen(true);
                 return;
             case "action-format":
-                onFormat();
+                props.onFormat();
                 return;
             case "action-rename":
-                onRename();
+                props.onRename();
                 return;
             case "action-delete":
-                onDelete();
+                props.onDelete();
                 return;
             case "action-download":
-                onDownload();
+                props.onDownload();
                 return;
             case "action-test-registry":
                 setIsTestRegistryModalOpen(true);
                 return;
         }
-    };
-
-    const typeForDisplay = (): string => {
-        switch (design.type) {
-            case ArtifactTypes.OPENAPI:
-                return "OpenAPI";
-            case ArtifactTypes.ASYNCAPI:
-                return "AsyncAPI";
-            case ArtifactTypes.AVRO:
-                return "Apache Avro";
-            case ArtifactTypes.JSON:
-                return "JSON Schema";
-            case ArtifactTypes.PROTOBUF:
-                return "Google Protocol Buffers";
-        }
-        return "N/A";
     };
 
     const hasRhosrContext = (): boolean => {
@@ -183,27 +168,27 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
     };
 
     useEffect(() => {
-        if (design) {
-            const context: DesignContext|undefined = design.origin;
+        if (props.design) {
+            const context: DesignContext|undefined = props.design.origin;
             setDesignContext(context);
         }
-    }, [design]);
+    }, [props.design]);
 
-    const menuItems: any[] = menuActions.filter(action => !action.accept ? true : action.accept(design)).map(action => (
+    const menuItems: any[] = menuActions.filter(action => !action.accept ? true : action.accept(props.design)).map(action => (
         action.isSeparator ? (
             <DropdownSeparator key={action.key} />
         ) : (
-            <DropdownItem key={action.key} data-id={action.key}>{action.label}</DropdownItem>
+            <DropdownItem key={action.key} data-id={action.key} isDisabled={action.isDisabled ? action.isDisabled(props) : false}>{action.label}</DropdownItem>
         )
     ));
 
     return (
         <React.Fragment>
             <TestRegistryModal isOpen={isTestRegistryModalOpen}
-                               design={design}
+                               design={props.design}
                                onCancel={() => setIsTestRegistryModalOpen(false)}
                                onSubmit={(...params) => {
-                                    onRegistrationTestRegistry(...params);
+                                    props.onRegistrationTestRegistry(...params);
                                     setIsTestRegistryModalOpen(false);
                                }} />
             <div className="editor-context">
@@ -212,12 +197,12 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
                         <BreadcrumbItem component="button">
                             <NavLink location="/">API and Schema Designs</NavLink>
                         </BreadcrumbItem>
-                        <BreadcrumbItem isActive={true}>{design?.name}</BreadcrumbItem>
+                        <BreadcrumbItem isActive={true}>{props.design?.name}</BreadcrumbItem>
                     </Breadcrumb>
                 </div>
                 <div className="editor-context-last-modified">
                     <span>Last modified:</span>
-                    <Moment date={design.modifiedOn} fromNow={true} />
+                    <Moment date={props.design.modifiedOn} fromNow={true} />
                 </div>
                 <div className="editor-context-actions">
                     <Dropdown
@@ -230,7 +215,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
                     />
                 </div>
                 <div className="editor-context-save">
-                    <Button className="btn-save" variant="primary" onClick={onSave} isDisabled={!dirty}>Save</Button>
+                    <Button className="btn-save" variant="primary" onClick={props.onSave} isDisabled={!props.dirty}>Save</Button>
                 </div>
                 <div className="editor-context-toggle">
                     <Button className="btn-toggle" variant="plain" onClick={onToggleExpand}>
@@ -241,15 +226,15 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
             <If condition={isExpanded}>
                 <div className="editor-context-details">
                     <TextContent>
-                        <Text component="h1" className="title">{design?.name}</Text>
-                        <DesignDescription className="summary" description={design?.summary} />
+                        <Text component="h1" className="title">{props.design?.name}</Text>
+                        <DesignDescription className="summary" description={props.design?.summary} />
                     </TextContent>
                     <div className="metadata">
                         <DescriptionList isHorizontal={true} isCompact={true}>
                             <DescriptionListGroup>
                                 <DescriptionListTerm>Type</DescriptionListTerm>
                                 <DescriptionListDescription>
-                                    <ArtifactTypeIcon type={design.type} isShowLabel={true} isShowIcon={true} />
+                                    <ArtifactTypeIcon type={props.design.type} isShowLabel={true} isShowIcon={true} />
                                 </DescriptionListDescription>
                             </DescriptionListGroup>
                             <If condition={hasRhosrContext}>
@@ -288,7 +273,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (
                     </div>
                 </div>
             </If>
-            <ExportToRhosrModal design={design as Design}
+            <ExportToRhosrModal design={props.design as Design}
                                 isOpen={isRegisterModalOpen}
                                 onExported={onRegisterDesignConfirmed}
                                 onCancel={() => setRegisterModalOpen(false)} />
