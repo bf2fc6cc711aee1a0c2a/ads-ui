@@ -51,16 +51,16 @@ type EditorContextMenuItem = {
 
 const menuActions: EditorContextMenuItem[] = [
     {
-        label: "Edit metadata",
+        label: "Edit design metadata",
         key: "action-rename",
     },
     {
-        label: "Format content",
+        label: "Format design content",
         key: "action-format",
         accept: (design: Design) => { return [ArtifactTypes.AVRO, ArtifactTypes.JSON].includes(design.type); },
     },
     {
-        label: "Show changes",
+        label: "Show design changes",
         key: "action-compare",
     },
     {
@@ -68,12 +68,12 @@ const menuActions: EditorContextMenuItem[] = [
         isSeparator: true
     },
     {
-        label: "Export to Service Registry",
-        key: "action-export-to-rhosr",
+        label: "Run Service Registry check",
+        key: "action-test-registry"
     },
     {
-        label: "Test using Service Registry",
-        key: "action-test-registry"
+        label: "Export design to Service Registry",
+        key: "action-export-to-rhosr",
     },
     {
         label: "Download design",
