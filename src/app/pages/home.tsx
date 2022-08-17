@@ -1,7 +1,6 @@
-import React, {FunctionComponent, useRef, useState} from "react";
+import React, {FunctionComponent, useEffect, useRef, useState} from "react";
 import "./home.css";
 import {
-    Button,
     Drawer,
     DrawerActions,
     DrawerCloseButton,
@@ -10,11 +9,8 @@ import {
     DrawerHead,
     DrawerPanelBody,
     DrawerPanelContent,
-    Flex,
-    FlexItem,
     PageSection,
     PageSectionVariants,
-    Popover,
     Text,
     TextContent,
     TextVariants,
@@ -22,7 +18,8 @@ import {
     TitleSizes
 } from "@patternfly/react-core";
 import {
-    CreateDesignModal, DesignDetailsPanel,
+    CreateDesignModal,
+    DesignDetailsPanel,
     DesignsPanel,
     ImportDesignModal,
     ImportFrom,
@@ -32,7 +29,6 @@ import {CreateDesign, CreateDesignContent, Design, Template} from "@app/models";
 import {cloneObject, propertyReplace} from "@app/utils";
 import {DesignsService, useDesignsService} from "@app/services";
 import {Navigation, useNavigation} from "@app/contexts/navigation";
-import {QuestionCircleIcon} from "@patternfly/react-icons";
 import {ArtifactTypeIcon} from "@app/components";
 
 export type HomePageProps = {
@@ -50,6 +46,10 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
 
     const designsSvc: DesignsService = useDesignsService();
     const nav: Navigation = useNavigation();
+
+    useEffect(() => {
+        console.info("[HomePageProps] --- API Designer UI i-17");
+    }, []);
 
     const onDrawerExpand = (): void => {
         drawerRef.current && drawerRef.current.focus();
