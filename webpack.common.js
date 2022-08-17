@@ -106,8 +106,7 @@ module.exports = (env, argv) => {
       }),
       new webpack.container.ModuleFederationPlugin({
         name: federatedModuleName,
-        // filename: `${federatedModuleName}${isProduction ? ".[chunkhash:8]" : ""}.js`,
-        filename: `${federatedModuleName}.js`,
+        filename: `${federatedModuleName}${isProduction ? '.[chunkhash:8]' : ''}.js`,
         exposes: {
           "./FederatedHomePage": "./src/app/pages/home-federated",
           "./FederatedEditorPage": "./src/app/pages/editor-federated",
