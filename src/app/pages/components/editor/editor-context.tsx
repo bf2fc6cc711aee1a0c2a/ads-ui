@@ -46,7 +46,7 @@ type EditorContextMenuItem = {
     label?: string;
     key: string;
     isSeparator?: boolean;
-    accept?: (design: Design) => boolean;
+    accept?: (props: EditorContextProps) => boolean;
     isDisabled?: (props: EditorContextProps) => boolean;
 };
 
@@ -58,7 +58,7 @@ const menuActions: EditorContextMenuItem[] = [
     {
         label: "Format design content",
         key: "action-format",
-        accept: (design: Design) => { return [ArtifactTypes.AVRO, ArtifactTypes.JSON].includes(design.type); },
+        accept: (props: EditorContextProps) => { return [ArtifactTypes.AVRO, ArtifactTypes.JSON].includes(props.design.type); },
     },
     {
         label: "Show design changes",
@@ -174,7 +174,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (props: Edit
         }
     }, [props.design]);
 
-    const menuItems: any[] = menuActions.filter(action => !action.accept ? true : action.accept(props.design)).map(action => (
+    const menuItems: any[] = menuActions.filter(action => !action.accept ? true : action.accept(props)).map(action => (
         action.isSeparator ? (
             <DropdownSeparator key={action.key} />
         ) : (
