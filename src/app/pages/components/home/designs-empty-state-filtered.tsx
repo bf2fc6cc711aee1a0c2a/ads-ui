@@ -1,4 +1,4 @@
-import React, {FunctionComponent} from "react";
+import React, { FunctionComponent } from "react";
 import {
     Bullseye,
     Button,
@@ -8,7 +8,7 @@ import {
     EmptyStateVariant,
     Title
 } from "@patternfly/react-core";
-import {SearchIcon} from "@patternfly/react-icons";
+import { SearchIcon } from "@patternfly/react-icons";
 
 /**
  * Properties

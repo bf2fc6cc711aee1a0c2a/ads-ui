@@ -1,7 +1,7 @@
-import React, {FunctionComponent} from "react";
-import {DesignEvent} from "@app/models";
-import {DesignContext} from "@app/models/designs/design-context.model";
-import {RegistryNavLink} from "@app/components";
+import React, { FunctionComponent } from "react";
+import { DesignEvent } from "@app/models";
+import { DesignContext } from "@app/models/designs/design-context.model";
+import { RegistryNavLink } from "@app/components";
 
 
 export type DesignEventTypeProps = {

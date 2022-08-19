@@ -1,7 +1,7 @@
-import React, {FunctionComponent} from "react";
-import {Template} from "@app/models";
+import React, { FunctionComponent } from "react";
+import { Template } from "@app/models";
 import "./template-item.css";
-import {PlusCircleIcon} from "@patternfly/react-icons";
+import { PlusCircleIcon } from "@patternfly/react-icons";
 
 export type TemplateItemProps = {
     template: Template;

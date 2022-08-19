@@ -1,11 +1,11 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import "./design-events.css";
-import {Design, DesignEvent} from "@app/models";
-import {DesignsService, useDesignsService} from "@app/services";
-import {DateTime, If, IfNotEmpty, IsLoading, RegistryNavLink} from "@app/components";
-import {DesignEventType, DesignOriginLabel} from "@app/pages/components";
-import {hasOrigin} from "@app/utils";
-import {Divider} from "@patternfly/react-core";
+import { Design, DesignEvent } from "@app/models";
+import { DesignsService, useDesignsService } from "@app/services";
+import { DateTime, If, IfNotEmpty, IsLoading, RegistryNavLink } from "@app/components";
+import { DesignEventType, DesignOriginLabel } from "@app/pages/components";
+import { hasOrigin } from "@app/utils";
+import { Divider } from "@patternfly/react-core";
 
 
 export type DesignEventsProps = {

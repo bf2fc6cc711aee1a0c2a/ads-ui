@@ -89,7 +89,7 @@ async function createOrUpdateArtifact(auth: Auth, basePath: string, data: Create
     }
     headers["Content-Type"] = data.contentType;
     return httpPostWithReturn<any, ArtifactMetaData>(endpoint, data.content, createOptions(headers));
-};
+}
 
 
 async function createArtifactVersion(auth: Auth, basePath: string, groupId: string | undefined, artifactId: string, data: CreateVersionData): Promise<VersionMetaData> {

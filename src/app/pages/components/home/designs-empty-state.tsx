@@ -1,4 +1,4 @@
-import React, {FunctionComponent} from "react";
+import React, { FunctionComponent } from "react";
 import {
     Button,
     EmptyState,
@@ -7,8 +7,8 @@ import {
     EmptyStateSecondaryActions,
     Title
 } from "@patternfly/react-core";
-import {AddCircleOIcon} from "@patternfly/react-icons";
-import {ImportDropdown, ImportFrom} from "@app/pages/components";
+import { AddCircleOIcon } from "@patternfly/react-icons";
+import { ImportDropdown, ImportFrom } from "@app/pages/components";
 
 /**
  * Properties

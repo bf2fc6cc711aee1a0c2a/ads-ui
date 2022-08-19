@@ -1,9 +1,9 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
-import {Registry} from "@rhoas/registry-management-sdk";
-import {RhosrInstanceService, RhosrInstanceServiceFactory, useRhosrInstanceServiceFactory} from "@app/services";
-import {UserInfo} from "@app/models";
-import {Alert} from "@patternfly/react-core";
-import {IsLoading} from "@app/components";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { Registry } from "@rhoas/registry-management-sdk";
+import { RhosrInstanceServiceFactory, useRhosrInstanceServiceFactory } from "@app/services";
+import { UserInfo } from "@app/models";
+import { Alert } from "@patternfly/react-core";
+import { IsLoading } from "@app/components";
 
 export type RhosrScopeType = "read" | "write" | "admin";
 

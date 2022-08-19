@@ -10,8 +10,8 @@ import {
     Paging
 } from "@app/models";
 import Dexie from "dexie";
-import {v4 as uuidv4} from "uuid";
-import {cloneObject, limit} from "@app/utils";
+import { v4 as uuidv4 } from "uuid";
+import { cloneObject, limit } from "@app/utils";
 
 
 const db = new Dexie("designsDB");
@@ -54,8 +54,10 @@ async function createDesign(cd: CreateDesign, cdc: CreateDesignContent): Promise
     newEvent.id = id;
 
     return Promise.all([
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         db.designs.add(newDesign),
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         db.content.add(newDesignContent),
         createEvent(newEvent)
@@ -63,6 +65,7 @@ async function createDesign(cd: CreateDesign, cdc: CreateDesignContent): Promise
 }
 
 async function getDesigns(): Promise<Design[]> {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     return db.designs.toArray();
 }
@@ -109,28 +112,35 @@ async function searchDesigns(criteria: DesignsSearchCriteria, paging: Paging, so
             page: paging.page,
             pageSize: paging.pageSize,
             count: totalCount
-        }
+        };
     });
 }
 
 
 async function getDesign(id: string): Promise<Design> {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     return db.designs.where("id").equals(id).first();
 }
 
 async function deleteDesign(id: string): Promise<void> {
     return Promise.all([
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         db.designs.where("id").equals(id).delete(),
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         db.content.where("id").equals(id).delete(),
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         db.events.where("id").equals(id).delete(),
-    ]).then(r => {});
+    ]).then(() => {
+        // This space intentionally left blank.
+    });
 }
 
 async function renameDesign(id: string, newName: string, newSummary?: string): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     return db.designs.update(id, {
         name: limit(newName, 64) as string,
@@ -139,6 +149,7 @@ async function renameDesign(id: string, newName: string, newSummary?: string): P
 }
 
 async function getDesignContent(id: string): Promise<DesignContent> {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     return db.content.where("id").equals(id).first();
 }
@@ -152,20 +163,25 @@ async function updateDesignContent(content: DesignContent): Promise<void> {
     };
 
     return Promise.all([
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         db.content.update(content.id, {
             data: content.data
         }),
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         db.designs.update(content.id, {
             modifiedOn: new Date()
         }),
         createEvent(newEvent)
-    ]).then(() => {});
+    ]).then(() => {
+        // This space intentionally left blank.
+    });
 }
 
 
 async function getEvents(id: string): Promise<DesignEvent[]> {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     return db.events.where("id").equals(id).reverse().sortBy("on");
 }
@@ -173,6 +189,7 @@ async function getEvents(id: string): Promise<DesignEvent[]> {
 
 async function createEvent(event: DesignEvent): Promise<void> {
     event.eventId = uuidv4();
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     return db.events.add(event);
 }

@@ -1,8 +1,8 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
+import React, { FunctionComponent, useState } from "react";
 import "./url-upload.css";
-import {Button, Spinner, TextArea, TextInput} from "@patternfly/react-core";
-import {If, IsLoading} from "@app/components";
-import {UrlService, useUrlService} from "@app/services";
+import { Button, Spinner, TextArea, TextInput } from "@patternfly/react-core";
+import { If, IsLoading } from "@app/components";
+import { UrlService, useUrlService } from "@app/services";
 
 /**
  * Properties

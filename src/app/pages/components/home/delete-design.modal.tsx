@@ -1,6 +1,16 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
-import {Alert, Button, Checkbox, Form, FormGroup, Modal, ModalVariant, Text, TextContent} from "@patternfly/react-core";
-import {Design} from "@app/models";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import {
+    Alert,
+    Button,
+    Checkbox,
+    Form,
+    FormGroup,
+    Modal,
+    ModalVariant,
+    Text,
+    TextContent
+} from "@patternfly/react-core";
+import { Design } from "@app/models";
 
 export type DeleteDesignModalProps = {
     design: Design|undefined;

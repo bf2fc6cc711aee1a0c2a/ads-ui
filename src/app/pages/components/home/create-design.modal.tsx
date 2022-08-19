@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import {
     Button,
     Form,
@@ -14,10 +14,10 @@ import {
     TextArea,
     TextInput
 } from "@patternfly/react-core";
-import {ArtifactTypes, CreateDesign, Template} from "@app/models";
-import {TemplatesService, useTemplatesService} from "@app/services";
-import {If, ServicePreviewWarning} from "@app/components";
-import {TemplateItem} from "@app/pages/components";
+import { ArtifactTypes, CreateDesign, Template } from "@app/models";
+import { TemplatesService, useTemplatesService } from "@app/services";
+import { If, ServicePreviewWarning } from "@app/components";
+import { TemplateItem } from "@app/pages/components";
 
 export type CreateDesignModalProps = {
     isOpen: boolean|undefined;

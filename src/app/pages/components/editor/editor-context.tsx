@@ -1,6 +1,6 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import "./editor-context.css";
-import {ArtifactTypes, Design, TestRegistryErrorResponse} from "@app/models";
+import { ArtifactTypes, Design, TestRegistryErrorResponse } from "@app/models";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -13,16 +13,15 @@ import {
     DropdownItem,
     DropdownSeparator,
     DropdownToggle,
-    GalleryItem,
     Text,
     TextContent
 } from "@patternfly/react-core";
-import {ArtifactTypeIcon, DesignDescription, If, NavLink, RegistryNavLink, ToggleIcon} from "@app/components";
+import { ArtifactTypeIcon, DesignDescription, If, NavLink, RegistryNavLink, ToggleIcon } from "@app/components";
 import Moment from "react-moment";
-import {DesignContext} from "@app/models/designs/design-context.model";
-import {ExportToRhosrData, ExportToRhosrModal, TestRegistryModal} from "@app/pages/components";
-import {AlertsService, LocalStorageService, useAlertsService, useLocalStorageService} from "@app/services";
-import {Registry} from "@rhoas/registry-management-sdk";
+import { DesignContext } from "@app/models/designs/design-context.model";
+import { ExportToRhosrData, ExportToRhosrModal, TestRegistryModal } from "@app/pages/components";
+import { AlertsService, LocalStorageService, useAlertsService, useLocalStorageService } from "@app/services";
+import { Registry } from "@rhoas/registry-management-sdk";
 
 /**
  * Properties
@@ -122,6 +121,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (props: Edit
     );
 
     const onActionMenuSelect = (event?: React.SyntheticEvent<HTMLDivElement>): void => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const action: string = event?.target.attributes["data-id"].value;
         setActionMenuToggled(false);

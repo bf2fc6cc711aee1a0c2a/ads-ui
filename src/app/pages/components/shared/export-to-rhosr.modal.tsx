@@ -1,8 +1,17 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import "./export-to-rhosr.modal.css";
-import {Button, Form, FormGroup, Modal, ModalVariant, SelectVariant, Spinner, TextInput} from "@patternfly/react-core";
-import {Design, DesignEvent} from "@app/models";
-import {Registry} from "@rhoas/registry-management-sdk";
+import {
+    Button,
+    Form,
+    FormGroup,
+    Modal,
+    ModalVariant,
+    SelectVariant,
+    Spinner,
+    TextInput
+} from "@patternfly/react-core";
+import { Design, DesignEvent } from "@app/models";
+import { Registry } from "@rhoas/registry-management-sdk";
 import {
     DesignsService,
     RhosrInstanceService,
@@ -12,10 +21,10 @@ import {
     useRhosrInstanceServiceFactory,
     useRhosrService
 } from "@app/services";
-import {If, IfNotEmpty, IsLoading, ObjectSelect, RhosrEmptyState} from "@app/components";
-import {DesignContext} from "@app/models/designs/design-context.model";
-import {CreateOrUpdateArtifactData} from "@app/models/rhosr-instance/create-or-update-artifact-data.model";
-import {IfRhosr, RegistrationError} from "@app/pages/components";
+import { If, IfNotEmpty, IsLoading, ObjectSelect, RhosrEmptyState } from "@app/components";
+import { DesignContext } from "@app/models/designs/design-context.model";
+import { CreateOrUpdateArtifactData } from "@app/models/rhosr-instance/create-or-update-artifact-data.model";
+import { IfRhosr, RegistrationError } from "@app/pages/components";
 
 export type ExportToRhosrData = {
     registry: Registry;

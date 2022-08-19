@@ -1,8 +1,9 @@
-import {Configuration, Registry, RegistriesApi, RegistryList} from '@rhoas/registry-management-sdk';
-import {Auth, useAuth, Config, useConfig} from "@rhoas/app-services-ui-shared";
-import {LocalStorageService, useLocalStorageService} from "@app/services/local-storage";
+import { Configuration, RegistriesApi, Registry, RegistryList } from "@rhoas/registry-management-sdk";
+import { Auth, Config, useAuth, useConfig } from "@rhoas/app-services-ui-shared";
+import { LocalStorageService, useLocalStorageService } from "@app/services/local-storage";
 
 const RHOSR_MOCK_DATA: Registry[] = [
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     {
         id: "1",
@@ -14,6 +15,7 @@ const RHOSR_MOCK_DATA: Registry[] = [
         updated_at: "2022-01-01T12:00:00Z",
         instance_type: "standard"
     },
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     {
         id: "2",
@@ -28,23 +30,25 @@ const RHOSR_MOCK_DATA: Registry[] = [
 ];
 
 const RHOSR_MOCK_DATA_OF: Registry[] = [
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     {
         id: "101",
         name: "Operate First Registry 1",
-        registryUrl: "http://apicurio-registry-mem-one.apps.smaug.na.operate-first.cloud/",
-        browserUrl: "http://apicurio-registry-mem-one.apps.smaug.na.operate-first.cloud/ui/",
+        registryUrl: "https://apicurio-registry-mem-one.apps.smaug.na.operate-first.cloud/",
+        browserUrl: "https://apicurio-registry-mem-one.apps.smaug.na.operate-first.cloud/ui/",
         status: "ready",
         created_at: "2022-01-01T12:00:00Z",
         updated_at: "2022-01-01T12:00:00Z",
         instance_type: "standard"
     },
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     {
         id: "201",
         name: "Operate First Registry 2",
-        registryUrl: "http://apicurio-registry-mem-two.apps.smaug.na.operate-first.cloud/",
-        browserUrl: "http://apicurio-registry-mem-two.apps.smaug.na.operate-first.cloud/ui/",
+        registryUrl: "https://apicurio-registry-mem-two.apps.smaug.na.operate-first.cloud/",
+        browserUrl: "https://apicurio-registry-mem-two.apps.smaug.na.operate-first.cloud/ui/",
         status: "ready",
         created_at: "2022-01-01T12:00:00Z",
         updated_at: "2022-01-01T12:00:00Z",
@@ -122,15 +126,14 @@ export interface RhosrService {
 function createMockService(mockData: Registry[]): RhosrService {
     return {
         getRegistries(): Promise<Registry[]> {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 setTimeout(() => {
                     resolve(mockData);
                 }, 150);
             });
-            //return Promise.resolve(mockData);
         },
         getRegistry(id: string): Promise<Registry> {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 setTimeout(() => {
                     const matching: Registry[] = mockData.filter(registry => registry.id === id);
                     if (matching && matching.length > 0) {

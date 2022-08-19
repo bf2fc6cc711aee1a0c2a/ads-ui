@@ -1,12 +1,11 @@
-import {DesignsService, useDesignsService, useRhosrService} from "@app/services";
-import {Button, Form, FormGroup, Modal, ModalVariant, TextInput} from "@patternfly/react-core";
-import {Registry} from "@rhoas/registry-management-sdk";
-import React, {useEffect, useState} from "react";
-import {Design, DesignEvent} from "@app/models";
-import {IfNotEmpty, IsLoading, ObjectSelect, RhosrEmptyState} from "@app/components";
-import {cloneObject} from "@app/utils";
-import {IfRhosr} from "@app/pages/components";
-import {DesignContext} from "@app/models/designs/design-context.model";
+import { DesignsService, useDesignsService, useRhosrService } from "@app/services";
+import { Button, Form, FormGroup, Modal, ModalVariant, TextInput } from "@patternfly/react-core";
+import { Registry } from "@rhoas/registry-management-sdk";
+import React, { useEffect, useState } from "react";
+import { Design, DesignEvent } from "@app/models";
+import { IfNotEmpty, IsLoading, ObjectSelect, RhosrEmptyState } from "@app/components";
+import { IfRhosr } from "@app/pages/components";
+import { DesignContext } from "@app/models/designs/design-context.model";
 
 
 export interface TestRegistryModalProps {

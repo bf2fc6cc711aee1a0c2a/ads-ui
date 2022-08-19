@@ -1,4 +1,4 @@
-import {ContentTypes, Template} from "@app/models";
+import { ContentTypes, Template } from "@app/models";
 import JSON_BLANK from "./json/json-blank.json";
 
 export const JSON_TEMPLATES: Template[] = [
@@ -10,4 +10,4 @@ export const JSON_TEMPLATES: Template[] = [
             data: JSON_BLANK
         }
     }
-]
+];

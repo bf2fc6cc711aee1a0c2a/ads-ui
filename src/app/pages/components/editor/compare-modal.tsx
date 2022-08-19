@@ -1,11 +1,11 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import "./compare-modal.css";
-import {Modal, ToggleGroup, ToggleGroupItem} from "@patternfly/react-core";
-import {editor} from "monaco-editor";
+import { Modal, ToggleGroup, ToggleGroupItem } from "@patternfly/react-core";
+import { editor } from "monaco-editor";
+import { DiffEditor } from "@monaco-editor/react";
+import { ArrowsAltHIcon } from "@patternfly/react-icons";
+import { contentToString } from "@app/utils";
 import IDiffEditorConstructionOptions = editor.IDiffEditorConstructionOptions;
-import {DiffEditor} from "@monaco-editor/react";
-import {ArrowsAltHIcon} from "@patternfly/react-icons";
-import {contentToString} from "@app/utils";
 
 /**
  * Properties

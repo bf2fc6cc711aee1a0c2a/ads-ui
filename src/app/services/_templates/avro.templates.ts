@@ -1,4 +1,4 @@
-import {ContentTypes, Template} from "@app/models";
+import { ContentTypes, Template } from "@app/models";
 import AVRO_BLANK from "./avro/avro-blank.json";
 
 export const AVRO_TEMPLATES: Template[] = [
@@ -10,4 +10,4 @@ export const AVRO_TEMPLATES: Template[] = [
             data: AVRO_BLANK
         }
     }
-]
+];

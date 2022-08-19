@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import {
     Button,
     FileUpload,
@@ -13,11 +13,11 @@ import {
     TextArea,
     TextInput
 } from "@patternfly/react-core";
-import {ArtifactTypes, ContentTypes, CreateDesign, CreateDesignContent} from "@app/models";
-import {If, ServicePreviewWarning} from "@app/components";
-import {ImportFrom, UrlUpload} from "@app/pages/components";
-import {isJson, isProto, isWsdl, isXml, isXsd, isYaml, parseJson, parseYaml} from "@app/utils";
-import {DesignContext} from "@app/models/designs/design-context.model";
+import { ArtifactTypes, ContentTypes, CreateDesign, CreateDesignContent } from "@app/models";
+import { If, ServicePreviewWarning } from "@app/components";
+import { ImportFrom, UrlUpload } from "@app/pages/components";
+import { isJson, isProto, isWsdl, isXml, isXsd, isYaml, parseJson, parseYaml } from "@app/utils";
+import { DesignContext } from "@app/models/designs/design-context.model";
 
 
 export type ImportDesignModalProps = {
@@ -29,6 +29,7 @@ export type ImportDesignModalProps = {
 
 
 const PLACEHOLDER_TYPE_OPTION: SelectOptionObject = {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     value: undefined,
     label: "Select a type...",
@@ -254,6 +255,7 @@ export const ImportDesignModal: FunctionComponent<ImportDesignModalProps> = ({im
             setTypeSelection(undefined);
         } else {
             setType(newType);
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore (there really is a value on the option)
             const newTypeSelection: SelectOptionObject = TYPE_OPTIONS.filter(option => option.value === newType)[0];
             setTypeSelection(newTypeSelection);

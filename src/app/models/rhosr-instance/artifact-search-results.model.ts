@@ -1,4 +1,4 @@
-import {SearchedArtifact} from "@app/models";
+import { SearchedArtifact } from "@app/models";
 
 export interface ArtifactSearchResults {
     artifacts: SearchedArtifact[];

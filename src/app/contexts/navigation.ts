@@ -1,6 +1,6 @@
-import {Basename, useBasename} from "@rhoas/app-services-ui-shared";
-import {History} from "history";
-import {useHistory} from "react-router-dom";
+import { Basename, useBasename } from "@rhoas/app-services-ui-shared";
+import { History } from "history";
+import { useHistory } from "react-router-dom";
 
 export const navigateTo: (path: string, basename: Basename, history: History) => void = (path: string, basename: Basename, history: History) => {
     const to: string = `${basename.getBasename()}${path}`;
@@ -22,4 +22,4 @@ export const useNavigation: () => Navigation = (): Navigation => {
             return navigateTo(path, basename, history);
         }
     };
-}
+};

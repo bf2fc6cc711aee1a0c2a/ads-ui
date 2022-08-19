@@ -1,7 +1,7 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import "./export-to-rhosr.modal.css";
-import {Button, Form, FormGroup, Modal, ModalVariant, TextArea, TextInput} from "@patternfly/react-core";
-import {Design} from "@app/models";
+import { Button, Form, FormGroup, Modal, ModalVariant, TextArea, TextInput } from "@patternfly/react-core";
+import { Design } from "@app/models";
 
 export type RenameData = {
     name: string;

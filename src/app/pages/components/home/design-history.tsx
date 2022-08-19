@@ -1,9 +1,9 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import "./design-history.css";
-import {Design, DesignEvent} from "@app/models";
-import {DesignsService, useDesignsService} from "@app/services";
-import {DateTime, IfNotEmpty, IsLoading} from "@app/components";
-import {DesignEventType} from "@app/pages/components";
+import { Design, DesignEvent } from "@app/models";
+import { DesignsService, useDesignsService } from "@app/services";
+import { DateTime, IfNotEmpty, IsLoading } from "@app/components";
+import { DesignEventType } from "@app/pages/components";
 
 /**
  * Properties

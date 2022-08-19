@@ -1,4 +1,4 @@
-import {SearchedVersion} from "@app/models";
+import { SearchedVersion } from "@app/models";
 
 export interface VersionSearchResults {
     versions: SearchedVersion[];

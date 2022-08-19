@@ -1,16 +1,18 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import "./designs.panel.css";
-import {Alert, AlertActionCloseButton, Card, CardBody} from "@patternfly/react-core";
+import { Alert, AlertActionCloseButton, Card, CardBody } from "@patternfly/react-core";
 import {
     AlertsService,
     DesignsService,
-    DownloadService, LocalStorageService, useAlertsService,
+    DownloadService,
+    LocalStorageService,
+    useAlertsService,
     useDesignsService,
     useDownloadService,
     useLocalStorageService
 } from "@app/services";
-import {Design, DesignsSearchCriteria, DesignsSearchResults, DesignsSort, Paging} from "@app/models";
-import {If, ListWithToolbar, RegistryNavLink} from "@app/components";
+import { Design, DesignsSearchCriteria, DesignsSearchResults, DesignsSort, Paging } from "@app/models";
+import { If, ListWithToolbar } from "@app/components";
 import {
     DeleteDesignModal,
     DesignList,
@@ -23,9 +25,8 @@ import {
     RenameData,
     RenameModal
 } from "@app/pages/components";
-import {Navigation, useNavigation} from "@app/contexts/navigation";
-import {contentTypeForDesign, convertToValidFilename, fileExtensionForDesign} from "@app/utils";
-import {AlertVariant, useAlert} from "@rhoas/app-services-ui-shared";
+import { Navigation, useNavigation } from "@app/contexts/navigation";
+import { contentTypeForDesign, convertToValidFilename, fileExtensionForDesign } from "@app/utils";
 
 
 export type DesignsPanelProps = {

@@ -1,6 +1,6 @@
 import YAML from "yaml";
-import {IParserResult, parse} from "protobufjs";
-import {ArtifactTypes, ContentTypes, Design, DesignContent} from "@app/models";
+import { parse } from "protobufjs";
+import { ArtifactTypes, ContentTypes, Design, DesignContent } from "@app/models";
 
 /**
  * Returns true if the given content is JSON formatted.
@@ -33,6 +33,7 @@ export function isYaml(content: string): boolean {
             return true;
         }
     } catch (e) {
+        // Do nothing - it's not a YAML file.
     }
     return false;
 }
@@ -84,7 +85,7 @@ export function isXsd(content: string): boolean {
  */
 export function isProto(content: string): boolean {
     try {
-        const result: IParserResult = parse(content);
+        /*const result: IParserResult = */parse(content);
         return true;
     } catch (e) {
         return false;
@@ -178,7 +179,7 @@ export function formatContent(value: string, contentType: string): string {
  * @param value
  */
 export function convertToValidFilename(value: string): string {
-    return (value.replace(/[\/|\\:*?"<>]/g, ""));
+    return (value.replace(/[/|\\:*?"<>]/g, ""));
 }
 
 /**

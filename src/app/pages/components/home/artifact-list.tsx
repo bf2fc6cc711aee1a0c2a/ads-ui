@@ -1,7 +1,7 @@
-import React, {FunctionComponent, useState} from "react";
+import React, { FunctionComponent, useState } from "react";
 import "./artifact-list.css";
-import {CreateDesignContent, SearchedArtifact, SearchedVersion} from "@app/models";
-import {ArtifactListItem} from "@app/pages/components";
+import { CreateDesignContent, SearchedArtifact, SearchedVersion } from "@app/models";
+import { ArtifactListItem } from "@app/pages/components";
 
 /**
  * Properties

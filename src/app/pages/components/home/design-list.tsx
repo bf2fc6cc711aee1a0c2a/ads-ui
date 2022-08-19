@@ -1,14 +1,14 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import "./design-list.css";
-import {Design, DesignsSearchResults, DesignsSort} from "@app/models";
-import {ResponsiveTable} from "@rhoas/app-services-ui-components";
-import {ArtifactTypeIcon, DesignDescription, NavLink} from "@app/components";
+import { Design, DesignsSearchResults, DesignsSort } from "@app/models";
+import { ResponsiveTable } from "@rhoas/app-services-ui-components";
+import { ArtifactTypeIcon, DesignDescription, NavLink } from "@app/components";
 import Moment from "react-moment";
-import {KebabToggle, Truncate} from "@patternfly/react-core";
-import {IAction} from "@patternfly/react-table";
-import {ThProps} from "@patternfly/react-table/src/components/TableComposable/Th";
-import {CustomActionsToggleProps} from "@patternfly/react-table/src/components/Table/ActionsColumn";
-import {DesignOriginLabel} from "@app/pages/components";
+import { KebabToggle, Truncate } from "@patternfly/react-core";
+import { IAction } from "@patternfly/react-table";
+import { ThProps } from "@patternfly/react-table/src/components/TableComposable/Th";
+import { CustomActionsToggleProps } from "@patternfly/react-table/src/components/Table/ActionsColumn";
+import { DesignOriginLabel } from "@app/pages/components";
 
 
 export type DesignListProps = {

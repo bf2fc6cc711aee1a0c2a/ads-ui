@@ -1,6 +1,6 @@
-import React, {FunctionComponent} from "react";
-import {Design} from "@app/models";
-import {Alert, AlertActionLink, Button, CodeBlock, CodeBlockCode} from "@patternfly/react-core";
+import React, { FunctionComponent } from "react";
+import { Design } from "@app/models";
+import { Alert, AlertActionLink, CodeBlock, CodeBlockCode } from "@patternfly/react-core";
 
 
 export type RegistrationErrorProps = {

@@ -1,5 +1,5 @@
-import {ContentTypes} from "@app/models/rhosr-instance";
-import axios, {AxiosRequestConfig} from "axios";
+import { ContentTypes } from "@app/models/rhosr-instance";
+import axios, { AxiosRequestConfig } from "axios";
 
 const AXIOS = axios.create();
 
@@ -28,24 +28,24 @@ function unwrapErrorData(error: any): any {
             message: error.message,
             ...error.response.data,
             status: error.response.status
-        }
+        };
     } else if (error && error.response) {
         return {
             message: error.message,
             status: error.response.status
-        }
+        };
     } else if (error) {
         console.error("Unknown error detected: ", error);
         return {
             message: error.message,
             status: 500
-        }
+        };
     } else {
         console.error("Unknown error detected: ", error);
         return {
             message: "Unknown error",
             status: 500
-        }
+        };
     }
 }
 
@@ -89,7 +89,7 @@ export function createEndpoint(baseHref: string, path: string, params?: any, que
  * @param headers
  */
 export function createOptions(headers: { [header: string]: string }): AxiosRequestConfig {
-    const options: AxiosRequestConfig = {headers};
+    const options: AxiosRequestConfig = { headers };
     return options;
 }
 
@@ -102,7 +102,7 @@ export function httpGet<T>(url: string, options?: AxiosRequestConfig, successCal
     console.info("[BaseService] Making a GET request to: ", url);
 
     if (!options) {
-        options = createOptions({"Accept": ContentTypes.APPLICATION_JSON});
+        options = createOptions({ "Accept": ContentTypes.APPLICATION_JSON });
     }
 
     const config: AxiosRequestConfig = createAxiosConfig("get", url, options);
@@ -133,7 +133,7 @@ export function httpPost<I>(url: string, body: I, options?: AxiosRequestConfig, 
     console.info("[BaseService] Making a POST request to: ", url);
 
     if (!options) {
-        options = createOptions({"Content-Type": ContentTypes.APPLICATION_JSON});
+        options = createOptions({ "Content-Type": ContentTypes.APPLICATION_JSON });
     }
 
     const config: AxiosRequestConfig = createAxiosConfig("post", url, options, body);
@@ -197,7 +197,7 @@ export function httpPut<I>(url: string, body: I, options?: AxiosRequestConfig, s
     console.info("[BaseService] Making a PUT request to: ", url);
 
     if (!options) {
-        options = createOptions({"Content-Type": ContentTypes.APPLICATION_JSON});
+        options = createOptions({ "Content-Type": ContentTypes.APPLICATION_JSON });
     }
 
     const config: AxiosRequestConfig = createAxiosConfig("put", url, options, body);
@@ -257,7 +257,9 @@ export function httpDelete<T>(url: string, options?: AxiosRequestConfig, success
     }
 
     const config: AxiosRequestConfig = createAxiosConfig("delete", url, options);
-// @ts-ignore
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     return AXIOS.request(config)
         .then(() => {
             return successCallback ? successCallback() : null;

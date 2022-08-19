@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import "./designs-toolbar.css";
 import {
     Button,
@@ -10,9 +10,8 @@ import {
     ToolbarContent,
     ToolbarItem
 } from "@patternfly/react-core";
-import {SortAlphaDownAltIcon, SortAlphaDownIcon} from "@patternfly/react-icons";
-import {DesignsSearchCriteria, DesignsSearchResults, Paging} from "@app/models";
-import {ImportDropdown, ImportFrom} from "@app/pages/components";
+import { DesignsSearchCriteria, DesignsSearchResults, Paging } from "@app/models";
+import { ImportDropdown, ImportFrom } from "@app/pages/components";
 
 
 /**

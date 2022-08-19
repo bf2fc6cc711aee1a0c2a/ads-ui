@@ -1,9 +1,9 @@
-import React, {FunctionComponent, useState} from "react";
+import React, { FunctionComponent, useState } from "react";
 import "./design-details-panel.css";
-import {Design} from "@app/models";
-import {Tab, Tabs, TabTitleText} from "@patternfly/react-core";
-import {ArtifactTypeIcon, DateTime, DesignDescription} from "@app/components";
-import {DesignEvents, DesignHistory, DesignOriginLabel} from "@app/pages/components";
+import { Design } from "@app/models";
+import { Tab, Tabs, TabTitleText } from "@patternfly/react-core";
+import { ArtifactTypeIcon, DateTime, DesignDescription } from "@app/components";
+import { DesignEvents, DesignHistory, DesignOriginLabel } from "@app/pages/components";
 
 /**
  * Properties

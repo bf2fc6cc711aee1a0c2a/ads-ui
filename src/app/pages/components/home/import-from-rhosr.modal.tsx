@@ -1,10 +1,10 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
-import {Button, Modal, ModalVariant} from "@patternfly/react-core";
-import {CreateDesign, CreateDesignContent, SearchedArtifact, SearchedVersion} from "@app/models";
-import {Registry} from "@rhoas/registry-management-sdk";
-import {RhosrService, useRhosrService} from "@app/services";
-import {If, IsLoading, RhosrEmptyState, ServicePreviewWarning} from "@app/components";
-import {ArtifactSelector} from "@app/pages/components";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { Button, Modal, ModalVariant } from "@patternfly/react-core";
+import { CreateDesign, CreateDesignContent, SearchedArtifact, SearchedVersion } from "@app/models";
+import { Registry } from "@rhoas/registry-management-sdk";
+import { RhosrService, useRhosrService } from "@app/services";
+import { If, IsLoading, RhosrEmptyState, ServicePreviewWarning } from "@app/components";
+import { ArtifactSelector } from "@app/pages/components";
 
 
 export type ImportFromRhosrModalProps = {

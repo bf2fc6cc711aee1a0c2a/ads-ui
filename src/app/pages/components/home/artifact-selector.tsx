@@ -1,5 +1,5 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
-import {Registry} from "@rhoas/registry-management-sdk";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { Registry } from "@rhoas/registry-management-sdk";
 import {
     ArtifactSearchResults,
     CreateDesignContent,
@@ -8,10 +8,10 @@ import {
     SearchedArtifact,
     SearchedVersion
 } from "@app/models";
-import {RhosrInstanceService, RhosrInstanceServiceFactory, useRhosrInstanceServiceFactory} from "@app/services";
-import {ArtifactList, ArtifactListToolbar, ArtifactListToolbarCriteria, IfRhosr} from "@app/pages/components";
-import {ListWithToolbar} from "@app/components";
-import {EmptyState, EmptyStateBody, EmptyStateVariant, Spinner, Title} from "@patternfly/react-core";
+import { RhosrInstanceService, RhosrInstanceServiceFactory, useRhosrInstanceServiceFactory } from "@app/services";
+import { ArtifactList, ArtifactListToolbar, ArtifactListToolbarCriteria, IfRhosr } from "@app/pages/components";
+import { ListWithToolbar } from "@app/components";
+import { EmptyState, EmptyStateBody, EmptyStateVariant, Spinner, Title } from "@patternfly/react-core";
 
 /**
  * Properties

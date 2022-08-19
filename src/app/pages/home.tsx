@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useEffect, useRef, useState} from "react";
+import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import "./home.css";
 import {
     Drawer,
@@ -25,11 +25,11 @@ import {
     ImportFrom,
     ImportFromRhosrModal
 } from "@app/pages/components";
-import {CreateDesign, CreateDesignContent, Design, Template} from "@app/models";
-import {cloneObject, propertyReplace} from "@app/utils";
-import {DesignsService, useDesignsService} from "@app/services";
-import {Navigation, useNavigation} from "@app/contexts/navigation";
-import {ArtifactTypeIcon} from "@app/components";
+import { CreateDesign, CreateDesignContent, Design, Template } from "@app/models";
+import { cloneObject, propertyReplace } from "@app/utils";
+import { DesignsService, useDesignsService } from "@app/services";
+import { Navigation, useNavigation } from "@app/contexts/navigation";
+import { ArtifactTypeIcon } from "@app/components";
 
 export type HomePageProps = {
 };

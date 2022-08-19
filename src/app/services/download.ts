@@ -5,8 +5,8 @@
  * @param contentType
  * @param filename
  */
-import {DesignsService, useDesignsService} from "@app/services/designs";
-import {Design, DesignEvent} from "@app/models";
+import { DesignsService, useDesignsService } from "@app/services/designs";
+import { Design, DesignEvent } from "@app/models";
 
 
 async function downloadToFS(designsSvc: DesignsService, design: Design, content: string, contentType: string, filename: string): Promise<void> {
@@ -15,18 +15,18 @@ async function downloadToFS(designsSvc: DesignsService, design: Design, content:
 
     if (_w.chrome !== undefined) {
         // Chrome version
-        let link = document.createElement('a');
-        let blob = new Blob([content], { type: contentType });
+        const link = document.createElement("a");
+        const blob = new Blob([content], { type: contentType });
         link.href = _w.URL.createObjectURL(blob);
         link.download = filename;
         link.click();
     } else if (_w.navigator !== undefined && _w.navigator.msSaveBlob !== undefined) {
         // IE version
-        let blob = new Blob([content], { type: contentType });
+        const blob = new Blob([content], { type: contentType });
         _w.navigator.msSaveBlob(blob, filename);
     } else {
         // Firefox version
-        let file = new File([content], filename, { type: 'application/force-download' });
+        const file = new File([content], filename, { type: "application/force-download" });
         _w.open(URL.createObjectURL(file));
     }
 
@@ -39,7 +39,8 @@ async function downloadToFS(designsSvc: DesignsService, design: Design, content:
             filename
         }
     };
-    designsSvc.createEvent(event);
+
+    return designsSvc.createEvent(event);
 }
 
 

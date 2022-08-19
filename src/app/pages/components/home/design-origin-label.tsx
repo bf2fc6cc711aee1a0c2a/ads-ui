@@ -1,7 +1,7 @@
-import React, {FunctionComponent} from "react";
-import {Design} from "@app/models";
-import {Label} from "@patternfly/react-core";
-import {hasOrigin} from "@app/utils";
+import React, { FunctionComponent } from "react";
+import { Design } from "@app/models";
+import { Label } from "@patternfly/react-core";
+import { hasOrigin } from "@app/utils";
 
 
 export type DesignOriginLabelProps = {

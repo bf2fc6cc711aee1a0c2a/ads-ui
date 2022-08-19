@@ -1,4 +1,4 @@
-import {CreateDesignContent} from "@app/models";
+import { CreateDesignContent } from "@app/models";
 
 export interface Template {
 

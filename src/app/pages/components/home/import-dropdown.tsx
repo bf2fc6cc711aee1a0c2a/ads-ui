@@ -1,6 +1,6 @@
-import React, {FunctionComponent, useState} from "react";
+import React, { FunctionComponent, useState } from "react";
 import "./import-dropdown.css";
-import {Dropdown, DropdownItem, DropdownToggle} from "@patternfly/react-core";
+import { Dropdown, DropdownItem, DropdownToggle } from "@patternfly/react-core";
 
 export enum ImportFrom {
     FILE,
@@ -34,6 +34,7 @@ export const ImportDropdown: FunctionComponent<ImportDropdownProps> = ({variant,
     );
 
     const onMenuSelect: (event?: React.SyntheticEvent<HTMLDivElement>) => void = (event) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const action: string = event?.target.attributes["data-id"].value;
         setToggled(false);

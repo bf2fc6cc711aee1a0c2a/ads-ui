@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useEffect, useRef, useState} from "react";
+import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import "./editor.css";
 import {
     Button,
@@ -29,15 +29,15 @@ import {
     useDownloadService,
     useRhosrInstanceServiceFactory
 } from "@app/services";
-import {ArtifactTypes, ContentTypes, Design, DesignContent, TestRegistryErrorResponse} from "@app/models";
-import {IsLoading} from "@app/components";
-import {CompareModal, DeleteDesignModal, EditorContext, RenameData, RenameModal} from "@app/pages/components";
-import {OpenApiEditor, ProtoEditor, TextEditor} from "@app/editors";
-import {AsyncApiEditor} from "@app/editors/editor-asyncapi";
-import {Registry} from "@rhoas/registry-management-sdk";
-import {contentTypeForDesign, convertToValidFilename, fileExtensionForDesign, formatContent} from "@app/utils";
-import {Prompt} from "react-router-dom";
-import {Navigation, useNavigation} from "@app/contexts/navigation";
+import { ArtifactTypes, ContentTypes, Design, DesignContent, TestRegistryErrorResponse } from "@app/models";
+import { IsLoading } from "@app/components";
+import { CompareModal, DeleteDesignModal, EditorContext, RenameData, RenameModal } from "@app/pages/components";
+import { OpenApiEditor, ProtoEditor, TextEditor } from "@app/editors";
+import { AsyncApiEditor } from "@app/editors/editor-asyncapi";
+import { Registry } from "@rhoas/registry-management-sdk";
+import { contentTypeForDesign, convertToValidFilename, fileExtensionForDesign, formatContent } from "@app/utils";
+import { Prompt } from "react-router-dom";
+import { Navigation, useNavigation } from "@app/contexts/navigation";
 
 
 export type EditorPageProps = {

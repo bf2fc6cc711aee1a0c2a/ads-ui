@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import "./artifact-list-toolbar.css";
 import {
     Button,
@@ -11,10 +11,10 @@ import {
     ToolbarContent,
     ToolbarItem
 } from "@patternfly/react-core";
-import {SortAlphaDownAltIcon, SortAlphaDownIcon} from "@patternfly/react-icons";
-import {ArtifactSearchResults, Paging} from "@app/models";
-import {Registry} from "@rhoas/registry-management-sdk";
-import {ObjectSelect} from "@app/components/object-select";
+import { SortAlphaDownAltIcon, SortAlphaDownIcon } from "@patternfly/react-icons";
+import { ArtifactSearchResults, Paging } from "@app/models";
+import { Registry } from "@rhoas/registry-management-sdk";
+import { ObjectSelect } from "@app/components/object-select";
 
 
 export interface ArtifactListToolbarCriteria {
