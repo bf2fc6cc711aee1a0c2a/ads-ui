@@ -72,7 +72,7 @@ async function getRegistries(auth: Auth, basePath: string): Promise<Registry[]> 
             basePath,
         })
     );
-    return api.getRegistries().then(res => {
+    return api.getRegistries(1, 50).then(res => {
         const registries: RegistryList = res?.data;
         return registries.items;
     });
