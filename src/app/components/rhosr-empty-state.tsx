@@ -1,14 +1,13 @@
-import React, {FunctionComponent} from "react";
-import {EmptyState, EmptyStateBody, EmptyStateIcon, Title} from "@patternfly/react-core";
-import {AddCircleOIcon} from "@patternfly/react-icons";
+import React, { FunctionComponent } from "react";
+import { EmptyState, EmptyStateBody, EmptyStateIcon, Title } from "@patternfly/react-core";
+import { AddCircleOIcon } from "@patternfly/react-icons";
 
 /**
  * Properties
  */
-export type RhosrEmptyStateProps = {
-};
+export type RhosrEmptyStateProps = Record<string, never>;
 
-export const RhosrEmptyState: FunctionComponent<RhosrEmptyStateProps> = ({}: RhosrEmptyStateProps) => {
+export const RhosrEmptyState: FunctionComponent<RhosrEmptyStateProps> = () => {
     return (
         <EmptyState>
             <EmptyStateIcon icon={AddCircleOIcon} />

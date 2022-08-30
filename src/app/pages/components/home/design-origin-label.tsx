@@ -9,7 +9,7 @@ export type DesignOriginLabelProps = {
 };
 
 
-export const DesignOriginLabel: FunctionComponent<DesignOriginLabelProps> = ({design}: DesignOriginLabelProps) => {
+export const DesignOriginLabel: FunctionComponent<DesignOriginLabelProps> = ({ design }: DesignOriginLabelProps) => {
 
     const label = (): string => {
         if (design) {

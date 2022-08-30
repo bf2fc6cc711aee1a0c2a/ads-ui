@@ -4,10 +4,9 @@ import { RhosrService, useRhosrService } from "@app/services/rhosr";
 import { IfNotEmpty, IsLoading, NavLink } from "@app/components";
 import { Registry } from "@rhoas/registry-management-sdk";
 
-export type RhosrPanelProps = {
-}
+export type RhosrPanelProps = Record<string, unknown>;
 
-export const RhosrPanel: FunctionComponent<RhosrPanelProps> = ({}: RhosrPanelProps) => {
+export const RhosrPanel: FunctionComponent<RhosrPanelProps> = () => {
     const [ loading, setLoading ] = useState(true);
     const [ registries, setRegistries ] = useState([] as Registry[]);
 
@@ -33,7 +32,7 @@ export const RhosrPanel: FunctionComponent<RhosrPanelProps> = ({}: RhosrPanelPro
             <CardTitle>Browse Service Registries</CardTitle>
             <CardBody>
                 <IsLoading condition={loading}>
-                    <IfNotEmpty collection={registries} emptyStateTitle={`None found`} emptyStateMessage={`Create a Service Registry instance to browse it for editable content.`}>
+                    <IfNotEmpty collection={registries} emptyStateTitle="None found" emptyStateMessage="Create a Service Registry instance to browse it for editable content.">
                         <div className="registries">
                             {
                                 registries.map(registry =>

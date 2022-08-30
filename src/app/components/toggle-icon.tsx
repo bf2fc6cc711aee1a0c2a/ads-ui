@@ -1,5 +1,5 @@
-import React, {FunctionComponent} from "react";
-import {ChevronRightIcon, ChevronDownIcon} from "@patternfly/react-icons";
+import React, { FunctionComponent } from "react";
+import { ChevronDownIcon, ChevronRightIcon } from "@patternfly/react-icons";
 
 /**
  * Properties
@@ -9,10 +9,10 @@ export type ToggleIconProps = {
     onClick: () => void;
 };
 
-export const ToggleIcon: FunctionComponent<ToggleIconProps> = ({expanded, onClick}: ToggleIconProps) => {
+export const ToggleIcon: FunctionComponent<ToggleIconProps> = ({ expanded, onClick }: ToggleIconProps) => {
     return expanded ? (
-        <ChevronDownIcon />
+        <ChevronDownIcon onClick={onClick} />
     ) : (
-        <ChevronRightIcon />
+        <ChevronRightIcon onClick={onClick} />
     );
 };

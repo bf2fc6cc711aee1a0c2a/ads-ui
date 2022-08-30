@@ -1,15 +1,15 @@
-import React, {MutableRefObject, useEffect, useRef, useState} from "react";
-import {Editor as DesignEditor, EditorProps} from "@app/editors/editor-types";
+import React, { MutableRefObject, useEffect, useRef, useState } from "react";
+import { Editor as DesignEditor, EditorProps } from "@app/editors/editor-types";
 import Editor from "@monaco-editor/react";
-import {ContentTypes, DesignContent} from "@app/models";
-import {editor} from "monaco-editor";
+import { ContentTypes, DesignContent } from "@app/models";
+import { editor } from "monaco-editor";
+import { contentToString } from "@app/utils";
 import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
-import {contentToString} from "@app/utils";
 
 
 export const designContentToString = (content: DesignContent): string => {
     return contentToString(content.data);
-}
+};
 
 
 export const designContentToLanguage = (content: DesignContent): string => {
@@ -30,7 +30,7 @@ export const designContentToLanguage = (content: DesignContent): string => {
  * Simple text editor.  This is a fallback editor for any text based content
  * we might want to edit.
  */
-export const TextEditor: DesignEditor = ({content, onChange}: EditorProps) => {
+export const TextEditor: DesignEditor = ({ content, onChange }: EditorProps) => {
     const defaultValue: string = designContentToString(content);
     const defaultLanguage: string = designContentToLanguage(content);
 
@@ -59,9 +59,9 @@ export const TextEditor: DesignEditor = ({content, onChange}: EditorProps) => {
             onChange={onChange}
             options={{
                 automaticLayout: true,
-                wordWrap: 'on'
+                wordWrap: "on"
             }}
-            onMount={(editor, monaco) => {
+            onMount={(editor) => {
                 editorRef.current = editor;
             }}
         />

@@ -37,7 +37,7 @@ export type DesignsPanelProps = {
 }
 
 
-export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesign, onDesignSelected, onCreate, onImport}: DesignsPanelProps) => {
+export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({ selectedDesign, onDesignSelected, onCreate, onImport }: DesignsPanelProps) => {
     const [ isLoading, setLoading ] = useState(false);
     const [ showDataWarning, setShowDataWarning ] = useState(true);
     const [ refresh, setRefresh ] = useState(1);
@@ -89,9 +89,9 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesi
             }
             setRenameModalOpen(false);
             alerts.designRenamed(event);
-        }).catch(e => {
+        }).catch(() => {
             // TODO error handling
-        })
+        });
     };
 
     const onDeleteDesign = (design: Design): void => {
@@ -181,8 +181,8 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesi
 
     const toolbar: React.ReactNode = (
         <DesignsToolbar designs={designs} criteria={criteria} paging={paging}
-                        onCreate={onCreate} onImport={onImport}
-                        onCriteriaChange={onCriteriaChange} onPagingChange={onPagingChange} />
+            onCreate={onCreate} onImport={onImport}
+            onCriteriaChange={onCriteriaChange} onPagingChange={onPagingChange} />
     );
 
     const onCloseDataWarning = (): void => {
@@ -193,20 +193,20 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesi
     return (
         <div className="designs-panel">
             <ListWithToolbar toolbar={toolbar}
-                             emptyState={emptyState}
-                             filteredEmptyState={emptyStateFiltered}
-                             isLoading={isLoading}
-                             isFiltered={isFiltered}
-                             isEmpty={!designs || designs.count === 0}>
+                emptyState={emptyState}
+                filteredEmptyState={emptyStateFiltered}
+                isLoading={isLoading}
+                isFiltered={isFiltered}
+                isEmpty={!designs || designs.count === 0}>
                 <Card isSelectable={false}>
                     <CardBody className="panel-body">
                         <If condition={showDataWarning}>
                             <Alert className="panel-alert"
-                                   isInline={true}
-                                   variant="info"
-                                   title="Service Preview: Data is stored locally in your browser"
-                                   actionClose={<AlertActionCloseButton onClose={onCloseDataWarning} />}
-                                   style={{ marginBottom: "15px"}}>
+                                isInline={true}
+                                variant="info"
+                                title="Service Preview: Data is stored locally in your browser"
+                                actionClose={<AlertActionCloseButton onClose={onCloseDataWarning} />}
+                                style={{ marginBottom: "15px" }}>
                                 <p>
                                     In the Service Preview release of OpenShift API Designer, all designs are stored
                                     locally in your browser. Clearing your browser cache or switching to a new browser
@@ -216,31 +216,31 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({selectedDesi
                             </Alert>
                         </If>
                         <DesignList designs={designs as DesignsSearchResults}
-                                    selectedDesign={selectedDesign}
-                                    sort={sort}
-                                    onSelect={onDesignSelected}
-                                    onSort={onSortDesigns}
-                                    onEdit={onEditDesign}
-                                    onRename={onRenameDesign}
-                                    onDownload={onDownloadDesign}
-                                    onRegister={onRegisterDesign}
-                                    onDelete={onDeleteDesign} />
+                            selectedDesign={selectedDesign}
+                            sort={sort}
+                            onSelect={onDesignSelected}
+                            onSort={onSortDesigns}
+                            onEdit={onEditDesign}
+                            onRename={onRenameDesign}
+                            onDownload={onDownloadDesign}
+                            onRegister={onRegisterDesign}
+                            onDelete={onDeleteDesign} />
                     </CardBody>
                 </Card>
             </ListWithToolbar>
             <DeleteDesignModal design={designToDelete}
-                              isOpen={isDeleteModalOpen}
-                              onDelete={onDeleteDesignConfirmed}
-                              onDownload={onDownloadDesign}
-                              onCancel={() => setDeleteModalOpen(false)} />
+                isOpen={isDeleteModalOpen}
+                onDelete={onDeleteDesignConfirmed}
+                onDownload={onDownloadDesign}
+                onCancel={() => setDeleteModalOpen(false)} />
             <ExportToRhosrModal design={designToRegister as Design}
-                                isOpen={isRegisterModalOpen}
-                                onExported={onRegisterDesignConfirmed}
-                                onCancel={() => setRegisterModalOpen(false)} />
+                isOpen={isRegisterModalOpen}
+                onExported={onRegisterDesignConfirmed}
+                onCancel={() => setRegisterModalOpen(false)} />
             <RenameModal design={designToRename}
-                         isOpen={isRenameModalOpen}
-                         onRename={doRenameDesign}
-                         onCancel={() => setRenameModalOpen(false)} />
+                isOpen={isRenameModalOpen}
+                onRename={doRenameDesign}
+                onCancel={() => setRenameModalOpen(false)} />
         </div>
     );
 };

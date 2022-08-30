@@ -25,7 +25,7 @@ export type DesignListProps = {
 }
 
 export const DesignList: FunctionComponent<DesignListProps> = (
-    {designs, selectedDesign, sort, onSort, onEdit, onRename, onDelete, onRegister, onDownload, onSelect}: DesignListProps) => {
+    { designs, selectedDesign, sort, onSort, onEdit, onRename, onDelete, onRegister, onDownload, onSelect }: DesignListProps) => {
 
     const [sortByIndex, setSortByIndex] = useState<number>();
 
@@ -42,37 +42,45 @@ export const DesignList: FunctionComponent<DesignListProps> = (
             return (
                 <div>
                     <NavLink className="design-title"
-                             location={`/designs/${column.id}/editor`}>
+                        location={`/designs/${column.id}/editor`}>
                         <Truncate content={column.name} tooltipPosition="top" />
                     </NavLink>
                     <DesignDescription className="design-summary"
-                                       description={column.summary}
-                                       truncate={true} />
+                        description={column.summary}
+                        truncate={true} />
                 </div>
             );
         }
         // Type.
         if (colIndex === 1) {
-            return <ArtifactTypeIcon type={column.type} isShowLabel={true} />
+            return (
+                <ArtifactTypeIcon type={column.type} isShowLabel={true} />
+            );
         }
         // Modified on.
         if (colIndex === 2) {
-            return <Moment date={column.modifiedOn} fromNow={true} />
+            return (
+                <Moment date={column.modifiedOn} fromNow={true} />
+            );
         }
         // Origin.
         if (colIndex === 3) {
             return <DesignOriginLabel design={column} />;
         }
-        return <span />
+        return (
+            <span />
+        );
     };
 
     const renderActionsToggle = (props: CustomActionsToggleProps): React.ReactNode => {
-        return <KebabToggle isDisabled={props.isDisabled} isOpen={props.isOpen} onToggle={(value, event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            props.onToggle(value);
-        }} />
-    }
+        return (
+            <KebabToggle isDisabled={props.isDisabled} isOpen={props.isOpen} onToggle={(value, event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                props.onToggle(value);
+            }} />
+        );
+    };
 
     const actionsFor = (design: any): IAction[] => {
         return [
@@ -85,7 +93,7 @@ export const DesignList: FunctionComponent<DesignListProps> = (
             { isSeparator: true, },
             { title: "Delete design", onClick: () => onDelete(design) }
         ];
-    }
+    };
 
     const sortParams = (column: any): ThProps["sort"] | undefined => {
         return column.sortable ? {
@@ -117,20 +125,20 @@ export const DesignList: FunctionComponent<DesignListProps> = (
                 expectedLength={designs.count}
                 minimumColumnWidth={350}
                 onRowClick={(row) => onSelect(row.row.id === selectedDesign?.id ? undefined : row.row)}
-                renderHeader={({ column, Th, key }) => (
+                renderHeader={({ column, Th }) => (
                     <Th sort={sortParams(column)}
                         className="design-list-header"
                         key={`header-${column.id}`}
                         width={column.width}
                         modifier="truncate">{column.label}</Th>
                 )}
-                renderCell={({ column, row, colIndex, Td, key }) => (
+                renderCell={({ row, colIndex, Td }) => (
                     <Td className="design-list-cell" key={`cell-${colIndex}-${row.id}`} children={renderColumnData(row as Design, colIndex)} />
                 )}
-                renderActions={({row, ActionsColumn}) => (
-                    <ActionsColumn key={`actions-${row['id']}`}
-                                   actionsToggle={renderActionsToggle}
-                                   items={actionsFor(row)}/>
+                renderActions={({ row, ActionsColumn }) => (
+                    <ActionsColumn key={`actions-${row["id"]}`}
+                        actionsToggle={renderActionsToggle}
+                        items={actionsFor(row)}/>
                 )}
                 isRowSelected={({ row }) => row.id === selectedDesign?.id}
             />

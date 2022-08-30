@@ -1,5 +1,5 @@
-import React, {FunctionComponent} from "react";
-import {Button, EmptyState, EmptyStateBody, EmptyStateVariant, Title} from "@patternfly/react-core";
+import React, { FunctionComponent } from "react";
+import { EmptyState, EmptyStateBody, EmptyStateVariant, Title } from "@patternfly/react-core";
 
 /**
  * Properties
@@ -17,7 +17,7 @@ export type IfNotEmptyProps = {
  * provided collection is not empty.  If the provided collection is empty, then
  * an empty state control is displayed instead.
  */
-export const IfNotEmpty: FunctionComponent<IfNotEmptyProps> = ({collection, emptyState, emptyStateTitle, emptyStateMessage, children}: IfNotEmptyProps) => {
+export const IfNotEmpty: FunctionComponent<IfNotEmptyProps> = ({ collection, emptyState, emptyStateTitle, emptyStateMessage, children }: IfNotEmptyProps) => {
     const isEmpty = () => {
         return !collection || collection.length === 0;
     };
@@ -30,6 +30,6 @@ export const IfNotEmpty: FunctionComponent<IfNotEmptyProps> = ({collection, empt
     );
 
     return isEmpty() ?
-        <React.Fragment children={empty}/> :
-        <React.Fragment children={children} />
+        (<React.Fragment children={empty}/>) :
+        (<React.Fragment children={children} />);
 };

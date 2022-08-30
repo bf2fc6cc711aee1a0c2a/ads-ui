@@ -9,7 +9,7 @@ export type TemplateItemProps = {
     onSelect: (template: Template) => void;
 }
 
-export const TemplateItem: FunctionComponent<TemplateItemProps> = ({template, isSelected, onSelect}: TemplateItemProps) => {
+export const TemplateItem: FunctionComponent<TemplateItemProps> = ({ template, isSelected, onSelect }: TemplateItemProps) => {
     const onClick = (): void => {
         if (!isSelected) {
             onSelect(template);

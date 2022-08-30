@@ -11,7 +11,7 @@ export type ArtifactNameProps = {
 /**
  * Displays a RHOSR artifact's name.
  */
-export const ArtifactName: FunctionComponent<ArtifactNameProps> = ({id, name}: ArtifactNameProps) => {
+export const ArtifactName: FunctionComponent<ArtifactNameProps> = ({ id, name }: ArtifactNameProps) => {
     return name ? (
         <React.Fragment>
             <span className="name">{name}</span>

@@ -14,7 +14,7 @@ export type ImportFromRhosrModalProps = {
 }
 
 
-export const ImportFromRhosrModal: FunctionComponent<ImportFromRhosrModalProps> = ({isOpen, onImport, onCancel}: ImportFromRhosrModalProps) => {
+export const ImportFromRhosrModal: FunctionComponent<ImportFromRhosrModalProps> = ({ isOpen, onImport, onCancel }: ImportFromRhosrModalProps) => {
     const [isValid, setValid] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const [registries, setRegistries] = useState([] as Registry[]);
@@ -80,7 +80,7 @@ export const ImportFromRhosrModal: FunctionComponent<ImportFromRhosrModalProps> 
         setValid(valid);
     }, [design, designContent]);
 
-    let actions: any[] = registries.length === 0 ? [] : [
+    const actions: any[] = registries.length === 0 ? [] : [
         <Button key="create" variant="primary" isDisabled={!isValid} onClick={doImport}>
             Import
         </Button>,
@@ -107,5 +107,5 @@ export const ImportFromRhosrModal: FunctionComponent<ImportFromRhosrModalProps> 
                 </If>
             </IsLoading>
         </Modal>
-    )
+    );
 };

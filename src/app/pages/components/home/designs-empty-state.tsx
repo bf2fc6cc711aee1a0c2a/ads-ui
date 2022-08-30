@@ -22,7 +22,7 @@ export type DesignsEmptyStateProps = {
  * The empty state UI shown to the user when no designs are available, either due to
  * filtering or because no designs have been created yet.
  */
-export const DesignsEmptyState: FunctionComponent<DesignsEmptyStateProps> = ({onCreate, onImport}: DesignsEmptyStateProps) => {
+export const DesignsEmptyState: FunctionComponent<DesignsEmptyStateProps> = ({ onCreate, onImport }: DesignsEmptyStateProps) => {
     return (
         <EmptyState>
             <EmptyStateIcon icon={AddCircleOIcon} />

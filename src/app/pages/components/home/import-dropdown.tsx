@@ -6,7 +6,7 @@ export enum ImportFrom {
     FILE,
     URL,
     RHOSR
-};
+}
 
 /**
  * Properties
@@ -20,7 +20,7 @@ export type ImportDropdownProps = {
  * A control to display the Import dropdown on the main page (used to select how to import content
  * into the API Designer).
  */
-export const ImportDropdown: FunctionComponent<ImportDropdownProps> = ({variant, onImport}: ImportDropdownProps) => {
+export const ImportDropdown: FunctionComponent<ImportDropdownProps> = ({ variant, onImport }: ImportDropdownProps) => {
     const [isToggled, setToggled] = useState(false);
 
     const onToggle = (value: boolean): void => {

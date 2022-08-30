@@ -6,6 +6,6 @@ type FederatedEditorPageProps = EditorPageProps & FederatedProps;
 
 const FederatedEditorPage: React.FunctionComponent<FederatedEditorPageProps> = (props: FederatedEditorPageProps) => {
     return (<EditorPage {...props}/>);
-}
+};
 
 export default FederatedEditorPage;

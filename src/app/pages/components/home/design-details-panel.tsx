@@ -15,7 +15,7 @@ export type DesignDetailsPanelProps = {
 /**
  * Details panel with metadata and history about a single selected design.
  */
-export const DesignDetailsPanel: FunctionComponent<DesignDetailsPanelProps> = ({design}: DesignDetailsPanelProps) => {
+export const DesignDetailsPanel: FunctionComponent<DesignDetailsPanelProps> = ({ design }: DesignDetailsPanelProps) => {
 
     const [activeTabKey, setActiveTabKey] = useState<string>("details");
 
@@ -23,7 +23,7 @@ export const DesignDetailsPanel: FunctionComponent<DesignDetailsPanelProps> = ({
         <React.Fragment>
             <Tabs
                 activeKey={activeTabKey}
-                onSelect={(event, eventKey) => {setActiveTabKey(eventKey as string)}}
+                onSelect={(event, eventKey) => {setActiveTabKey(eventKey as string);}}
                 aria-label="Design panel detail tabs"
             >
                 <Tab eventKey="details" title={<TabTitleText>Details</TabTitleText>}>

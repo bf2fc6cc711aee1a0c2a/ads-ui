@@ -58,7 +58,7 @@ const TYPE_OPTIONS: SelectOptionObject[] = [
 });
 
 
-export const CreateDesignModal: FunctionComponent<CreateDesignModalProps> = ({isOpen, onCreate, onCancel}: CreateDesignModalProps) => {
+export const CreateDesignModal: FunctionComponent<CreateDesignModalProps> = ({ isOpen, onCreate, onCancel }: CreateDesignModalProps) => {
     const [isValid, setValid] = useState(false);
     const [name, setName] = useState("");
     const [summary, setSummary] = useState("");
@@ -176,7 +176,7 @@ export const CreateDesignModal: FunctionComponent<CreateDesignModalProps> = ({is
                         name="create-design-name"
                         aria-describedby="create-design-name-helper"
                         value={name}
-                        onChange={(value) => {setName(value)}}
+                        onChange={(value) => {setName(value);}}
                     />
                 </FormGroup>
                 <FormGroup label="Description" fieldId="create-design-description">
@@ -186,7 +186,7 @@ export const CreateDesignModal: FunctionComponent<CreateDesignModalProps> = ({is
                         name="create-design-description"
                         aria-describedby="create-design-description-helper"
                         value={summary}
-                        onChange={(value) => {setSummary(value)}}
+                        onChange={(value) => {setSummary(value);}}
                     />
                 </FormGroup>
                 <FormGroup label="Type" isRequired={true} fieldId="create-design-type">
@@ -194,7 +194,7 @@ export const CreateDesignModal: FunctionComponent<CreateDesignModalProps> = ({is
                         variant={SelectVariant.single}
                         aria-label="Select type"
                         toggleId="create-design-type"
-                        onToggle={() => {setTypeToggled(!isTypeToggled)}}
+                        onToggle={() => {setTypeToggled(!isTypeToggled);}}
                         onSelect={(event, selection) => onTypeSelect(selection)}
                         isOpen={isTypeToggled}
                         selections={typeSelection}
@@ -211,7 +211,7 @@ export const CreateDesignModal: FunctionComponent<CreateDesignModalProps> = ({is
                             variant={SelectVariant.single}
                             aria-label="Select version"
                             toggleId="create-design-version"
-                            onToggle={() => {setVersionToggled(!isVersionToggled)}}
+                            onToggle={() => {setVersionToggled(!isVersionToggled);}}
                             onSelect={(event, selection) => onVersionSelect(selection as string)}
                             isOpen={isVersionToggled}
                             selections={version}
@@ -224,16 +224,16 @@ export const CreateDesignModal: FunctionComponent<CreateDesignModalProps> = ({is
                 </If>
                 <If condition={(templates && templates.length > 1) as boolean}>
                     <FormGroup label="Template" fieldId="create-design-template">
-                        <Gallery hasGutter minWidths={{default: "125px"}} maxWidths={{default: "125px"}}>
-                        {
-                            templates?.map(t => (
-                                <GalleryItem key={t.id}>
-                                    <TemplateItem template={t} isSelected={t === template} onSelect={() => {
-                                        setTemplate(t)
-                                    }} />
-                                </GalleryItem>
-                            ))
-                        }
+                        <Gallery hasGutter minWidths={{ default: "125px" }} maxWidths={{ default: "125px" }}>
+                            {
+                                templates?.map(t => (
+                                    <GalleryItem key={t.id}>
+                                        <TemplateItem template={t} isSelected={t === template} onSelect={() => {
+                                            setTemplate(t);
+                                        }} />
+                                    </GalleryItem>
+                                ))
+                            }
                         </Gallery>
                     </FormGroup>
                 </If>

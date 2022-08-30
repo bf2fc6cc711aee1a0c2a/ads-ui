@@ -17,7 +17,7 @@ export type RenameModalProps = {
 
 
 export const RenameModal: FunctionComponent<RenameModalProps> = (
-    {design, isOpen, onRename, onCancel}: RenameModalProps) => {
+    { design, isOpen, onRename, onCancel }: RenameModalProps) => {
 
     const [isValid, setValid] = useState(false);
     const [name, setName] = useState<string>();
@@ -78,10 +78,10 @@ export const RenameModal: FunctionComponent<RenameModalProps> = (
                         name="edit-description"
                         aria-describedby="edit-description-helper"
                         value={summary}
-                        onChange={(value) => {setSummary(value)}}
+                        onChange={(value) => {setSummary(value);}}
                     />
                 </FormGroup>
             </Form>
         </Modal>
-    )
+    );
 };

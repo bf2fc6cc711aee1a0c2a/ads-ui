@@ -1,6 +1,6 @@
-import React, {FunctionComponent} from "react";
+import React, { FunctionComponent } from "react";
 import "./design-description.css";
-import {Truncate} from "@patternfly/react-core";
+import { Truncate } from "@patternfly/react-core";
 
 /**
  * Properties
@@ -12,7 +12,7 @@ export type DesignDescriptionProps = {
 }
 
 
-export const DesignDescription: FunctionComponent<DesignDescriptionProps> = ({description, truncate, className}: DesignDescriptionProps) => {
+export const DesignDescription: FunctionComponent<DesignDescriptionProps> = ({ description, truncate, className }: DesignDescriptionProps) => {
     let classes: string = "";
     if (className) {
         classes = className;
@@ -27,4 +27,4 @@ export const DesignDescription: FunctionComponent<DesignDescriptionProps> = ({de
     ) : (
         <div className={classes}>{description || "No description."}</div>
     );
-}
+};

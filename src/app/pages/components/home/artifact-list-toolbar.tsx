@@ -28,15 +28,15 @@ export type ArtifactListToolbarProps = {
     criteria: ArtifactListToolbarCriteria;
     paging: Paging;
     artifacts?: ArtifactSearchResults;
-    menuAppendTo?: HTMLElement | (() => HTMLElement) | 'parent' | 'inline' | undefined | null;
+    menuAppendTo?: HTMLElement | (() => HTMLElement) | "parent" | "inline" | undefined | null;
     onRegistrySelected: (registry: Registry) => void;
     onCriteriaChange: (criteria: ArtifactListToolbarCriteria) => void;
     onPagingChange: (paging: Paging) => void;
 }
 
 
-export const ArtifactListToolbar: FunctionComponent<ArtifactListToolbarProps> = ({registries, criteria, onCriteriaChange, paging,
-                                                                            onPagingChange, artifacts, onRegistrySelected, menuAppendTo}: ArtifactListToolbarProps) => {
+export const ArtifactListToolbar: FunctionComponent<ArtifactListToolbarProps> = (
+    { registries, criteria, onCriteriaChange, paging, onPagingChange, artifacts, onRegistrySelected, menuAppendTo }: ArtifactListToolbarProps) => {
     const [ registry, setRegistry ] = useState<Registry>();
     const [ filterValue, setFilterValue ] = useState(criteria.filterValue);
 
@@ -69,13 +69,13 @@ export const ArtifactListToolbar: FunctionComponent<ArtifactListToolbarProps> = 
 
     const onFilterChange = (value: string): void => {
         setFilterValue(value);
-    }
+    };
 
     const onSearch = (): void => {
         onCriteriaChange({
             ...criteria,
             filterValue
-        })
+        });
     };
 
     const onClear = (): void => {
@@ -83,8 +83,8 @@ export const ArtifactListToolbar: FunctionComponent<ArtifactListToolbarProps> = 
         onCriteriaChange({
             ...criteria,
             filterValue: ""
-        })
-    }
+        });
+    };
 
     const totalArtifactCount = (): number => {
         return artifacts?.count || 0;
@@ -105,11 +105,11 @@ export const ArtifactListToolbar: FunctionComponent<ArtifactListToolbarProps> = 
             <ToolbarContent>
                 <ToolbarItem variant="search-filter">
                     <ObjectSelect value={registry} items={registries}
-                                  variant={SelectVariant.single}
-                                  onSelect={onRegistrySelectInternal}
-                                  toggleId="artifact-list-toolbar-registries"
-                                  menuAppendTo={menuAppendTo || 'parent'}
-                                  itemToString={item => item.name} />
+                        variant={SelectVariant.single}
+                        onSelect={onRegistrySelectInternal}
+                        toggleId="artifact-list-toolbar-registries"
+                        menuAppendTo={menuAppendTo || "parent"}
+                        itemToString={item => item.name} />
                 </ToolbarItem>
                 <ToolbarItem variant="search-filter">
                     <SearchInput aria-label="Filter artifacts" value={filterValue} onChange={onFilterChange} onSearch={onSearch} onClear={onClear} />
@@ -123,7 +123,7 @@ export const ArtifactListToolbar: FunctionComponent<ArtifactListToolbarProps> = 
                 </ToolbarItem>
                 <ToolbarItem className="artifact-paging-item">
                     <Pagination
-                        style={{padding: "5px"}}
+                        style={{ padding: "5px" }}
                         variant="bottom"
                         dropDirection="down"
                         isCompact={true}

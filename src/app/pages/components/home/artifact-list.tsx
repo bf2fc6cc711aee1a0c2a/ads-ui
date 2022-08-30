@@ -17,7 +17,7 @@ export type ArtifactListProps = {
  * A list of artifacts in a RHOSR instance.
  */
 export const ArtifactList: FunctionComponent<ArtifactListProps> = (
-    {artifacts, fetchArtifactVersions, fetchArtifactContent, onArtifactSelected}: ArtifactListProps) => {
+    { artifacts, fetchArtifactVersions, fetchArtifactContent, onArtifactSelected }: ArtifactListProps) => {
 
     const [selectedArtifact, setSelectedArtifact] = useState<SearchedArtifact>();
 
@@ -45,12 +45,12 @@ export const ArtifactList: FunctionComponent<ArtifactListProps> = (
             {
                 artifacts?.map( (artifact, idx) =>
                     <ArtifactListItem artifact={artifact} key={idx}
-                                      onSelected={onArtifactSelectedInternal}
-                                      onUnselected={onArtifactUnselectedInternal}
-                                      fetchArtifactVersions={fetchArtifactVersions}
-                                      fetchArtifactContent={fetchArtifactContent}
-                                      onArtifactLoaded={onArtifactLoaded}
-                                      isSelected={selectedArtifact === artifact} />
+                        onSelected={onArtifactSelectedInternal}
+                        onUnselected={onArtifactUnselectedInternal}
+                        fetchArtifactVersions={fetchArtifactVersions}
+                        fetchArtifactContent={fetchArtifactContent}
+                        onArtifactLoaded={onArtifactLoaded}
+                        isSelected={selectedArtifact === artifact} />
                 )
             }
         </div>
