@@ -41,7 +41,7 @@ export type ExportToRhosrModalProps = {
 
 
 export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
-    {design, isOpen, onExported, onCancel}: ExportToRhosrModalProps) => {
+    { design, isOpen, onExported, onCancel }: ExportToRhosrModalProps) => {
 
     const [isValid, setValid] = useState(false);
     const [isExporting, setExporting] = useState(false);
@@ -253,18 +253,18 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
                     <Form>
                         <FormGroup label="Registry Instance" isRequired={true} fieldId="export-registry-instance">
                             <ObjectSelect items={registries}
-                                          value={registry}
-                                          onSelect={onRegistrySelect}
-                                          variant={SelectVariant.single}
-                                          toggleId="export-registry"
-                                          menuAppendTo="parent"
-                                          itemToString={item => item.name} />
+                                value={registry}
+                                onSelect={onRegistrySelect}
+                                variant={SelectVariant.single}
+                                toggleId="export-registry"
+                                menuAppendTo="parent"
+                                itemToString={item => item.name} />
                         </FormGroup>
                         <IfRhosr registry={registry} scope="write" onHasAccess={setHasRhosrAccess}>
                             <If condition={registrationError !== undefined}>
                                 <RegistrationError design={design} error={registrationError}
-                                                   onCancel={onCancel}
-                                                   onTryAgain={() => setRegistrationError(undefined)} />
+                                    onCancel={onCancel}
+                                    onTryAgain={() => setRegistrationError(undefined)} />
                             </If>
                             <If condition={registrationError === undefined}>
                                 <FormGroup label="Group" isRequired={false} fieldId="export-group">
@@ -309,5 +309,5 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
                 </IfNotEmpty>
             </IsLoading>
         </Modal>
-    )
+    );
 };

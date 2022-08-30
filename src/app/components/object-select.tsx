@@ -1,6 +1,6 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
-import {Select, SelectOption, SelectVariant} from "@patternfly/react-core";
-import {SelectOptionObject} from "@patternfly/react-core/src/components/Select/SelectOption";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core";
+import { SelectOptionObject } from "@patternfly/react-core/src/components/Select/SelectOption";
 
 interface ObjectSelectOptionObject extends SelectOptionObject {
     item: any;
@@ -16,15 +16,15 @@ export type ObjectSelectProps = {
     itemToString: (value: any) => string;
     noSelectionLabel?: string;
     toggleId?: string;
-    menuAppendTo?: HTMLElement | (() => HTMLElement) | 'parent' | 'inline';
-    variant?: 'single' | 'checkbox' | 'typeahead' | 'typeaheadmulti';
+    menuAppendTo?: HTMLElement | (() => HTMLElement) | "parent" | "inline";
+    variant?: "single" | "checkbox" | "typeahead" | "typeaheadmulti";
 };
 
 /**
  * A generic control that makes it easier to create a <Select> from an array of objects.
  */
 export const ObjectSelect: FunctionComponent<ObjectSelectProps> = (
-    {value, items, onSelect, itemToString, noSelectionLabel, toggleId, menuAppendTo, variant}: ObjectSelectProps) => {
+    { value, items, onSelect, itemToString, noSelectionLabel, toggleId, menuAppendTo, variant }: ObjectSelectProps) => {
 
     const [isToggled, setToggled] = useState<boolean>(false);
     const [selectObjects, setSelectObjects] = useState<ObjectSelectOptionObject[]>();
@@ -42,13 +42,13 @@ export const ObjectSelect: FunctionComponent<ObjectSelectProps> = (
 
     useEffect(() => {
         const theItems: any[] = items || [];
-        const selectObjects: ObjectSelectOptionObject[] = theItems.map((item, index) => {
+        const selectObjects: ObjectSelectOptionObject[] = theItems.map((item) => {
             return {
                 item: item,
                 toString: () => {
-                    return itemToString(item)
+                    return itemToString(item);
                 }
-            }
+            };
         });
         if (noSelectionLabel !== undefined) {
             const noSelection: ObjectSelectOptionObject = {
@@ -56,7 +56,7 @@ export const ObjectSelect: FunctionComponent<ObjectSelectProps> = (
                 toString(): string {
                     return noSelectionLabel;
                 }
-            }
+            };
             setSelectObjects([
                 noSelection, ...selectObjects
             ]);
@@ -73,17 +73,17 @@ export const ObjectSelect: FunctionComponent<ObjectSelectProps> = (
 
     return (
         <Select menuAppendTo={menuAppendTo}
-                variant={variant || SelectVariant.single}
-                onToggle={setToggled}
-                toggleId={toggleId}
-                onSelect={onSelectInternal}
-                isOpen={isToggled}
-                selections={selections}>
+            variant={variant || SelectVariant.single}
+            onToggle={setToggled}
+            toggleId={toggleId}
+            onSelect={onSelectInternal}
+            isOpen={isToggled}
+            selections={selections}>
             {
                 selectObjects?.map((soo, index) => (
                     <SelectOption isPlaceholder={soo.item === undefined} key={index} value={soo} />
                 ))
             }
         </Select>
-    )
+    );
 };

@@ -32,7 +32,7 @@ export type DesignsToolbarProps = {
  * The toolbar to filter (and paginate) the collection of designs.
  */
 export const DesignsToolbar: FunctionComponent<DesignsToolbarProps> = (
-    {criteria, paging, designs, onCriteriaChange, onPagingChange, onCreate, onImport}: DesignsToolbarProps) => {
+    { criteria, paging, designs, onCriteriaChange, onPagingChange, onCreate, onImport }: DesignsToolbarProps) => {
 
     const [ filterValue, setFilterValue ] = useState(criteria.filterValue);
 
@@ -63,7 +63,7 @@ export const DesignsToolbar: FunctionComponent<DesignsToolbarProps> = (
         onCriteriaChange({
             ...criteria,
             filterValue
-        })
+        });
     };
 
     const onClear = (): void => {
@@ -71,7 +71,7 @@ export const DesignsToolbar: FunctionComponent<DesignsToolbarProps> = (
         onCriteriaChange({
             ...criteria,
             filterValue: ""
-        })
+        });
     };
 
     const totalDesignCount = (): number => {
@@ -92,7 +92,7 @@ export const DesignsToolbar: FunctionComponent<DesignsToolbarProps> = (
                 </ToolbarItem>
                 <ToolbarItem className="design-paging-item">
                     <Pagination
-                        style={{padding: "0"}}
+                        style={{ padding: "0" }}
                         variant="bottom"
                         dropDirection="down"
                         isCompact={true}

@@ -185,12 +185,12 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (props: Edit
     return (
         <React.Fragment>
             <TestRegistryModal isOpen={isTestRegistryModalOpen}
-                               design={props.design}
-                               onCancel={() => setIsTestRegistryModalOpen(false)}
-                               onSubmit={(...params) => {
-                                    props.onRegistrationTestRegistry(...params);
-                                    setIsTestRegistryModalOpen(false);
-                               }} />
+                design={props.design}
+                onCancel={() => setIsTestRegistryModalOpen(false)}
+                onSubmit={(...params) => {
+                    props.onRegistrationTestRegistry(...params);
+                    setIsTestRegistryModalOpen(false);
+                }} />
             <div className="editor-context">
                 <div className="editor-context-breadcrumbs">
                     <Breadcrumb style={{ marginBottom: "10px" }}>
@@ -219,7 +219,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (props: Edit
                 </div>
                 <div className="editor-context-toggle">
                     <Button className="btn-toggle" variant="plain" onClick={onToggleExpand}>
-                        <ToggleIcon expanded={isExpanded} onClick={() => { setExpanded(!isExpanded) }} />
+                        <ToggleIcon expanded={isExpanded} onClick={() => { setExpanded(!isExpanded); }} />
                     </Button>
                 </div>
             </div>
@@ -274,9 +274,9 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (props: Edit
                 </div>
             </If>
             <ExportToRhosrModal design={props.design as Design}
-                                isOpen={isRegisterModalOpen}
-                                onExported={onRegisterDesignConfirmed}
-                                onCancel={() => setRegisterModalOpen(false)} />
+                isOpen={isRegisterModalOpen}
+                onExported={onRegisterDesignConfirmed}
+                onCancel={() => setRegisterModalOpen(false)} />
         </React.Fragment>
     );
 };

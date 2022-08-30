@@ -1,6 +1,6 @@
-import React, {FunctionComponent} from "react";
-import {Link} from "react-router-dom";
-import {Basename, useBasename} from "@rhoas/app-services-ui-shared";
+import React, { FunctionComponent } from "react";
+import { Link } from "react-router-dom";
+import { Basename, useBasename } from "@rhoas/app-services-ui-shared";
 
 export type NavLinkProps = {
     location: string;
@@ -9,7 +9,7 @@ export type NavLinkProps = {
     children?: React.ReactNode;
 }
 
-export const NavLink: FunctionComponent<NavLinkProps> = ({location, title, className, children}: NavLinkProps) => {
+export const NavLink: FunctionComponent<NavLinkProps> = ({ location, title, className, children }: NavLinkProps) => {
 
     const basename: Basename = useBasename();
     const to: string = `${basename.getBasename()}${location}`;

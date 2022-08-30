@@ -21,9 +21,9 @@ export type DesignsEmptyStateFilteredProps = {
  * The empty state UI shown to the user when no designs are available, either due to
  * filtering or because no designs have been created yet.
  */
-export const DesignsEmptyStateFiltered: FunctionComponent<DesignsEmptyStateFilteredProps> = ({onClear}: DesignsEmptyStateFilteredProps) => {
+export const DesignsEmptyStateFiltered: FunctionComponent<DesignsEmptyStateFilteredProps> = ({ onClear }: DesignsEmptyStateFilteredProps) => {
     return (
-        <Bullseye style={{backgroundColor: "white"}}>
+        <Bullseye style={{ backgroundColor: "white" }}>
             <EmptyState variant={EmptyStateVariant.small}>
                 <EmptyStateIcon icon={SearchIcon} />
                 <Title headingLevel="h2" size="lg">

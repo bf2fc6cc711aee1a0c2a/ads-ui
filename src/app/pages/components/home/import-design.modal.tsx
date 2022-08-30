@@ -84,7 +84,7 @@ type DetectionInfo = {
 }
 
 
-export const ImportDesignModal: FunctionComponent<ImportDesignModalProps> = ({importType, isOpen, onImport, onCancel}: ImportDesignModalProps) => {
+export const ImportDesignModal: FunctionComponent<ImportDesignModalProps> = ({ importType, isOpen, onImport, onCancel }: ImportDesignModalProps) => {
     const [isValid, setValid] = useState(false);
 
     const [designContent, setDesignContent] = useState<string>();
@@ -206,8 +206,8 @@ export const ImportDesignModal: FunctionComponent<ImportDesignModalProps> = ({im
             type: ArtifactTypes.AVRO,
             contentType: contentType,
             name: contentObj.name
-        }
-    }
+        };
+    };
 
     const detectXmlInfo = (content: string): DetectionInfo => {
         let type: string = ArtifactTypes.XML;
@@ -220,14 +220,14 @@ export const ImportDesignModal: FunctionComponent<ImportDesignModalProps> = ({im
             type,
             contentType: ContentTypes.TEXT_XML
         };
-    }
+    };
 
     const detectProtoInfo = (): DetectionInfo => {
         return {
             contentType: ContentTypes.APPLICATION_PROTOBUF,
             type: ArtifactTypes.PROTOBUF
         };
-    }
+    };
 
     // Tries to figure out the type and meta-data of the content by parsing it and looking
     // for key indicators.
@@ -414,5 +414,5 @@ export const ImportDesignModal: FunctionComponent<ImportDesignModalProps> = ({im
                 </If>
             </Form>
         </Modal>
-    )
+    );
 };

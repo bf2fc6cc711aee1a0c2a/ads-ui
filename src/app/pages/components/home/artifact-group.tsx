@@ -10,7 +10,7 @@ export type ArtifactGroupProps = {
 /**
  * Displays a RHOSR artifact's group.
  */
-export const ArtifactGroup: FunctionComponent<ArtifactGroupProps> = ({groupId}: ArtifactGroupProps) => {
+export const ArtifactGroup: FunctionComponent<ArtifactGroupProps> = ({ groupId }: ArtifactGroupProps) => {
     const style = (): string => {
         return !groupId ? "nogroup" : "group";
     };

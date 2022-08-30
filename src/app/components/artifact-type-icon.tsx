@@ -1,6 +1,6 @@
-import React, {FunctionComponent} from "react";
+import React, { FunctionComponent } from "react";
 import "./artifact-type-icon.css";
-import {ArtifactTypes} from "@app/models";
+import { ArtifactTypes } from "@app/models";
 
 /**
  * Properties
@@ -12,7 +12,7 @@ export type ArtifactTypeIconProps = {
 }
 
 
-export const ArtifactTypeIcon: FunctionComponent<ArtifactTypeIconProps> = ({type, isShowIcon, isShowLabel}: ArtifactTypeIconProps) => {
+export const ArtifactTypeIcon: FunctionComponent<ArtifactTypeIconProps> = ({ type, isShowIcon, isShowLabel }: ArtifactTypeIconProps) => {
     const getTitle = (): string => {
         let title: string = type;
         switch (type) {
@@ -131,11 +131,13 @@ export const ArtifactTypeIcon: FunctionComponent<ArtifactTypeIconProps> = ({type
             classes += " icon-only";
         }
         return classes;
-    }
+    };
 
     const renderLabel = (): React.ReactNode | undefined => {
         if (isShowLabel) {
-            return <span>{getLabel()}</span>
+            return (
+                <span>{getLabel()}</span>
+            );
         } else {
             return undefined;
         }
@@ -144,4 +146,4 @@ export const ArtifactTypeIcon: FunctionComponent<ArtifactTypeIconProps> = ({type
     return (
         <div className={getClassNames()} title={getTitle()} children={renderLabel()} />
     );
-}
+};

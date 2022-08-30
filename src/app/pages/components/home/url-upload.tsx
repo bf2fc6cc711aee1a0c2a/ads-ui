@@ -17,7 +17,7 @@ export type UrlUploadProps = {
  * A control similar to the FileUpload control from patternfly that allows uploading from
  * a URL instead of a file.
  */
-export const UrlUpload: FunctionComponent<UrlUploadProps> = ({id, urlPlaceholder, onChange}: UrlUploadProps) => {
+export const UrlUpload: FunctionComponent<UrlUploadProps> = ({ id, urlPlaceholder, onChange }: UrlUploadProps) => {
     const [url, setUrl] = useState<string>();
     const [previewContent, setPreviewContent] = useState<string>();
     const [isLoading, setLoading] = useState<boolean>(false);
@@ -67,8 +67,8 @@ export const UrlUpload: FunctionComponent<UrlUploadProps> = ({id, urlPlaceholder
         <div className="url-upload">
             <div className="url-upload-flex">
                 <div className="url-upload-url">
-                    <TextInput value={url} type="text" placeholder={urlPlaceholder}
-                               onChange={onTextInputChange} aria-label="url input" />
+                    <TextInput value={url} type="text" placeholder={urlPlaceholder} id={id}
+                        onChange={onTextInputChange} aria-label="url input" />
                 </div>
                 <div className="url-upload-button">
                     <Button variant="control" isDisabled={!hasUrl()} onClick={onFetch}>Fetch</Button>

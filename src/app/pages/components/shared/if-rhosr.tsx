@@ -24,7 +24,7 @@ export type IfRhosrProps = {
  * component can be used to guard functionality that will only work if the user
  * has permission to interact with the registry in the required way.
  */
-export const IfRhosr: FunctionComponent<IfRhosrProps> = ({registry, scope, onHasAccess, children}: IfRhosrProps) => {
+export const IfRhosr: FunctionComponent<IfRhosrProps> = ({ registry, scope, onHasAccess, children }: IfRhosrProps) => {
     const [isLoading, setLoading] = useState<boolean>(false);
     const [userInfo, setUserInfo] = useState<UserInfo>();
 
@@ -81,7 +81,7 @@ export const IfRhosr: FunctionComponent<IfRhosrProps> = ({registry, scope, onHas
                     <Alert variant="danger" isInline={true} title="Permission denied (no access)">
                         <p>
                             You do not have sufficient access privileges to Service Registry instance
-                            <span style={{fontWeight: "bold"}}> {registry?.name}</span>.
+                            <span style={{ fontWeight: "bold" }}> {registry?.name}</span>.
 
                             Contact your organization admin or the owner of the Service Registry instance to request the appropriate access.
                         </p>

@@ -1,8 +1,8 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
-import {DesignContext} from "@app/models/designs/design-context.model";
-import {RhosrService, useRhosrService} from "@app/services";
-import {stripTrailingSlash} from "@app/utils";
-import {Registry} from "@rhoas/registry-management-sdk";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { DesignContext } from "@app/models/designs/design-context.model";
+import { RhosrService, useRhosrService } from "@app/services";
+import { stripTrailingSlash } from "@app/utils";
+import { Registry } from "@rhoas/registry-management-sdk";
 
 /**
  * Properties
@@ -17,7 +17,7 @@ export type RegistryNavLinkProps = {
  * A navigation link to an artifact in a service registry instance.  The context passed to this
  * component must be of type "rhosr".
  */
-export const RegistryNavLink: FunctionComponent<RegistryNavLinkProps> = ({registry, context, children}: RegistryNavLinkProps) => {
+export const RegistryNavLink: FunctionComponent<RegistryNavLinkProps> = ({ registry, context, children }: RegistryNavLinkProps) => {
     const [href, setHref] = useState<string>();
 
     const rhosr: RhosrService | undefined = registry === undefined ? useRhosrService() : undefined;

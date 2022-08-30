@@ -6,6 +6,6 @@ type FederatedHomePageProps = HomePageProps & FederatedProps;
 
 const FederatedHomePage: React.FunctionComponent<FederatedHomePageProps> = () => {
     return (<HomePage />);
-}
+};
 
 export default FederatedHomePage;

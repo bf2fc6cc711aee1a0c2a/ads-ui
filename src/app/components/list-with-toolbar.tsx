@@ -1,7 +1,6 @@
-import React, {FunctionComponent} from "react";
-import {IsLoading} from "@app/components/is-loading";
-import {If} from "@app/components/if";
-import {IfNotEmpty} from "@app/components/if-not-empty";
+import React, { FunctionComponent } from "react";
+import { IsLoading } from "@app/components/is-loading";
+import { If } from "@app/components/if";
 
 /**
  * Properties
@@ -23,7 +22,7 @@ export type ListWithToolbarProps = {
  * indicated condition is true.
  */
 export const ListWithToolbar: FunctionComponent<ListWithToolbarProps> = (
-    {toolbar, alwaysShowToolbar, emptyState, filteredEmptyState, isLoading, loadingComponent, isEmpty, isFiltered, children}: ListWithToolbarProps) => {
+    { toolbar, alwaysShowToolbar, emptyState, filteredEmptyState, isLoading, loadingComponent, isEmpty, isFiltered, children }: ListWithToolbarProps) => {
 
     return (
         <React.Fragment>

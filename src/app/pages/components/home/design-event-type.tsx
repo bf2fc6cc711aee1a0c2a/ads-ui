@@ -10,7 +10,7 @@ export type DesignEventTypeProps = {
 };
 
 
-export const DesignEventType: FunctionComponent<DesignEventTypeProps> = ({event, variant}: DesignEventTypeProps) => {
+export const DesignEventType: FunctionComponent<DesignEventTypeProps> = ({ event, variant }: DesignEventTypeProps) => {
     const typeLabel = (): React.ReactNode => {
         switch (event.type) {
             case "download":
@@ -20,6 +20,7 @@ export const DesignEventType: FunctionComponent<DesignEventTypeProps> = ({event,
             case "import":
                 return importTypeLabel();
             case "register":
+                // eslint-disable-next-line no-case-declarations
                 const context: DesignContext = {
                     type: "rhosr",
                     rhosr: event.data
@@ -72,5 +73,7 @@ export const DesignEventType: FunctionComponent<DesignEventTypeProps> = ({event,
         return <span>Imported content</span>;
     };
 
-    return <React.Fragment children={typeLabel()} />
+    return (
+        <React.Fragment children={typeLabel()} />
+    );
 };

@@ -20,7 +20,7 @@ export type DeleteDesignModalProps = {
     onDownload: (design: Design) => void;
 }
 
-export const DeleteDesignModal: FunctionComponent<DeleteDesignModalProps> = ({design, isOpen, onDelete, onDownload, onCancel}: DeleteDesignModalProps) => {
+export const DeleteDesignModal: FunctionComponent<DeleteDesignModalProps> = ({ design, isOpen, onDelete, onDownload, onCancel }: DeleteDesignModalProps) => {
     const [isValid, setValid] = useState(false);
 
     // Called when the user clicks the Delete button in the modal
@@ -52,7 +52,7 @@ export const DeleteDesignModal: FunctionComponent<DeleteDesignModalProps> = ({de
                 </Button>
             ]}
         >
-            <TextContent style={{marginBottom: "15px"}}>
+            <TextContent style={{ marginBottom: "15px" }}>
                 <Text component="p">The following API or schema design will be deleted.</Text>
             </TextContent>
 
@@ -65,16 +65,16 @@ export const DeleteDesignModal: FunctionComponent<DeleteDesignModalProps> = ({de
                 </FormGroup>
                 <FormGroup fieldId="delete-design-warning">
                     <Alert isInline variant="info" title="To save your data for future use, download the design.">
-                        <p style={{lineHeight: "18px"}}>
+                        <p style={{ lineHeight: "18px" }}>
                             To ensure your data is successfully saved, wait for the download to complete
                             before deleting the design.
                         </p>
-                        <Button variant="link" onClick={doDownload} style={{paddingLeft:"0px"}}>Download design</Button>
+                        <Button variant="link" onClick={doDownload} style={{ paddingLeft: "0px" }}>Download design</Button>
                     </Alert>
                 </FormGroup>
                 <FormGroup fieldId="delete-design-confirm">
                     <Checkbox id="valid-checkbox" name="" label="I understand that the design will be permanently deleted."
-                              isChecked={isValid} onChange={(checked) => setValid(checked)} />
+                        isChecked={isValid} onChange={(checked) => setValid(checked)} />
                 </FormGroup>
             </Form>
         </Modal>

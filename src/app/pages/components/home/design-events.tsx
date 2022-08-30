@@ -13,7 +13,7 @@ export type DesignEventsProps = {
 };
 
 
-export const DesignEvents: FunctionComponent<DesignEventsProps> = ({design}: DesignEventsProps) => {
+export const DesignEvents: FunctionComponent<DesignEventsProps> = ({ design }: DesignEventsProps) => {
     const [isLoading, setLoading] = useState<boolean>(false);
     const [exports, setExports] = useState<DesignEvent[]>();
 
@@ -40,7 +40,7 @@ export const DesignEvents: FunctionComponent<DesignEventsProps> = ({design}: Des
             designsService.getEvents(design.id).then(events => {
                 setExports(events?.filter(event => event.type === "download" || event.type === "register"));
                 setLoading(false);
-            }).catch(error => {
+            }).catch(() => {
                 // TODO error handling!
             });
         }

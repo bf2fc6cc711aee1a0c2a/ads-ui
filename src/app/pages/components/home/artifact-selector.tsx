@@ -25,7 +25,7 @@ export type ArtifactSelectorProps = {
  * A control that allows the user to find and select a single version of a single artifact from
  * a service registry instance.
  */
-export const ArtifactSelector: FunctionComponent<ArtifactSelectorProps> = ({registries, onSelected}: ArtifactSelectorProps) => {
+export const ArtifactSelector: FunctionComponent<ArtifactSelectorProps> = ({ registries, onSelected }: ArtifactSelectorProps) => {
     const [ querying, setQuerying ] = useState(true);
     const [ paging, setPaging ] = useState<Paging>({
         pageSize: 20,
@@ -112,10 +112,10 @@ export const ArtifactSelector: FunctionComponent<ArtifactSelectorProps> = ({regi
 
     const toolbar: React.ReactNode = (
         <ArtifactListToolbar registries={registries} criteria={criteria} paging={paging}
-                             onRegistrySelected={onRegistrySelected}
-                             menuAppendTo={document.getElementById('artifact-selector')}
-                             onCriteriaChange={onCriteriaChange} onPagingChange={onPagingChange}
-                             artifacts={artifacts} />
+            onRegistrySelected={onRegistrySelected}
+            menuAppendTo={document.getElementById("artifact-selector")}
+            onCriteriaChange={onCriteriaChange} onPagingChange={onPagingChange}
+            artifacts={artifacts} />
     );
 
     const emptyState: React.ReactNode = (
@@ -137,7 +137,7 @@ export const ArtifactSelector: FunctionComponent<ArtifactSelectorProps> = ({regi
     );
 
     const loadingComponent: React.ReactNode = (
-        <Spinner size="lg" style={{marginTop: "10px"}} />
+        <Spinner size="lg" style={{ marginTop: "10px" }} />
     );
 
     return (

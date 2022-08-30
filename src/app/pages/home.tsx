@@ -31,10 +31,9 @@ import { DesignsService, useDesignsService } from "@app/services";
 import { Navigation, useNavigation } from "@app/contexts/navigation";
 import { ArtifactTypeIcon } from "@app/components";
 
-export type HomePageProps = {
-};
+export type HomePageProps = Record<string, never>;
 
-export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) => {
+export const HomePage: FunctionComponent<HomePageProps> = () => {
     const [ isDrawerExpanded, setDrawerExpanded ] = useState(true);
     const [ isCreateModalOpen, setCreateModalOpen ] = useState(false);
     const [ isImportModalOpen, setImportModalOpen ] = useState(false);
@@ -74,10 +73,10 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
     };
 
     const createDesign = async (info: CreateDesign, template: Template): Promise<void> => {
-        let dc: CreateDesignContent = {
+        const dc: CreateDesignContent = {
             contentType: template.content.contentType,
             data: cloneObject(template.content.data)
-        }
+        };
         if (typeof dc.data === "string") {
             dc.data = dc.data.replace("$NAME", info.name).replace("$SUMMARY", info.summary||"");
         } else {
@@ -113,7 +112,7 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
                     </Text>
                     <Title
                         headingLevel="h2"
-                        size={TitleSizes['xl']}
+                        size={TitleSizes["xl"]}
                         className="pf-u-mt-0"
                     >
                         <div className="design-details-header">
@@ -147,20 +146,20 @@ export const HomePage: FunctionComponent<HomePageProps> = ({}: HomePageProps) =>
                                     your designs locally or by exporting them to OpenShift Service Registry.
                                 </Text>
                             </TextContent>
-                            <CreateDesignModal isOpen={isCreateModalOpen} onCreate={createDesign} onCancel={() => {setCreateModalOpen(false)}} />
-                            <ImportDesignModal isOpen={isImportModalOpen} onImport={importDesign} onCancel={() => {setImportModalOpen(false)}}
-                                              importType={importType} />
-                            <ImportFromRhosrModal isOpen={isImportFromRhosrModalOpen} onImport={importDesign} onCancel={() => {setImportFromRhosrModalOpen(false)}} />
+                            <CreateDesignModal isOpen={isCreateModalOpen} onCreate={createDesign} onCancel={() => {setCreateModalOpen(false);}} />
+                            <ImportDesignModal isOpen={isImportModalOpen} onImport={importDesign} onCancel={() => {setImportModalOpen(false);}}
+                                importType={importType} />
+                            <ImportFromRhosrModal isOpen={isImportFromRhosrModalOpen} onImport={importDesign} onCancel={() => {setImportFromRhosrModalOpen(false);}} />
                         </PageSection>
                         <PageSection variant={PageSectionVariants.default} isFilled={true}>
-                            <DesignsPanel onCreate={() => {setCreateModalOpen(true)}}
-                                          onDesignSelected={onDesignSelected}
-                                          selectedDesign={selectedDesign}
-                                          onImport={onImport} />
+                            <DesignsPanel onCreate={() => {setCreateModalOpen(true);}}
+                                onDesignSelected={onDesignSelected}
+                                selectedDesign={selectedDesign}
+                                onImport={onImport} />
                         </PageSection>
                     </DrawerContentBody>
                 </DrawerContent>
             </Drawer>
         </React.Fragment>
     );
-}
+};

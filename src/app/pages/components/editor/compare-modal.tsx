@@ -19,7 +19,7 @@ export type CompareModalProps = {
     onClose: () => void;
 };
 
-export const CompareModal: FunctionComponent<CompareModalProps> = ({isOpen, onClose, before, beforeName, after, afterName}: CompareModalProps) => {
+export const CompareModal: FunctionComponent<CompareModalProps> = ({ isOpen, onClose, before, beforeName, after, afterName }: CompareModalProps) => {
     const [diffEditorContentOptions, setDiffEditorContentOptions] = useState({
         renderSideBySide: true,
         automaticLayout: true,
@@ -28,7 +28,7 @@ export const CompareModal: FunctionComponent<CompareModalProps> = ({isOpen, onCl
         inDiffEditor: true,
         originalAriaLabel: "Original",
         modifiedAriaLabel: "Modified"
-    } as IDiffEditorConstructionOptions)
+    } as IDiffEditorConstructionOptions);
 
     const [beforeAsString, setBeforeAsString] = useState<string>();
     const [afterAsString, setAfterAsString] = useState<string>();
@@ -42,7 +42,7 @@ export const CompareModal: FunctionComponent<CompareModalProps> = ({isOpen, onCl
             renderSideBySide: !diffEditorContentOptions.renderSideBySide
         });
         setIsDiffInline(!!diffEditorContentOptions.renderSideBySide);
-    }
+    };
 
     const switchWordWrap = () => {
         setDiffEditorContentOptions({
@@ -50,30 +50,30 @@ export const CompareModal: FunctionComponent<CompareModalProps> = ({isOpen, onCl
             wordWrap: diffEditorContentOptions.wordWrap == "off" ? "on" : "off"
         });
         setIsDiffWrapped(diffEditorContentOptions.wordWrap != "on");
-    }
+    };
 
     useEffect(() => {
         setBeforeAsString(contentToString(before));
-    }, [before])
+    }, [before]);
 
     useEffect(() => {
         setAfterAsString(contentToString(after));
-    }, [after])
+    }, [after]);
 
     return (
         <Modal id="compare-modal"
-               title="Unsaved changes"
-               isOpen={isOpen}
-               onClose={onClose}>
+            title="Unsaved changes"
+            isOpen={isOpen}
+            onClose={onClose}>
             <div className="compare-view">
                 <ToggleGroup className="compare-toggle-group"
-                             aria-label="Compare view toggle group">
+                    aria-label="Compare view toggle group">
                     <ToggleGroupItem text="Inline" key={1} buttonId="second"
-                                     isSelected={isDiffInline}
-                                     onChange={switchInlineCompare}/>
+                        isSelected={isDiffInline}
+                        onChange={switchInlineCompare}/>
                     <ToggleGroupItem text="Wrap text" key={0} buttonId="first"
-                                     isSelected={isDiffWrapped}
-                                     onChange={switchWordWrap}/>
+                        isSelected={isDiffWrapped}
+                        onChange={switchWordWrap}/>
                 </ToggleGroup>
                 <div className="compare-label">
                     <span className="before">Original: {beforeName}</span>
@@ -92,6 +92,5 @@ export const CompareModal: FunctionComponent<CompareModalProps> = ({isOpen, onCl
                 </div>
             </div>
         </Modal>
-
     );
 };

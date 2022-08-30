@@ -1,9 +1,9 @@
-import React, {RefObject, useEffect} from "react";
-import {Editor as DesignEditor, EditorProps} from "@app/editors/editor-types";
+import React, { RefObject, useEffect } from "react";
+import { Editor as DesignEditor, EditorProps } from "@app/editors/editor-types";
 import "./editor-asyncapi.css";
-import {Config, useConfig} from "@rhoas/app-services-ui-shared";
-import {parseJson, parseYaml, toJsonString, toYamlString} from "@app/utils";
-import {ContentTypes} from "@app/models";
+import { Config, useConfig } from "@rhoas/app-services-ui-shared";
+import { parseJson, parseYaml, toJsonString, toYamlString } from "@app/utils";
+import { ContentTypes } from "@app/models";
 
 
 export type AsyncApiEditorProps = {
@@ -16,7 +16,7 @@ export type AsyncApiEditorProps = {
  * and loaded via an iframe.  This component is a bridge - it acts as a React component that
  * bridges to the iframe.
  */
-export const AsyncApiEditor: DesignEditor = ({content, onChange, className}: AsyncApiEditorProps) => {
+export const AsyncApiEditor: DesignEditor = ({ content, onChange, className }: AsyncApiEditorProps) => {
     const ref: RefObject<any> = React.createRef();
     const cfg: Config = useConfig();
 
@@ -34,7 +34,7 @@ export const AsyncApiEditor: DesignEditor = ({content, onChange, className}: Asy
                         newContent = toJsonString(newContent);
                     }
                 } else if (typeof newContent === "string" && content.contentType === ContentTypes.APPLICATION_YAML) {
-                    console.info("[AsyncApiEditor] Converting from JSON string to YAML string.")
+                    console.info("[AsyncApiEditor] Converting from JSON string to YAML string.");
                     newContent = toYamlString(parseJson(newContent as string));
                 }
                 onChange(newContent);
@@ -76,15 +76,15 @@ export const AsyncApiEditor: DesignEditor = ({content, onChange, className}: Asy
                     allowImports: false
                 }
             }
-        }
+        };
         ref.current.contentWindow.postMessage(message, "*");
     };
 
     return (
         <iframe id="asyncapi-editor-frame"
-                ref={ ref }
-                className={ className ? className : "editor-asyncapi-flex-container" }
-                onLoad={ onEditorLoaded }
-                src={ editorAppUrl() } />
+            ref={ ref }
+            className={ className ? className : "editor-asyncapi-flex-container" }
+            onLoad={ onEditorLoaded }
+            src={ editorAppUrl() } />
     );
 };

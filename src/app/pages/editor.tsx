@@ -59,10 +59,10 @@ const onBeforeUnload = (e): void => {
     e.preventDefault();
     // Chrome requires returnValue to be set
     e.returnValue = "";
-}
+};
 
 
-export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorPageProps) => {
+export const EditorPage: FunctionComponent<EditorPageProps> = ({ params }: EditorPageProps) => {
     const [isLoading, setLoading] = useState(true);
     const [design, setDesign] = useState<Design>();
     const [designContent, setDesignContent] = useState<DesignContent>();
@@ -101,7 +101,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorP
         }).catch(error => {
             // TODO handle error
             console.error(`[EditorPage] Failed to get design with id ${designId}: `, error);
-        })
+        });
     }, [params]);
 
     // Add browser hook to prevent navigation and tab closing when the editor is dirty
@@ -125,13 +125,13 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorP
             // TODO handle error
             console.error(`[EditorPage] Failed to get design content with id ${designId}: `, error);
         });
-    }, [design])
+    }, [design]);
 
     // Called when the user makes an edit in the editor.
     const onEditorChange = (value: any): void => {
         setCurrentContent(value);
         setDirty(true);
-    }
+    };
 
     // Called when the user makes an edit in the editor.
     const onSave = (): void => {
@@ -201,10 +201,10 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorP
             }
             setRenameModalOpen(false);
             alerts.designRenamed(event);
-        }).catch(e => {
+        }).catch(() => {
             // TODO error handling
         });
-    }
+    };
 
     const textEditor: React.ReactElement = (
         <TextEditor content={designContent as DesignContent} onChange={onEditorChange}/>
@@ -243,42 +243,41 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorP
 
     const onCompareContent = () => {
         setCompareModalOpen(true);
-    }
+    };
 
     const closeCompareEditor = () => {
         setCompareModalOpen(false);
-    }
+    };
 
     const testArtifactRegistration = (registry: Registry, groupId: string | undefined, artifactId: string) => {
         setTestRegistryIssuesIsLoading(true);
         openTestRegistryIssuesPanel();
         // cache registry used during registry test to allow for a retry from the sidepanel
-        setTestRegistryArgsCache({registry, groupId, artifactId});
+        setTestRegistryArgsCache({ registry, groupId, artifactId });
         rhosrInstanceFactory.createFor(registry)
             .testUpdateArtifactContent(groupId, artifactId, currentContent)
             .then(() => {
                 // Nothing to do here.
             }).catch((error: TestRegistryErrorResponse) => {
-            openTestRegistryIssuesPanel(error);
-        });
-    }
+                openTestRegistryIssuesPanel(error);
+            });
+    };
 
     const openTestRegistryIssuesPanel = (error?: TestRegistryErrorResponse) => {
         setTestRegistryIssuesDrawerIsOpen(true);
         setTestRegistryError(error);
         setTestRegistryIssuesIsLoading(false);
-    }
+    };
 
     const closeTestRegistryIssuesPanel = () => {
         setTestRegistryIssuesDrawerIsOpen(false);
         setTestRegistryIssuesIsLoading(false);
         setTestRegistryError(undefined);
-    }
+    };
 
     const renderPanelContent = (error?: TestRegistryErrorResponse) => {
         return (
-            <DrawerPanelContent isResizable onResize={onResizeTestRegistrySidepanel} minSize="35%"
-                                id="test-registry-issues-panel">
+            <DrawerPanelContent isResizable onResize={onResizeTestRegistrySidepanel} minSize="35%" id="test-registry-issues-panel">
                 <DrawerHead>
                     <h2 className="pf-c-title pf-m-2xl" tabIndex={isTestRegistryIssuesDrawerOpen ? 0 : -1}
                         ref={drawerRef as any}>
@@ -299,35 +298,39 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorP
                     {renderPanelBody(error)}
                 </DrawerPanelBody>
             </DrawerPanelContent>
-        )
+        );
     };
 
     const renderPanelBody = (error?: TestRegistryErrorResponse) => {
         if (isTestRegistryIssuesLoading) {
-            return <Spinner className="spinner"/>
+            return (
+                <Spinner className="spinner"/>
+            );
         } else if (error) {
-            return <DescriptionList isHorizontal>
-                {error.name === "RuleViolationException" && error.causes?.length > 0 ?
-                    error.causes.map((cause, i) =>
-                        <React.Fragment key={`issue-${i}`}>
-                            <DescriptionListGroup>
-                                <DescriptionListTerm>Code</DescriptionListTerm>
-                                <DescriptionListDescription>{cause.description}</DescriptionListDescription>
-                                <DescriptionListTerm>Context</DescriptionListTerm>
-                                <DescriptionListDescription>
-                                    <pre>{cause.context}</pre>
-                                </DescriptionListDescription>
-                            </DescriptionListGroup>
-                            <Divider/>
-                        </React.Fragment>
-                    ) : <CodeBlock>
-                        <CodeBlockCode id="code-content">{error.detail}</CodeBlockCode>
-                    </CodeBlock>}
-            </DescriptionList>
+            return (
+                <DescriptionList isHorizontal>
+                    {error.name === "RuleViolationException" && error.causes?.length > 0 ?
+                        error.causes.map((cause, i) =>
+                            <React.Fragment key={`issue-${i}`}>
+                                <DescriptionListGroup>
+                                    <DescriptionListTerm>Code</DescriptionListTerm>
+                                    <DescriptionListDescription>{cause.description}</DescriptionListDescription>
+                                    <DescriptionListTerm>Context</DescriptionListTerm>
+                                    <DescriptionListDescription>
+                                        <pre>{cause.context}</pre>
+                                    </DescriptionListDescription>
+                                </DescriptionListGroup>
+                                <Divider/>
+                            </React.Fragment>
+                        ) : <CodeBlock>
+                            <CodeBlockCode id="code-content">{error.detail}</CodeBlockCode>
+                        </CodeBlock>}
+                </DescriptionList>
+            );
         }
 
         return <p>Registry Test completed with no issues.</p>;
-    }
+    };
 
     return (
         <IsLoading condition={isLoading}>
@@ -357,21 +360,21 @@ export const EditorPage: FunctionComponent<EditorPageProps> = ({params}: EditorP
                 </Drawer>
             </PageSection>
             <CompareModal isOpen={isCompareModalOpen}
-                          onClose={closeCompareEditor}
-                          before={designContent?.data}
-                          beforeName={design?.name||""}
-                          after={currentContent}
-                          afterName={design?.name||""} />
+                onClose={closeCompareEditor}
+                before={designContent?.data}
+                beforeName={design?.name || ""}
+                after={currentContent}
+                afterName={design?.name || ""}/>
             <RenameModal design={design}
-                         isOpen={isRenameModalOpen}
-                         onRename={doRenameDesign}
-                         onCancel={() => setRenameModalOpen(false)}/>
+                isOpen={isRenameModalOpen}
+                onRename={doRenameDesign}
+                onCancel={() => setRenameModalOpen(false)}/>
             <DeleteDesignModal design={design}
-                               isOpen={isDeleteModalOpen}
-                               onDelete={onDeleteDesignConfirmed}
-                               onDownload={onDownload}
-                               onCancel={() => setDeleteModalOpen(false)}/>
-            <Prompt when={isDirty} message={`You have unsaved changes.  Do you really want to leave?`}/>
+                isOpen={isDeleteModalOpen}
+                onDelete={onDeleteDesignConfirmed}
+                onDownload={onDownload}
+                onCancel={() => setDeleteModalOpen(false)}/>
+            <Prompt when={isDirty} message={ "You have unsaved changes.  Do you really want to leave?" }/>
         </IsLoading>
     );
-}
+};

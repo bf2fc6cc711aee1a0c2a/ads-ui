@@ -1,8 +1,8 @@
-import {AlertVariant, useAlert} from "@rhoas/app-services-ui-shared";
-import {Design} from "@app/models";
-import {ExportToRhosrData, RenameData} from "@app/pages/components";
+import { AlertVariant, useAlert } from "@rhoas/app-services-ui-shared";
+import { Design } from "@app/models";
+import { ExportToRhosrData, RenameData } from "@app/pages/components";
 import React from "react";
-import {RegistryNavLink} from "@app/components";
+import { RegistryNavLink } from "@app/components";
 
 
 export interface AlertsService {
@@ -52,7 +52,7 @@ export const useAlertsService: () => AlertsService = (): AlertsService => {
             const description: React.ReactNode = (
                 <React.Fragment>
                     <div>
-                        Design '{design?.name}' was <span style={{fontWeight: "bold"}}>successfully saved locally in your browser</span>.
+                        Design '{design?.name}' was <span style={{ fontWeight: "bold" }}>successfully saved locally in your browser</span>.
                     </div>
                 </React.Fragment>
             );

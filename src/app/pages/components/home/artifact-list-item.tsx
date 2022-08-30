@@ -23,7 +23,7 @@ export type ArtifactListItemProps = {
  * A list of artifacts in a RHOSR instance.
  */
 export const ArtifactListItem: FunctionComponent<ArtifactListItemProps> = (
-    {artifact, isSelected, onSelected, onUnselected, onArtifactLoaded, fetchArtifactVersions, fetchArtifactContent}: ArtifactListItemProps) => {
+    { artifact, isSelected, onSelected, onUnselected, onArtifactLoaded, fetchArtifactVersions, fetchArtifactContent }: ArtifactListItemProps) => {
 
     const [isLoading, setLoading] = useState<boolean>(false);
     const [versions, setVersions] = useState<SearchedVersion[]>();
@@ -31,9 +31,6 @@ export const ArtifactListItem: FunctionComponent<ArtifactListItemProps> = (
     const [content, setContent] = useState<string>();
     const [isContentLoaded, setContentLoaded] = useState<boolean>(false);
 
-    const labels = (): string[] => {
-        return artifact.labels ? artifact.labels : [];
-    };
     const statuses = (): string[] => {
         const rval: string[] = [];
         if (artifact.state === "DISABLED") {
@@ -63,7 +60,7 @@ export const ArtifactListItem: FunctionComponent<ArtifactListItemProps> = (
             setVersions(versions);
             setLoading(false);
             onVersionSelect(undefined);
-        }).catch(error => {
+        }).catch(() => {
             // TODO handle errors
         });
     };
@@ -92,11 +89,11 @@ export const ArtifactListItem: FunctionComponent<ArtifactListItemProps> = (
         setLoading(true);
         console.debug(`[ArtifactListItem] Version selected for ${artifact.id}, loading content. Version: `, version);
         fetchArtifactContent(artifact, version).then(content => {
-            console.debug("[ArtifactListItem] Artifact content successfully fetched for: ", artifact.id)
+            console.debug("[ArtifactListItem] Artifact content successfully fetched for: ", artifact.id);
             setContent(content);
             setLoading(false);
             setContentLoaded(true);
-        }).catch(error => {
+        }).catch(() => {
             // TODO handle errors loading the artifact content
         });
     };
@@ -129,7 +126,7 @@ export const ArtifactListItem: FunctionComponent<ArtifactListItemProps> = (
 
     return (
         <div className={`artifact-list-item ${isSelected ? "selected" : ""} ${isContentLoaded ? "loaded" : ""}`}
-             onClick={onToggleSelected}>
+            onClick={onToggleSelected}>
             <div className="artifact-list-item-radio">
                 <IsLoading condition={isLoading} loadingComponent={(<Spinner size="sm" />)}>
                     <Radio id={`artifact-radio-${artifact.id}`} name="" isChecked={isSelected} />
@@ -153,9 +150,9 @@ export const ArtifactListItem: FunctionComponent<ArtifactListItemProps> = (
             <div className="artifact-list-item-versions">
                 <If condition={isSelected}>
                     <ObjectSelect value={selectedVersion} items={versions as SearchedVersion[]}
-                                  toggleId={`artifact-list-item-${artifact.id}-version-select`}
-                                  noSelectionLabel="latest" menuAppendTo="parent"
-                                  onSelect={onVersionSelect} itemToString={version => version.version} />
+                        toggleId={`artifact-list-item-${artifact.id}-version-select`}
+                        noSelectionLabel="latest" menuAppendTo="parent"
+                        onSelect={onVersionSelect} itemToString={version => version.version} />
                 </If>
             </div>
         </div>

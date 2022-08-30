@@ -12,7 +12,7 @@ export type DesignHistoryProps = {
     design: Design;
 };
 
-export const DesignHistory: FunctionComponent<DesignHistoryProps> = ({design}: DesignHistoryProps) => {
+export const DesignHistory: FunctionComponent<DesignHistoryProps> = ({ design }: DesignHistoryProps) => {
     const [isLoading, setLoading] = useState<boolean>(false);
     const [events, setEvents] = useState<DesignEvent[]>();
 
@@ -23,7 +23,7 @@ export const DesignHistory: FunctionComponent<DesignHistoryProps> = ({design}: D
             designsService.getEvents(design.id).then(events => {
                 setEvents(events);
                 setLoading(false);
-            }).catch(error => {
+            }).catch(() => {
                 // TODO error handling!
             });
         }
