@@ -178,7 +178,7 @@ export const TestRegistryModal: React.FunctionComponent<TestRegistryModalProps> 
             ]}
         >
             <IsLoading condition={isLoadingRegistries}>
-                <IfNotEmpty collection={registries} emptyState={<RhosrEmptyState />}>
+                <IfNotEmpty collection={registries} emptyState={<RhosrEmptyState message="To test your design using Service Registry, you must create a Service Registry instance first." />}>
                     <Form>
                         <FormGroup
                             isRequired={true}

@@ -99,7 +99,7 @@ export const ImportFromRhosrModal: FunctionComponent<ImportFromRhosrModalProps> 
         >
             <IsLoading condition={isLoading}>
                 <If condition={registries.length === 0}>
-                    <RhosrEmptyState />
+                    <RhosrEmptyState message="To import a design from Service Registry, you must create a Service Registry instance first." />
                 </If>
                 <If condition={registries.length > 0}>
                     <ServicePreviewWarning />

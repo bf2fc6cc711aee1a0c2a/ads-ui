@@ -1,13 +1,18 @@
 import React, { FunctionComponent } from "react";
 import { EmptyState, EmptyStateBody, EmptyStateIcon, Title } from "@patternfly/react-core";
 import { AddCircleOIcon } from "@patternfly/react-icons";
+import { Registry } from "@rhoas/registry-management-sdk";
+import { DesignContext } from "@app/models/designs/design-context.model";
 
 /**
  * Properties
  */
-export type RhosrEmptyStateProps = Record<string, never>;
+export type RhosrEmptyStateProps  = {
+    message: string;
+};
 
-export const RhosrEmptyState: FunctionComponent<RhosrEmptyStateProps> = () => {
+
+export const RhosrEmptyState: FunctionComponent<RhosrEmptyStateProps> = ({ message }) => {
     return (
         <EmptyState>
             <EmptyStateIcon icon={AddCircleOIcon} />
@@ -15,8 +20,7 @@ export const RhosrEmptyState: FunctionComponent<RhosrEmptyStateProps> = () => {
                 No Service Registry instances
             </Title>
             <EmptyStateBody>
-                To save a design as an artifact in Service Registry,
-                you must create a Service Registry instance first.
+                { message }
             </EmptyStateBody>
             <a href="/application-services/service-registry">Create Service Registry instance</a>
         </EmptyState>

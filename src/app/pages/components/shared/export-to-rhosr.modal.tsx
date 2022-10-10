@@ -249,7 +249,7 @@ export const ExportToRhosrModal: FunctionComponent<ExportToRhosrModalProps> = (
             actions={actions}
         >
             <IsLoading condition={isLoadingRegistries}>
-                <IfNotEmpty collection={registries} emptyState={<RhosrEmptyState />}>
+                <IfNotEmpty collection={registries} emptyState={<RhosrEmptyState message="To save a design as an artifact in Service Registry, you must create a Service Registry instance first." />}>
                     <Form>
                         <FormGroup label="Registry Instance" isRequired={true} fieldId="export-registry-instance">
                             <ObjectSelect items={registries}
